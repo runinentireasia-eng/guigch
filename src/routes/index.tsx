@@ -107,7 +107,7 @@ function DotCluster() {
 }
 
 /* ---------- Hero ---------- */
-function Hero() {
+function Hero({ races }: { races: Race[] }) {
   const { t } = useLang();
   return (
     <section className="border-b border-frost/15">
@@ -132,13 +132,13 @@ function Hero() {
             </div>
           </div>
         </div>
-        <ParticleField />
+            <ParticleField count={races.length} />
       </div>
     </section>
   );
 }
 
-function ParticleField() {
+function ParticleField({ count }: { count: number }) {
   const dots = useMemo(() => {
     const seed = 1337;
     const rand = (i: number) => {
@@ -157,7 +157,7 @@ function ParticleField() {
   return (
     <div className="relative h-[420px] w-full border border-frost/15">
       <div className="absolute top-3 left-3 text-caption text-smoke">FIG. 01 · РАСЕ FIELD</div>
-      <div className="absolute bottom-3 right-3 text-caption text-smoke">n = {races.length}</div>
+      <div className="absolute bottom-3 right-3 text-caption text-smoke">n = {count}</div>
       {dots.map((d, i) => (
         <span
           key={i}
