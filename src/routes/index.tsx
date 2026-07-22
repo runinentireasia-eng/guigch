@@ -1,20 +1,33 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useLang, type Lang, type DictKey } from "@/lib/i18n";
-import { races, type Race, type RaceCategory } from "@/lib/races";
+import { rowToRace, type Race, type RaceCategory, type RaceRow } from "@/lib/races";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
+  const { data: races = [] } = useQuery({
+    queryKey: ["races"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("races")
+        .select("*")
+        .order("race_date", { ascending: true });
+      if (error) throw error;
+      return (data ?? []).map((r, i) => rowToRace(r as RaceRow, i));
+    },
+  });
   return (
     <div className="min-h-screen bg-void-black text-frost font-[300]">
       <AnnouncementBar />
       <Nav />
-      <Hero />
+      <Hero races={races} />
       <ManifestoSection />
-      <CalendarSection />
+      <CalendarSection races={races} />
       <Footer />
     </div>
   );
