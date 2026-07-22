@@ -83,12 +83,18 @@ function Nav() {
         </div>
         <div className="flex items-center gap-3">
           <LangToggle />
-          <button className="border border-frost text-frost px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:bg-frost/5">
+          <Link
+            to="/auth"
+            className="border border-frost text-frost px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:bg-frost/5"
+          >
             {t("logIn")}
-          </button>
-          <button className="bg-frost text-void-black px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:opacity-90">
+          </Link>
+          <Link
+            to="/admin"
+            className="bg-frost text-void-black px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:opacity-90"
+          >
             {t("addRace")}
-          </button>
+          </Link>
         </div>
       </div>
     </nav>
