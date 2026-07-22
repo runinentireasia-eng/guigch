@@ -225,7 +225,7 @@ const catKeys: Record<RaceCategory | "all", DictKey> = {
   fun: "filterFun",
 };
 
-function CalendarSection() {
+function CalendarSection({ races }: { races: Race[] }) {
   const { t, lang } = useLang();
   const [filter, setFilter] = useState<RaceCategory | "all">("all");
 
@@ -234,7 +234,7 @@ function CalendarSection() {
       races
         .filter((r) => (filter === "all" ? true : r.category === filter))
         .sort((a, b) => a.dateISO.localeCompare(b.dateISO)),
-    [filter],
+    [filter, races],
   );
 
   return (
