@@ -23,6 +23,53 @@ export interface Race {
   descriptionEn: string;
 }
 
+const MONTHS_EN = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const MONTHS_MN = ["1-Р САР","2-Р САР","3-Р САР","4-Р САР","5-Р САР","6-Р САР","7-Р САР","8-Р САР","9-Р САР","10-Р САР","11-Р САР","12-Р САР"];
+
+export type RaceRow = {
+  id: string;
+  name_mn: string;
+  name_en: string;
+  race_date: string;
+  location_mn: string;
+  location_en: string;
+  organizer_mn: string;
+  organizer_en: string;
+  category: string;
+  distances: string[];
+  status: string;
+  register_url: string;
+  description_mn: string;
+  description_en: string;
+};
+
+export function rowToRace(row: RaceRow, index: number): Race {
+  const d = new Date(row.race_date + "T00:00:00");
+  const m = d.getUTCMonth();
+  return {
+    id: row.id,
+    index: String(index + 1).padStart(2, "0"),
+    nameMn: row.name_mn,
+    nameEn: row.name_en,
+    dateISO: row.race_date,
+    monthMn: MONTHS_MN[m],
+    monthEn: MONTHS_EN[m],
+    day: String(d.getUTCDate()).padStart(2, "0"),
+    year: String(d.getUTCFullYear()),
+    locationMn: row.location_mn,
+    locationEn: row.location_en,
+    organizerMn: row.organizer_mn,
+    organizerEn: row.organizer_en,
+    category: (row.category as RaceCategory) ?? "road",
+    distances: row.distances ?? [],
+    status: (row.status as RaceStatus) ?? "open",
+    registerUrl: row.register_url,
+    descriptionMn: row.description_mn,
+    descriptionEn: row.description_en,
+  };
+}
+
+// Fallback seed used only before backend loads (kept minimal for SSR).
 export const races: Race[] = [
   {
     id: "ub-marathon-2026",

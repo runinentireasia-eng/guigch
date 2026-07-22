@@ -1,20 +1,33 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useLang, type Lang, type DictKey } from "@/lib/i18n";
-import { races, type Race, type RaceCategory } from "@/lib/races";
+import { rowToRace, type Race, type RaceCategory, type RaceRow } from "@/lib/races";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
+  const { data: races = [] } = useQuery({
+    queryKey: ["races"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("races")
+        .select("*")
+        .order("race_date", { ascending: true });
+      if (error) throw error;
+      return (data ?? []).map((r, i) => rowToRace(r as RaceRow, i));
+    },
+  });
   return (
     <div className="min-h-screen bg-void-black text-frost font-[300]">
       <AnnouncementBar />
       <Nav />
-      <Hero />
+      <Hero races={races} />
       <ManifestoSection />
-      <CalendarSection />
+      <CalendarSection races={races} />
       <Footer />
     </div>
   );
@@ -70,12 +83,18 @@ function Nav() {
         </div>
         <div className="flex items-center gap-3">
           <LangToggle />
-          <button className="border border-frost text-frost px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:bg-frost/5">
+          <Link
+            to="/auth"
+            className="border border-frost text-frost px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:bg-frost/5"
+          >
             {t("logIn")}
-          </button>
-          <button className="bg-frost text-void-black px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:opacity-90">
+          </Link>
+          <Link
+            to="/admin"
+            className="bg-frost text-void-black px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:opacity-90"
+          >
             {t("addRace")}
-          </button>
+          </Link>
         </div>
       </div>
     </nav>
@@ -94,7 +113,7 @@ function DotCluster() {
 }
 
 /* ---------- Hero ---------- */
-function Hero() {
+function Hero({ races }: { races: Race[] }) {
   const { t } = useLang();
   return (
     <section className="border-b border-frost/15">
@@ -119,13 +138,13 @@ function Hero() {
             </div>
           </div>
         </div>
-        <ParticleField />
+            <ParticleField count={races.length} />
       </div>
     </section>
   );
 }
 
-function ParticleField() {
+function ParticleField({ count }: { count: number }) {
   const dots = useMemo(() => {
     const seed = 1337;
     const rand = (i: number) => {
@@ -144,7 +163,7 @@ function ParticleField() {
   return (
     <div className="relative h-[420px] w-full border border-frost/15">
       <div className="absolute top-3 left-3 text-caption text-smoke">FIG. 01 · РАСЕ FIELD</div>
-      <div className="absolute bottom-3 right-3 text-caption text-smoke">n = {races.length}</div>
+      <div className="absolute bottom-3 right-3 text-caption text-smoke">n = {count}</div>
       {dots.map((d, i) => (
         <span
           key={i}
@@ -212,7 +231,7 @@ const catKeys: Record<RaceCategory | "all", DictKey> = {
   fun: "filterFun",
 };
 
-function CalendarSection() {
+function CalendarSection({ races }: { races: Race[] }) {
   const { t, lang } = useLang();
   const [filter, setFilter] = useState<RaceCategory | "all">("all");
 
@@ -221,7 +240,7 @@ function CalendarSection() {
       races
         .filter((r) => (filter === "all" ? true : r.category === filter))
         .sort((a, b) => a.dateISO.localeCompare(b.dateISO)),
-    [filter],
+    [filter, races],
   );
 
   return (
