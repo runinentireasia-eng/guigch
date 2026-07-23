@@ -1,29 +1,33 @@
 import { cn } from "@/lib/utils";
 import { type ReactNode } from "react";
 
+type SpotlightColor = "plasma" | "lime" | "frost";
+type SpotlightSize = "sm" | "md" | "lg" | "xl";
+type SpotlightIntensity = "subtle" | "normal" | "strong";
+
 interface SpotlightProps {
   children: ReactNode;
   className?: string;
   gradientClassName?: string;
-  color?: "plasma" | "lime" | "frost";
-  size?: "sm" | "md" | "lg" | "xl";
-  intensity?: "subtle" | "normal" | "strong";
+  color?: SpotlightColor;
+  size?: SpotlightSize;
+  intensity?: SpotlightIntensity;
 }
 
-const colorStops: Record<SpotlightProps["color"], string> = {
+const colorStops: Record<SpotlightColor, string> = {
   plasma: "rgba(16, 25, 236, 0.22)",
   lime: "rgba(235, 251, 16, 0.14)",
   frost: "rgba(255, 255, 255, 0.10)",
 };
 
-const sizeScales: Record<SpotlightProps["size"], string> = {
+const sizeScales: Record<SpotlightSize, string> = {
   sm: "50%",
   md: "75%",
   lg: "100%",
   xl: "125%",
 };
 
-const intensityStops: Record<SpotlightProps["intensity"], string> = {
+const intensityStops: Record<SpotlightIntensity, string> = {
   subtle: "transparent 55%",
   normal: "transparent 45%",
   strong: "transparent 35%",
