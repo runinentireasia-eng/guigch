@@ -27,6 +27,7 @@ function Index() {
       <Nav />
       <Hero races={races} />
       <ManifestoSection />
+      <CalendarGridSection races={races} />
       <CalendarSection races={races} />
       <Footer />
     </div>
@@ -230,6 +231,210 @@ const catKeys: Record<RaceCategory | "all", DictKey> = {
   ultra: "filterUltra",
   fun: "filterFun",
 };
+
+/* ---------- Calendar Grid (month view) ---------- */
+function CalendarGridSection({ races }: { races: Race[] }) {
+  const { t, lang } = useLang();
+  const today = useMemo(() => new Date(), []);
+  const firstRaceMonth = useMemo(() => {
+    const upcoming = races
+      .map((r) => new Date(r.dateISO + "T00:00:00"))
+      .filter((d) => d.getTime() >= new Date(today.toDateString()).getTime())
+      .sort((a, b) => a.getTime() - b.getTime())[0];
+    const base = upcoming ?? today;
+    return new Date(base.getFullYear(), base.getMonth(), 1);
+  }, [races, today]);
+
+  const [cursor, setCursor] = useState<Date>(firstRaceMonth);
+  useEffect(() => setCursor(firstRaceMonth), [firstRaceMonth]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const year = cursor.getFullYear();
+  const month = cursor.getMonth();
+  const monthNames = t("monthNames").split("_");
+  const weekdays = t("weekdayShort").split("_");
+
+  const firstDay = new Date(year, month, 1);
+  const startOffset = (firstDay.getDay() + 6) % 7; // Monday-first
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const racesByDay = useMemo(() => {
+    const map = new Map<number, Race[]>();
+    for (const r of races) {
+      const d = new Date(r.dateISO + "T00:00:00");
+      if (d.getFullYear() === year && d.getMonth() === month) {
+        const day = d.getDate();
+        const arr = map.get(day) ?? [];
+        arr.push(r);
+        map.set(day, arr);
+      }
+    }
+    return map;
+  }, [races, year, month]);
+
+  const monthRaces = useMemo(
+    () =>
+      races
+        .filter((r) => {
+          const d = new Date(r.dateISO + "T00:00:00");
+          return d.getFullYear() === year && d.getMonth() === month;
+        })
+        .sort((a, b) => a.dateISO.localeCompare(b.dateISO)),
+    [races, year, month],
+  );
+
+  const selected = monthRaces.find((r) => r.id === selectedId) ?? monthRaces[0];
+
+  const cells: (number | null)[] = [
+    ...Array.from({ length: startOffset }, () => null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  const shiftMonth = (delta: number) =>
+    setCursor(new Date(year, month + delta, 1));
+
+  const isToday = (day: number) =>
+    today.getFullYear() === year &&
+    today.getMonth() === month &&
+    today.getDate() === day;
+
+  return (
+    <section className="bg-void-black border-t border-frost/15">
+      <div className="max-w-[1280px] mx-auto px-6 py-[96px]">
+        <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
+          <div>
+            <div className="text-caption text-smoke mb-4">— {t("sectionCalendarLabel")}</div>
+            <h2 className="text-[40px] leading-[1.2] tracking-[-0.03em] font-[300] max-w-[560px]">
+              {t("sectionCalendarTitle")}
+            </h2>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => shiftMonth(-1)}
+              className="px-4 py-2 text-[12px] tracking-[0.06em] uppercase border border-frost/30 text-ash hover:text-frost hover:border-frost"
+            >
+              ← {t("prevMonth")}
+            </button>
+            <button
+              onClick={() => setCursor(new Date(today.getFullYear(), today.getMonth(), 1))}
+              className="px-4 py-2 text-[12px] tracking-[0.06em] uppercase border border-frost/30 text-ash hover:text-frost hover:border-frost"
+            >
+              {t("today")}
+            </button>
+            <button
+              onClick={() => shiftMonth(1)}
+              className="px-4 py-2 text-[12px] tracking-[0.06em] uppercase border border-frost/30 text-ash hover:text-frost hover:border-frost"
+            >
+              {t("nextMonth")} →
+            </button>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-[1fr_360px] gap-8">
+          <div className="border border-frost/15">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-frost/15">
+              <div className="text-caption text-smoke">FIG. 02 · MONTH</div>
+              <div className="text-[20px] tracking-[-0.02em] font-[300]">
+                {monthNames[month]} · {year}
+              </div>
+              <div className="text-caption text-smoke">n = {monthRaces.length.toString().padStart(2, "0")}</div>
+            </div>
+            <div className="grid grid-cols-7 border-b border-frost/15">
+              {weekdays.map((w) => (
+                <div key={w} className="text-caption text-smoke px-3 py-2 border-l border-frost/15 first:border-l-0">
+                  {w}
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-7">
+              {cells.map((day, i) => {
+                const dayRaces = day ? racesByDay.get(day) ?? [] : [];
+                const has = dayRaces.length > 0;
+                const isSel = has && selected && dayRaces.some((r) => r.id === selected.id);
+                return (
+                  <button
+                    key={i}
+                    disabled={!day || !has}
+                    onClick={() => has && setSelectedId(dayRaces[0].id)}
+                    className={`min-h-[92px] text-left p-3 border-l border-t border-frost/15 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative ${
+                      has ? "hover:bg-graphite/60 cursor-pointer" : "cursor-default"
+                    } ${isSel ? "bg-graphite/80" : ""}`}
+                  >
+                    {day && (
+                      <>
+                        <div
+                          className={`text-[15px] font-[300] tracking-[-0.02em] ${
+                            isToday(day) ? "text-reactor-lime" : has ? "text-frost" : "text-smoke"
+                          }`}
+                        >
+                          {String(day).padStart(2, "0")}
+                        </div>
+                        <div className="mt-2 flex flex-col gap-1">
+                          {dayRaces.slice(0, 2).map((r) => (
+                            <span
+                              key={r.id}
+                              className="text-[10px] tracking-[0.06em] uppercase text-void-black bg-reactor-lime px-1.5 py-[2px] truncate"
+                            >
+                              {lang === "mn" ? r.nameMn : r.nameEn}
+                            </span>
+                          ))}
+                          {dayRaces.length > 2 && (
+                            <span className="text-caption text-smoke">+{dayRaces.length - 2}</span>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <aside className="border border-frost/15 p-6 flex flex-col">
+            <div className="text-caption text-smoke mb-4">— {t("sectionCalendarLabel")} · SELECTED</div>
+            {selected ? (
+              <>
+                <div className="text-caption text-smoke">
+                  {lang === "mn" ? selected.monthMn : selected.monthEn} · {selected.day} · {selected.year}
+                </div>
+                <h3 className="text-[22px] leading-[1.25] tracking-[-0.02em] font-[400] text-frost mt-2">
+                  {lang === "mn" ? selected.nameMn : selected.nameEn}
+                </h3>
+                <div className="text-[13px] tracking-[0.02em] text-ash mt-3">
+                  {lang === "mn" ? selected.locationMn : selected.locationEn}
+                </div>
+                <div className="text-[13px] tracking-[0.02em] text-slate mt-1">
+                  {lang === "mn" ? selected.organizerMn : selected.organizerEn}
+                </div>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {selected.distances.map((d) => (
+                    <span key={d} className="text-caption border border-frost/30 px-2 py-1 text-frost">
+                      {d}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-[13px] leading-[1.6] text-ash mt-5 font-[400]">
+                  {lang === "mn" ? selected.descriptionMn : selected.descriptionEn}
+                </p>
+                <a
+                  href={selected.registerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-6 bg-reactor-lime text-void-black px-[24px] py-[12px] text-[13px] tracking-[0.04em] uppercase font-[400] text-center hover:opacity-90"
+                >
+                  {t("register")} →
+                </a>
+              </>
+            ) : (
+              <div className="text-[13px] text-smoke">{t("noRacesMonth")}</div>
+            )}
+          </aside>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function CalendarSection({ races }: { races: Race[] }) {
   const { t, lang } = useLang();
