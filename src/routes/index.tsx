@@ -28,7 +28,6 @@ function Index() {
       <Hero races={races} />
       <ManifestoSection />
       <CalendarGridSection races={races} />
-      <CalendarSection races={races} />
       <Footer />
     </div>
   );
