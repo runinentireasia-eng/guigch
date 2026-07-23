@@ -39,6 +39,20 @@ export const dict = {
   closingSoon: { mn: "УДАХГҮЙ ХААГДАНА", en: "CLOSING SOON" },
   waitlist: { mn: "ХҮЛЭЭГДЭЖ БУЙ", en: "WAITLIST" },
   sectionUpcoming: { mn: "БҮХ УРАЛДААН", en: "ALL RACES" },
+  sectionCalendarLabel: { mn: "ХУАНЛИ", en: "CALENDAR" },
+  sectionCalendarTitle: {
+    mn: "Сар бүрийн харагдац. Уралдааны өдрийг сонгож дэлгэрэнгүйг үзнэ үү.",
+    en: "Month-by-month view. Select a race day to see details.",
+  },
+  prevMonth: { mn: "ӨМНӨХ", en: "PREV" },
+  nextMonth: { mn: "ДАРАА", en: "NEXT" },
+  today: { mn: "ӨНӨӨДӨР", en: "TODAY" },
+  noRacesMonth: { mn: "Энэ сард уралдаан алга.", en: "No races this month." },
+  weekdayShort: { mn: "Да_Мя_Лх_Пү_Ба_Бя_Ня", en: "MO_TU_WE_TH_FR_SA_SU" },
+  monthNames: {
+    mn: "1-Р САР_2-Р САР_3-Р САР_4-Р САР_5-Р САР_6-Р САР_7-Р САР_8-Р САР_9-Р САР_10-Р САР_11-Р САР_12-Р САР",
+    en: "JANUARY_FEBRUARY_MARCH_APRIL_MAY_JUNE_JULY_AUGUST_SEPTEMBER_OCTOBER_NOVEMBER_DECEMBER",
+  },
   sectionSummary: {
     mn: "2026 оны улирлын урьдчилсан хуваарь. Огноо болон бүртгэлийн холбоос зохион байгуулагчаас баталгаажсан.",
     en: "Preliminary schedule for the 2026 season. Dates and links confirmed with each organizer.",
