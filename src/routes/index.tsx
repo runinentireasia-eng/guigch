@@ -299,7 +299,7 @@ function CalendarGridSection({ races }: { races: Race[] }) {
     today.getDate() === day;
 
   return (
-    <section className="bg-void-black border-t border-frost/15">
+    <section id="calendar" className="bg-void-black border-t border-frost/15">
       <div className="max-w-[1280px] mx-auto px-6 py-[96px]">
         <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
           <div>
