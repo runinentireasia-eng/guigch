@@ -246,7 +246,7 @@ function CalendarGridSection({ races }: { races: Race[] }) {
 
   const [cursor, setCursor] = useState<Date>(firstRaceMonth);
   useEffect(() => setCursor(firstRaceMonth), [firstRaceMonth]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedRace, setSelectedRace] = useState<Race | null>(null);
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
@@ -281,8 +281,6 @@ function CalendarGridSection({ races }: { races: Race[] }) {
         .sort((a, b) => a.dateISO.localeCompare(b.dateISO)),
     [races, year, month],
   );
-
-  const selected = monthRaces.find((r) => r.id === selectedId) ?? monthRaces[0];
 
   const cells: (number | null)[] = [
     ...Array.from({ length: startOffset }, () => null),
@@ -330,125 +328,160 @@ function CalendarGridSection({ races }: { races: Race[] }) {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-[1fr_360px] gap-8">
-          <div className="border border-frost/15">
-            <div className="flex items-center justify-between px-4 py-4 border-b border-frost/15">
-              <button
-                aria-label={t("prevMonth")}
-                onClick={() => shiftMonth(-1)}
-                className="size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
-              >
-                ←
-              </button>
-              <div className="flex flex-col items-center">
-                <div className="text-[20px] tracking-[-0.02em] font-[300]">
-                  {monthNames[month]} · {year}
-                </div>
-                <div className="text-caption text-smoke mt-1">
-                  n = {monthRaces.length.toString().padStart(2, "0")}
-                </div>
+        <div className="border border-frost/15">
+          <div className="flex items-center justify-between px-4 py-4 border-b border-frost/15">
+            <button
+              aria-label={t("prevMonth")}
+              onClick={() => shiftMonth(-1)}
+              className="size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+            >
+              ←
+            </button>
+            <div className="flex flex-col items-center">
+              <div className="text-[20px] tracking-[-0.02em] font-[300]">
+                {monthNames[month]} · {year}
               </div>
-              <button
-                aria-label={t("nextMonth")}
-                onClick={() => shiftMonth(1)}
-                className="size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
-              >
-                →
-              </button>
+              <div className="text-caption text-smoke mt-1">
+                n = {monthRaces.length.toString().padStart(2, "0")}
+              </div>
             </div>
-            <div className="grid grid-cols-7 border-b border-frost/15">
-              {weekdays.map((w) => (
-                <div key={w} className="text-caption text-smoke px-3 py-2 border-l border-frost/15 first:border-l-0">
-                  {w}
-                </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-7">
-              {cells.map((day, i) => {
-                const dayRaces = day ? racesByDay.get(day) ?? [] : [];
-                const has = dayRaces.length > 0;
-                const isSel = has && selected && dayRaces.some((r) => r.id === selected.id);
-                return (
-                  <button
-                    key={i}
-                    disabled={!day || !has}
-                    onClick={() => has && setSelectedId(dayRaces[0].id)}
-                    className={`min-h-[92px] text-left p-3 border-l border-t border-frost/15 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative ${
-                      has ? "hover:bg-graphite/60 cursor-pointer" : "cursor-default"
-                    } ${isSel ? "bg-graphite/80" : ""}`}
-                  >
-                    {day && (
-                      <>
-                        <div
-                          className={`text-[15px] font-[300] tracking-[-0.02em] ${
-                            isToday(day) ? "text-reactor-lime" : has ? "text-frost" : "text-smoke"
-                          }`}
-                        >
-                          {String(day).padStart(2, "0")}
-                        </div>
-                        <div className="mt-2 flex flex-col gap-1">
-                          {dayRaces.slice(0, 2).map((r) => (
-                            <span
-                              key={r.id}
-                              className="text-[10px] tracking-[0.06em] uppercase text-void-black bg-reactor-lime px-1.5 py-[2px] truncate"
-                            >
-                              {lang === "mn" ? r.nameMn : r.nameEn}
-                            </span>
-                          ))}
-                          {dayRaces.length > 2 && (
-                            <span className="text-caption text-smoke">+{dayRaces.length - 2}</span>
-                          )}
-                        </div>
-                      </>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            <button
+              aria-label={t("nextMonth")}
+              onClick={() => shiftMonth(1)}
+              className="size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+            >
+              →
+            </button>
           </div>
-
-          <aside className="border border-frost/15 p-6 flex flex-col">
-            <div className="text-caption text-smoke mb-4">— {t("sectionCalendarLabel")} · SELECTED</div>
-            {selected ? (
-              <>
-                <div className="text-caption text-smoke">
-                  {lang === "mn" ? selected.monthMn : selected.monthEn} · {selected.day} · {selected.year}
-                </div>
-                <h3 className="text-[22px] leading-[1.25] tracking-[-0.02em] font-[400] text-frost mt-2">
-                  {lang === "mn" ? selected.nameMn : selected.nameEn}
-                </h3>
-                <div className="text-[13px] tracking-[0.02em] text-ash mt-3">
-                  {lang === "mn" ? selected.locationMn : selected.locationEn}
-                </div>
-                <div className="text-[13px] tracking-[0.02em] text-slate mt-1">
-                  {lang === "mn" ? selected.organizerMn : selected.organizerEn}
-                </div>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {selected.distances.map((d) => (
-                    <span key={d} className="text-caption border border-frost/30 px-2 py-1 text-frost">
-                      {d}
-                    </span>
-                  ))}
-                </div>
-                <p className="text-[13px] leading-[1.6] text-ash mt-5 font-[400]">
-                  {lang === "mn" ? selected.descriptionMn : selected.descriptionEn}
-                </p>
-                <a
-                  href={selected.registerUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-6 bg-reactor-lime text-void-black px-[24px] py-[12px] text-[13px] tracking-[0.04em] uppercase font-[400] text-center hover:opacity-90"
+          <div className="grid grid-cols-7 border-b border-frost/15">
+            {weekdays.map((w) => (
+              <div key={w} className="text-caption text-smoke px-3 py-2 border-l border-frost/15 first:border-l-0">
+                {w}
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-7">
+            {cells.map((day, i) => {
+              const dayRaces = day ? racesByDay.get(day) ?? [] : [];
+              const has = dayRaces.length > 0;
+              return (
+                <div
+                  key={i}
+                  className={`min-h-[92px] text-left p-3 border-l border-t border-frost/15 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative ${
+                    has ? "hover:bg-graphite/60" : ""
+                  }`}
                 >
-                  {t("register")} →
-                </a>
-              </>
-            ) : (
-              <div className="text-[13px] text-smoke">{t("noRacesMonth")}</div>
-            )}
-          </aside>
+                  {day && (
+                    <>
+                      <div
+                        className={`text-[15px] font-[300] tracking-[-0.02em] ${
+                          isToday(day) ? "text-reactor-lime" : has ? "text-frost" : "text-smoke"
+                        }`}
+                      >
+                        {String(day).padStart(2, "0")}
+                      </div>
+                      <div className="mt-2 flex flex-col gap-1">
+                        {dayRaces.slice(0, 2).map((r) => (
+                          <button
+                            key={r.id}
+                            onClick={() => setSelectedRace(r)}
+                            className="text-[10px] tracking-[0.06em] uppercase text-void-black bg-reactor-lime px-1.5 py-[2px] truncate text-left hover:bg-frost transition-colors"
+                          >
+                            {lang === "mn" ? r.nameMn : r.nameEn}
+                          </button>
+                        ))}
+                        {dayRaces.length > 2 && (
+                          <button
+                            onClick={() => setSelectedRace(dayRaces[0])}
+                            className="text-caption text-smoke text-left hover:text-frost"
+                          >
+                            +{dayRaces.length - 2}
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
+
+      {selectedRace && (
+        <RacePopup
+          race={selectedRace}
+          onClose={() => setSelectedRace(null)}
+        />
+      )}
     </section>
+  );
+}
+
+function RacePopup({ race, onClose }: { race: Race; onClose: () => void }) {
+  const { t, lang } = useLang();
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center px-6 py-8 bg-void-black/80 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("eventDetails")}
+    >
+      <div
+        className="w-full max-w-[520px] border border-frost/15 bg-void-black p-6 sm:p-8 shadow-none"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div className="text-caption text-smoke">
+            {lang === "mn" ? race.monthMn : race.monthEn} · {race.day} · {race.year}
+          </div>
+          <button
+            onClick={onClose}
+            className="size-8 flex items-center justify-center border border-frost/30 text-frost text-[14px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+            aria-label={t("close")}
+          >
+            ✕
+          </button>
+        </div>
+        <h3 className="text-[24px] leading-[1.25] tracking-[-0.02em] font-[400] text-frost mt-4">
+          {lang === "mn" ? race.nameMn : race.nameEn}
+        </h3>
+        <div className="text-[13px] tracking-[0.02em] text-ash mt-3">
+          {lang === "mn" ? race.locationMn : race.locationEn}
+        </div>
+        <div className="text-[13px] tracking-[0.02em] text-slate mt-1">
+          {lang === "mn" ? race.organizerMn : race.organizerEn}
+        </div>
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {race.distances.map((d) => (
+            <span key={d} className="text-caption border border-frost/30 px-2 py-1 text-frost">
+              {d}
+            </span>
+          ))}
+        </div>
+        <p className="text-[14px] leading-[1.6] text-ash mt-5 font-[400]">
+          {lang === "mn" ? race.descriptionMn : race.descriptionEn}
+        </p>
+        <a
+          href={race.registerUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-6 block bg-reactor-lime text-void-black px-[24px] py-[12px] text-[13px] tracking-[0.04em] uppercase font-[400] text-center hover:opacity-90"
+        >
+          {t("register")} →
+        </a>
+      </div>
+    </div>
   );
 }
 

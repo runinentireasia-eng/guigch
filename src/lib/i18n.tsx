@@ -38,6 +38,8 @@ export const dict = {
   open: { mn: "БҮРТГЭЛ НЭЭЛТТЭЙ", en: "REGISTRATION OPEN" },
   closingSoon: { mn: "УДАХГҮЙ ХААГДАНА", en: "CLOSING SOON" },
   waitlist: { mn: "ХҮЛЭЭГДЭЖ БУЙ", en: "WAITLIST" },
+  close: { mn: "ХААХ", en: "CLOSE" },
+  eventDetails: { mn: "УРАЛДААНЫ ДЭЛГЭРЭНГҮЙ", en: "RACE DETAILS" },
   sectionUpcoming: { mn: "БҮХ УРАЛДААН", en: "ALL RACES" },
   sectionCalendarLabel: { mn: "ХУАНЛИ", en: "CALENDAR" },
   sectionCalendarTitle: {
