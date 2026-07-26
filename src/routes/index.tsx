@@ -28,6 +28,8 @@ function Index() {
       <Hero races={races} />
       <ManifestoSection />
       <CalendarGridSection races={races} />
+      <OrganizersSection races={races} />
+      <ResultsSection races={races} />
       <Footer />
     </div>
   );
