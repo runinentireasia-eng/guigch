@@ -633,11 +633,11 @@ function OrganizersSection({ races }: { races: Race[] }) {
   const organizers = useMemo(() => {
     const map = new Map<string, Race[]>();
     for (const r of races) {
-      const key = r.organizer || "—";
+      const key = (lang === "mn" ? r.organizerMn : r.organizerEn) || "—";
       map.set(key, [...(map.get(key) ?? []), r]);
     }
     return [...map.entries()].sort((a, b) => b[1].length - a[1].length);
-  }, [races]);
+  }, [races, lang]);
 
   return (
     <section id="organizers" className="bg-void-black border-t border-frost/15 scroll-mt-24">
@@ -679,8 +679,8 @@ function ResultsSection({ races }: { races: Race[] }) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return races
-      .filter((r) => new Date(r.date) < today)
-      .sort((a, b) => (a.date < b.date ? 1 : -1));
+      .filter((r) => new Date(r.dateISO + "T00:00:00") < today)
+      .sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
   }, [races]);
 
   return (
@@ -698,7 +698,7 @@ function ResultsSection({ races }: { races: Race[] }) {
           <ul className="border-t border-frost/15">
             {past.map((r) => (
               <li key={r.id} className="flex flex-wrap items-baseline gap-x-6 gap-y-1 border-b border-frost/15 py-4">
-                <span className="text-caption text-reactor-lime w-[110px]">{r.date}</span>
+                <span className="text-caption text-reactor-lime w-[110px]">{r.dateISO}</span>
                 <span className="text-[15px] font-[400] flex-1 min-w-[200px]">{lang === "mn" ? r.nameMn : r.nameEn}</span>
                 <span className="text-[13px] text-smoke">{lang === "mn" ? r.locationMn : r.locationEn}</span>
               </li>
