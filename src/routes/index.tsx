@@ -333,11 +333,28 @@ function CalendarGridSection({ races }: { races: Race[] }) {
         <div className="grid lg:grid-cols-[1fr_360px] gap-8">
           <div className="border border-frost/15">
             <div className="flex items-center justify-between px-4 py-4 border-b border-frost/15">
-              <div className="text-caption text-smoke">FIG. 02 · MONTH</div>
-              <div className="text-[20px] tracking-[-0.02em] font-[300]">
-                {monthNames[month]} · {year}
+              <button
+                aria-label={t("prevMonth")}
+                onClick={() => shiftMonth(-1)}
+                className="size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+              >
+                ←
+              </button>
+              <div className="flex flex-col items-center">
+                <div className="text-[20px] tracking-[-0.02em] font-[300]">
+                  {monthNames[month]} · {year}
+                </div>
+                <div className="text-caption text-smoke mt-1">
+                  n = {monthRaces.length.toString().padStart(2, "0")}
+                </div>
               </div>
-              <div className="text-caption text-smoke">n = {monthRaces.length.toString().padStart(2, "0")}</div>
+              <button
+                aria-label={t("nextMonth")}
+                onClick={() => shiftMonth(1)}
+                className="size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+              >
+                →
+              </button>
             </div>
             <div className="grid grid-cols-7 border-b border-frost/15">
               {weekdays.map((w) => (
