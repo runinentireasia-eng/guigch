@@ -15,6 +15,7 @@ import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedOrganizerRouteImport } from './routes/_authenticated/organizer'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const ResultsRoute = ResultsRouteImport.update({
@@ -46,6 +47,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedOrganizerRoute = AuthenticatedOrganizerRouteImport.update({
+  id: '/organizer',
+  path: '/organizer',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/organizers': typeof OrganizersRoute
   '/results': typeof ResultsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/organizer': typeof AuthenticatedOrganizerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/organizers': typeof OrganizersRoute
   '/results': typeof ResultsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/organizer': typeof AuthenticatedOrganizerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,12 +85,27 @@ export interface FileRoutesById {
   '/organizers': typeof OrganizersRoute
   '/results': typeof ResultsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/organizer': typeof AuthenticatedOrganizerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/calendar' | '/organizers' | '/results' | '/admin'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/calendar'
+    | '/organizers'
+    | '/results'
+    | '/admin'
+    | '/organizer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/calendar' | '/organizers' | '/results' | '/admin'
+  to:
+    | '/'
+    | '/auth'
+    | '/calendar'
+    | '/organizers'
+    | '/results'
+    | '/admin'
+    | '/organizer'
   id:
     | '__root__'
     | '/'
@@ -92,6 +115,7 @@ export interface FileRouteTypes {
     | '/organizers'
     | '/results'
     | '/_authenticated/admin'
+    | '/_authenticated/organizer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -147,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/organizer': {
+      id: '/_authenticated/organizer'
+      path: '/organizer'
+      fullPath: '/organizer'
+      preLoaderRoute: typeof AuthenticatedOrganizerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -159,10 +190,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedOrganizerRoute: typeof AuthenticatedOrganizerRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedOrganizerRoute: AuthenticatedOrganizerRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
