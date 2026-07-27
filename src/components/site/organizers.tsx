@@ -1,10 +1,13 @@
 import { useMemo } from "react";
 import { useLang } from "@/lib/i18n";
 import type { Race } from "@/lib/races";
+import { useVerifiedOrganizerNames } from "@/lib/access";
+import { VerifiedBadge } from "./form-ui";
 
 /* ---------- Organizers ---------- */
 export function OrganizersSection({ races }: { races: Race[] }) {
   const { lang } = useLang();
+  const { data: verified } = useVerifiedOrganizerNames();
   const organizers = useMemo(() => {
     const map = new Map<string, Race[]>();
     for (const r of races) {
@@ -27,7 +30,10 @@ export function OrganizersSection({ races }: { races: Race[] }) {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-frost/15 border border-frost/15">
             {organizers.map(([name, list]) => (
               <div key={name} className="bg-void-black p-6">
-                <div className="text-[15px] font-[400] tracking-[0.01em]">{name}</div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[15px] font-[400] tracking-[0.01em]">{name}</span>
+                  {verified?.has(name.trim().toLowerCase()) && <VerifiedBadge />}
+                </div>
                 <div className="mt-2 text-caption text-smoke">
                   {list.length} {lang === "mn" ? "уралдаан" : list.length === 1 ? "race" : "races"}
                 </div>
