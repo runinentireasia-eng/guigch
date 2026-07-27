@@ -56,11 +56,30 @@ function AuthPage() {
   }
 
   async function google() {
-    const res = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (res.error) toast.error(res.error.message ?? "Google sign-in failed");
-    else if (!res.redirected) navigate({ to: "/admin" });
+    setBusy(true);
+    try {
+      const res = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: `${window.location.origin}/auth`,
+      });
+      if (res.error) {
+        console.error("Google sign-in error", res.error);
+        toast.error(res.error.message ?? "Google sign-in failed");
+        return;
+      }
+      if (res.redirected) return;
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        toast.error("No session returned from Google");
+        return;
+      }
+      toast.success("Signed in");
+      navigate({ to: "/admin" });
+    } catch (err) {
+      console.error(err);
+      toast.error(err instanceof Error ? err.message : "Google sign-in failed");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -107,7 +126,9 @@ function AuthPage() {
 
         <button
           onClick={google}
-          className="w-full border border-frost text-frost px-[30px] py-[14px] text-[13px] tracking-[0.06em] uppercase font-[400] hover:bg-frost/5"
+          type="button"
+          disabled={busy}
+          className="w-full border border-frost text-frost px-[30px] py-[14px] text-[13px] tracking-[0.06em] uppercase font-[400] hover:bg-frost/5 disabled:opacity-50"
         >
           Continue with Google
         </button>
