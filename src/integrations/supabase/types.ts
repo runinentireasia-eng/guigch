@@ -14,9 +14,195 @@ export type Database = {
   }
   public: {
     Tables: {
+      organizer_profiles: {
+        Row: {
+          admin_notes: string
+          contact_person: string
+          created_at: string
+          email: string
+          id: string
+          org_name: string
+          phone: string
+          previous_event_url: string
+          proof: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["organizer_status"]
+          updated_at: string
+          user_id: string
+          website: string
+        }
+        Insert: {
+          admin_notes?: string
+          contact_person?: string
+          created_at?: string
+          email?: string
+          id?: string
+          org_name: string
+          phone?: string
+          previous_event_url?: string
+          proof?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["organizer_status"]
+          updated_at?: string
+          user_id: string
+          website?: string
+        }
+        Update: {
+          admin_notes?: string
+          contact_person?: string
+          created_at?: string
+          email?: string
+          id?: string
+          org_name?: string
+          phone?: string
+          previous_event_url?: string
+          proof?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["organizer_status"]
+          updated_at?: string
+          user_id?: string
+          website?: string
+        }
+        Relationships: []
+      }
+      race_audit_log: {
+        Row: {
+          action: string
+          actor_id: string
+          created_at: string
+          id: string
+          note: string
+          race_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          created_at?: string
+          id?: string
+          note?: string
+          race_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          created_at?: string
+          id?: string
+          note?: string
+          race_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "race_audit_log_race_id_fkey"
+            columns: ["race_id"]
+            isOneToOne: false
+            referencedRelation: "races"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      race_reports: {
+        Row: {
+          created_at: string
+          id: string
+          race_id: string | null
+          reason: string
+          reported_by: string | null
+          reporter_email: string
+          resolved: boolean
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          race_id?: string | null
+          reason: string
+          reported_by?: string | null
+          reporter_email?: string
+          resolved?: boolean
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          race_id?: string | null
+          reason?: string
+          reported_by?: string | null
+          reporter_email?: string
+          resolved?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "race_reports_race_id_fkey"
+            columns: ["race_id"]
+            isOneToOne: false
+            referencedRelation: "races"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      race_suggestions: {
+        Row: {
+          admin_notes: string
+          created_at: string
+          id: string
+          link: string
+          location: string
+          notes: string
+          organizer_name: string
+          race_date: string | null
+          race_name: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["suggestion_status"]
+          submitted_by: string | null
+          submitter_email: string
+          submitter_name: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string
+          created_at?: string
+          id?: string
+          link?: string
+          location?: string
+          notes?: string
+          organizer_name?: string
+          race_date?: string | null
+          race_name: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["suggestion_status"]
+          submitted_by?: string | null
+          submitter_email?: string
+          submitter_name?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string
+          created_at?: string
+          id?: string
+          link?: string
+          location?: string
+          notes?: string
+          organizer_name?: string
+          race_date?: string | null
+          race_name?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["suggestion_status"]
+          submitted_by?: string | null
+          submitter_email?: string
+          submitter_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       races: {
         Row: {
+          admin_notes: string
           category: string
+          course_info: string
           created_at: string
           description_en: string
           description_mn: string
@@ -28,13 +214,22 @@ export type Database = {
           name_mn: string
           organizer_en: string
           organizer_mn: string
+          owner_id: string | null
+          published_at: string | null
+          published_by: string | null
           race_date: string
           register_url: string
+          results_info: string
+          review_status: Database["public"]["Enums"]["race_review_status"]
+          schedule_info: string
           status: string
           updated_at: string
+          view_count: number
         }
         Insert: {
+          admin_notes?: string
           category: string
+          course_info?: string
           created_at?: string
           description_en?: string
           description_mn?: string
@@ -46,13 +241,22 @@ export type Database = {
           name_mn: string
           organizer_en?: string
           organizer_mn?: string
+          owner_id?: string | null
+          published_at?: string | null
+          published_by?: string | null
           race_date: string
           register_url?: string
+          results_info?: string
+          review_status?: Database["public"]["Enums"]["race_review_status"]
+          schedule_info?: string
           status?: string
           updated_at?: string
+          view_count?: number
         }
         Update: {
+          admin_notes?: string
           category?: string
+          course_info?: string
           created_at?: string
           description_en?: string
           description_mn?: string
@@ -64,10 +268,17 @@ export type Database = {
           name_mn?: string
           organizer_en?: string
           organizer_mn?: string
+          owner_id?: string | null
+          published_at?: string | null
+          published_by?: string | null
           race_date?: string
           register_url?: string
+          results_info?: string
+          review_status?: Database["public"]["Enums"]["race_review_status"]
+          schedule_info?: string
           status?: string
           updated_at?: string
+          view_count?: number
         }
         Relationships: []
       }
@@ -101,6 +312,17 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      organizer_status: "pending" | "verified" | "rejected"
+      race_review_status:
+        | "draft"
+        | "pending_verification"
+        | "needs_changes"
+        | "approved"
+        | "published"
+        | "postponed"
+        | "cancelled"
+        | "archived"
+      suggestion_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -229,6 +451,18 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      organizer_status: ["pending", "verified", "rejected"],
+      race_review_status: [
+        "draft",
+        "pending_verification",
+        "needs_changes",
+        "approved",
+        "published",
+        "postponed",
+        "cancelled",
+        "archived",
+      ],
+      suggestion_status: ["pending", "approved", "rejected"],
     },
   },
 } as const
