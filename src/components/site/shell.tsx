@@ -1,4 +1,6 @@
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { AddRaceModal } from "./add-race-modal";
 import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLang, type Lang } from "@/lib/i18n";
@@ -65,6 +67,7 @@ const navLinkClass = "text-[12px] tracking-[0.06em] uppercase text-ash hover:tex
 
 export function Nav() {
   const { t } = useLang();
+  const [addOpen, setAddOpen] = useState(false);
   return (
     <nav className="border-b border-frost/15 bg-void-black">
       <div className="max-w-[1280px] mx-auto px-6 h-[72px] flex items-center justify-between">
@@ -91,14 +94,15 @@ export function Nav() {
           >
             {t("logIn")}
           </Link>
-          <Link
-            to="/admin"
+          <button
+            onClick={() => setAddOpen(true)}
             className="bg-frost text-void-black px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:opacity-90"
           >
             {t("addRace")}
-          </Link>
+          </button>
         </div>
       </div>
+      {addOpen && <AddRaceModal onClose={() => setAddOpen(false)} />}
     </nav>
   );
 }

@@ -1,17 +1,20 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { z } from "zod";
+import { supabase } from "@/integrations/supabase/client";
+import { logRaceAction, useIsAdmin, useSessionUser } from "@/lib/access";
+import { Field, GhostButton, Input, PrimaryButton, Select, StatusPill, Textarea, VerifiedBadge } from "@/components/site/form-ui";
+import { RaceFields, REVIEW_STATUSES, emptyRaceForm, rowToRaceForm, toRacePayload, type RaceFormValues } from "@/components/site/race-form";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Admin · гүйгч.mn" },
-      { name: "description", content: "Manage the Mongolian race calendar." },
+      { name: "description", content: "Review suggestions, verify organizers and publish races on the Mongolian race calendar." },
       { property: "og:title", content: "Admin · гүйгч.mn" },
-      { property: "og:description", content: "Manage races on the Mongolian race calendar." },
+      { property: "og:description", content: "Review suggestions, verify organizers and publish races." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -19,125 +22,204 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-const CATEGORIES = ["road", "trail", "ultra", "fun"] as const;
-const STATUSES = ["open", "closing_soon", "waitlist"] as const;
-
-const raceSchema = z.object({
-  name_mn: z.string().trim().min(1, "Required").max(200),
-  name_en: z.string().trim().min(1, "Required").max(200),
-  race_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use YYYY-MM-DD"),
-  location_mn: z.string().trim().max(200).default(""),
-  location_en: z.string().trim().max(200).default(""),
-  organizer_mn: z.string().trim().max(200).default(""),
-  organizer_en: z.string().trim().max(200).default(""),
-  category: z.enum(CATEGORIES),
-  distances: z.string().max(200).default(""),
-  status: z.enum(STATUSES),
-  register_url: z.string().trim().url("Must be a valid URL").max(500).or(z.literal("")),
-  description_mn: z.string().trim().max(1000).default(""),
-  description_en: z.string().trim().max(1000).default(""),
-});
-
-type FormValues = z.infer<typeof raceSchema>;
-
-const emptyForm: FormValues = {
-  name_mn: "", name_en: "", race_date: "", location_mn: "", location_en: "",
-  organizer_mn: "", organizer_en: "", category: "road", distances: "",
-  status: "open", register_url: "", description_mn: "", description_en: "",
+const TABS = ["queue", "suggestions", "organizers", "reports", "duplicates", "races"] as const;
+type Tab = (typeof TABS)[number];
+const TAB_LABEL: Record<Tab, string> = {
+  queue: "SUBMISSIONS & EDITS",
+  suggestions: "COMMUNITY SUGGESTIONS",
+  organizers: "ORGANIZER REQUESTS",
+  reports: "REPORTED INFO",
+  duplicates: "DUPLICATE WARNINGS",
+  races: "ALL RACES",
 };
 
 function AdminPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const { data: user } = useSessionUser();
+  const { data: isAdmin, isLoading: roleLoading } = useIsAdmin();
+  const [tab, setTab] = useState<Tab>("queue");
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<FormValues>(emptyForm);
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) return;
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.user.id);
-      setIsAdmin(!!data?.some((r) => r.role === "admin"));
-    })();
-  }, []);
+  const [creating, setCreating] = useState(false);
+  const [form, setForm] = useState<RaceFormValues>(emptyRaceForm);
+  const set = <K extends keyof RaceFormValues>(k: K, v: RaceFormValues[K]) => setForm((f) => ({ ...f, [k]: v }));
 
   const races = useQuery({
-    queryKey: ["races"],
+    queryKey: ["admin-races"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("races")
-        .select("*")
-        .order("race_date", { ascending: true });
+      const { data, error } = await supabase.from("races").select("*").order("race_date", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+  const suggestions = useQuery({
+    queryKey: ["admin-suggestions"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("race_suggestions").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+  const organizers = useQuery({
+    queryKey: ["admin-organizers"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("organizer_profiles").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+  const reports = useQuery({
+    queryKey: ["admin-reports"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("race_reports").select("*").order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
   });
 
-  const save = useMutation({
-    mutationFn: async (values: FormValues) => {
-      const parsed = raceSchema.parse(values);
-      const payload = {
-        ...parsed,
-        distances: parsed.distances
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean),
-      };
+  const invalidateRaces = () => {
+    qc.invalidateQueries({ queryKey: ["admin-races"] });
+    qc.invalidateQueries({ queryKey: ["races"] });
+  };
+
+  const saveRace = useMutation({
+    mutationFn: async () => {
+      const payload = toRacePayload(form);
       if (editingId) {
         const { error } = await supabase.from("races").update(payload).eq("id", editingId);
         if (error) throw error;
+        await logRaceAction(editingId, "admin_edited");
       } else {
-        const { error } = await supabase.from("races").insert(payload);
+        const { data, error } = await supabase
+          .from("races")
+          .insert({ ...payload, review_status: "published" as const, published_at: new Date().toISOString(), published_by: user?.id ?? null })
+          .select("id")
+          .single();
         if (error) throw error;
+        await logRaceAction(data.id, "admin_created_published");
       }
     },
     onSuccess: () => {
-      toast.success(editingId ? "Race updated" : "Race added");
-      setForm(emptyForm);
-      setEditingId(null);
-      qc.invalidateQueries({ queryKey: ["races"] });
+      toast.success(editingId ? "Race updated" : "Race published");
+      setForm(emptyRaceForm); setEditingId(null); setCreating(false);
+      invalidateRaces();
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Save failed"),
+    onError: (e) => toast.error(e instanceof z.ZodError ? e.issues[0].message : e instanceof Error ? e.message : "Save failed"),
   });
 
-  const del = useMutation({
+  const setReview = useMutation({
+    mutationFn: async ({ id, status, note }: { id: string; status: string; note?: string }) => {
+      const publishing = status === "published";
+      const { error } = await supabase
+        .from("races")
+        .update({
+          review_status: status as never,
+          ...(note !== undefined ? { admin_notes: note } : {}),
+          ...(publishing ? { published_at: new Date().toISOString(), published_by: user?.id ?? null } : {}),
+        })
+        .eq("id", id);
+      if (error) throw error;
+      await logRaceAction(id, `set_${status}`, note ?? "");
+    },
+    onSuccess: () => { toast.success("Race status updated"); invalidateRaces(); },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Update failed"),
+  });
+
+  const assignOwner = useMutation({
+    mutationFn: async ({ id, ownerId }: { id: string; ownerId: string }) => {
+      const { error } = await supabase.from("races").update({ owner_id: ownerId || null }).eq("id", id);
+      if (error) throw error;
+      await logRaceAction(id, "assigned_owner", ownerId);
+    },
+    onSuccess: () => { toast.success("Owner assigned"); invalidateRaces(); },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Assign failed"),
+  });
+
+  const delRace = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("races").delete().eq("id", id);
       if (error) throw error;
+      await logRaceAction(null, "deleted_race", id);
     },
-    onSuccess: () => {
-      toast.success("Race deleted");
-      qc.invalidateQueries({ queryKey: ["races"] });
-    },
+    onSuccess: () => { toast.success("Race deleted"); invalidateRaces(); },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Delete failed"),
   });
+
+  const reviewSuggestion = useMutation({
+    mutationFn: async ({ id, status, note }: { id: string; status: "approved" | "rejected"; note?: string }) => {
+      const { error } = await supabase
+        .from("race_suggestions")
+        .update({ status, admin_notes: note ?? "", reviewed_by: user?.id ?? null, reviewed_at: new Date().toISOString() })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Suggestion reviewed"); qc.invalidateQueries({ queryKey: ["admin-suggestions"] }); },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
+  });
+
+  const reviewOrganizer = useMutation({
+    mutationFn: async ({ id, status, note }: { id: string; status: "verified" | "rejected"; note?: string }) => {
+      const { error } = await supabase
+        .from("organizer_profiles")
+        .update({ status, admin_notes: note ?? "", reviewed_by: user?.id ?? null, reviewed_at: new Date().toISOString() })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Organizer reviewed");
+      qc.invalidateQueries({ queryKey: ["admin-organizers"] });
+      qc.invalidateQueries({ queryKey: ["verified-organizers"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
+  });
+
+  const resolveReport = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("race_reports").update({ resolved: true }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Report resolved"); qc.invalidateQueries({ queryKey: ["admin-reports"] }); },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
+  });
+
+  const duplicates = useMemo(() => {
+    const map = new Map<string, typeof races.data>();
+    for (const r of races.data ?? []) {
+      const key = `${r.name_en.trim().toLowerCase()}|${r.race_date}`;
+      map.set(key, [...(map.get(key) ?? []), r] as typeof races.data);
+    }
+    return [...map.values()].filter((g) => (g?.length ?? 0) > 1);
+  }, [races.data]);
+
+  const queue = (races.data ?? []).filter((r) =>
+    ["pending_verification", "needs_changes", "approved", "draft"].includes(r.review_status));
+
+  const verifiedOrgs = (organizers.data ?? []).filter((o) => o.status === "verified");
+
+  function startEdit(row: any) {
+    setEditingId(row.id); setCreating(false); setForm(rowToRaceForm(row));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   async function signOut() {
     await supabase.auth.signOut();
     navigate({ to: "/" });
   }
 
-  function edit(row: any) {
-    setEditingId(row.id);
-    setForm({
-      name_mn: row.name_mn, name_en: row.name_en, race_date: row.race_date,
-      location_mn: row.location_mn, location_en: row.location_en,
-      organizer_mn: row.organizer_mn, organizer_en: row.organizer_en,
-      category: row.category, distances: (row.distances ?? []).join(", "),
-      status: row.status, register_url: row.register_url,
-      description_mn: row.description_mn, description_en: row.description_en,
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  if (!roleLoading && isAdmin === false) {
+    return (
+      <div className="min-h-screen bg-void-black text-frost font-[300]">
+        <div className="max-w-[1280px] mx-auto px-6 py-20">
+          <div className="text-caption text-smoke mb-4">— ADMIN</div>
+          <p className="text-[15px] text-ash">You're signed in but not a platform admin.</p>
+          <div className="mt-6"><Link to="/organizer" className="text-caption text-reactor-lime">Go to organizer dashboard →</Link></div>
+        </div>
+      </div>
+    );
   }
 
-  const set = <K extends keyof FormValues>(k: K, v: FormValues[K]) => setForm((f) => ({ ...f, [k]: v }));
-
   return (
-    <div className="min-h-screen bg-void-black text-frost">
+    <div className="min-h-screen bg-void-black text-frost font-[300]">
       <header className="border-b border-frost/15">
         <div className="max-w-[1280px] mx-auto px-6 h-[72px] flex items-center justify-between">
           <Link to="/" className="text-[16px] font-[400] lowercase">← гүйгч.mn / admin</Link>
@@ -145,134 +227,241 @@ function AdminPage() {
         </div>
       </header>
 
-      <main className="max-w-[1280px] mx-auto px-6 py-12 grid lg:grid-cols-[480px_1fr] gap-12">
-        <section>
-          <div className="text-caption text-smoke mb-4">— {editingId ? "EDIT RACE" : "NEW RACE"}</div>
-          {isAdmin === false && (
-            <div className="mb-6 border border-frost/30 p-4 text-[13px] text-smoke">
-              You're signed in but not an admin. Only admins can add/edit/delete races.
-            </div>
-          )}
-          <form
-            onSubmit={(e) => { e.preventDefault(); save.mutate(form); }}
-            className="flex flex-col gap-3"
-          >
-            <Row2>
-              <Field label="Name (MN)"><Input value={form.name_mn} onChange={(v) => set("name_mn", v)} /></Field>
-              <Field label="Name (EN)"><Input value={form.name_en} onChange={(v) => set("name_en", v)} /></Field>
-            </Row2>
-            <Field label="Date"><Input type="date" value={form.race_date} onChange={(v) => set("race_date", v)} /></Field>
-            <Row2>
-              <Field label="Category">
-                <Select value={form.category} onChange={(v) => set("category", v as any)} options={CATEGORIES} />
-              </Field>
-              <Field label="Status">
-                <Select value={form.status} onChange={(v) => set("status", v as any)} options={STATUSES} />
-              </Field>
-            </Row2>
-            <Field label="Distances (comma-separated, e.g. 5K, 10K, 21K)">
-              <Input value={form.distances} onChange={(v) => set("distances", v)} />
-            </Field>
-            <Row2>
-              <Field label="Location (MN)"><Input value={form.location_mn} onChange={(v) => set("location_mn", v)} /></Field>
-              <Field label="Location (EN)"><Input value={form.location_en} onChange={(v) => set("location_en", v)} /></Field>
-            </Row2>
-            <Row2>
-              <Field label="Organizer (MN)"><Input value={form.organizer_mn} onChange={(v) => set("organizer_mn", v)} /></Field>
-              <Field label="Organizer (EN)"><Input value={form.organizer_en} onChange={(v) => set("organizer_en", v)} /></Field>
-            </Row2>
-            <Field label="Registration URL"><Input value={form.register_url} onChange={(v) => set("register_url", v)} placeholder="https://…" /></Field>
-            <Field label="Description (MN)"><Textarea value={form.description_mn} onChange={(v) => set("description_mn", v)} /></Field>
-            <Field label="Description (EN)"><Textarea value={form.description_en} onChange={(v) => set("description_en", v)} /></Field>
+      <div className="border-b border-frost/15">
+        <div className="max-w-[1280px] mx-auto px-6 flex flex-wrap gap-6 py-4">
+          {TABS.map((tb) => (
+            <button
+              key={tb}
+              onClick={() => setTab(tb)}
+              className={`text-caption uppercase ${tab === tb ? "text-reactor-lime" : "text-smoke hover:text-frost"}`}
+            >
+              {TAB_LABEL[tb]}
+            </button>
+          ))}
+        </div>
+      </div>
 
-            <div className="flex gap-3 mt-2">
-              <button
-                type="submit"
-                disabled={save.isPending}
-                className="bg-reactor-lime text-void-black px-[30px] py-[14px] text-[13px] tracking-[0.06em] uppercase disabled:opacity-50"
-              >
-                {save.isPending ? "…" : editingId ? "Update race" : "Add race"}
-              </button>
-              {editingId && (
-                <button
-                  type="button"
-                  onClick={() => { setEditingId(null); setForm(emptyForm); }}
-                  className="border border-frost text-frost px-[30px] py-[14px] text-[13px] tracking-[0.06em] uppercase"
-                >Cancel</button>
-              )}
-            </div>
-          </form>
-        </section>
+      <main className="max-w-[1280px] mx-auto px-6 py-12 flex flex-col gap-12">
+        {(creating || editingId) && (
+          <section className="max-w-[620px]">
+            <div className="text-caption text-smoke mb-4">— {editingId ? "EDIT RACE" : "NEW RACE"}</div>
+            <form onSubmit={(e) => { e.preventDefault(); saveRace.mutate(); }} className="flex flex-col gap-3">
+              <RaceFields form={form} set={set} />
+              <div className="flex flex-wrap gap-3 mt-2">
+                <PrimaryButton type="submit" disabled={saveRace.isPending}>
+                  {saveRace.isPending ? "…" : editingId ? "SAVE CHANGES" : "CREATE & PUBLISH"}
+                </PrimaryButton>
+                <GhostButton onClick={() => { setEditingId(null); setCreating(false); setForm(emptyRaceForm); }}>CANCEL</GhostButton>
+              </div>
+            </form>
+          </section>
+        )}
 
-        <section>
-          <div className="text-caption text-smoke mb-4">— RACES ({races.data?.length ?? 0})</div>
-          <div className="flex flex-col">
-            <div className="border-t border-frost/40" />
-            {races.isLoading && <div className="py-6 text-smoke text-caption">Loading…</div>}
-            {races.data?.map((r) => (
-              <div key={r.id} className="border-t border-frost/15 py-4 grid grid-cols-[100px_1fr_auto] gap-4 items-start">
-                <div className="text-caption text-smoke">{r.race_date}</div>
-                <div>
-                  <div className="text-[15px] text-frost">{r.name_en}</div>
-                  <div className="text-caption text-smoke mt-1">{r.category} · {(r.distances ?? []).join(", ")}</div>
+        {tab === "queue" && (
+          <Section title={`SUBMISSIONS & EDITS (${queue.length})`}>
+            {queue.map((r) => (
+              <RaceReviewRow
+                key={r.id}
+                race={r}
+                verifiedOrgs={verifiedOrgs}
+                onEdit={() => startEdit(r)}
+                onStatus={(status, note) => setReview.mutate({ id: r.id, status, note })}
+                onAssign={(ownerId) => assignOwner.mutate({ id: r.id, ownerId })}
+              />
+            ))}
+            {queue.length === 0 && <Empty />}
+          </Section>
+        )}
+
+        {tab === "suggestions" && (
+          <Section title={`COMMUNITY SUGGESTIONS (${suggestions.data?.length ?? 0})`}>
+            {(suggestions.data ?? []).map((s) => (
+              <div key={s.id} className="border-t border-frost/15 py-4 flex flex-wrap gap-4 justify-between">
+                <div className="max-w-[640px]">
+                  <div className="text-[15px]">{s.race_name}</div>
+                  <div className="text-caption text-smoke mt-1">{s.race_date ?? "—"} · {s.location || "—"} · {s.organizer_name || "—"}</div>
+                  {s.link && <a href={s.link} target="_blank" rel="noreferrer" className="text-caption text-reactor-lime block mt-1">{s.link}</a>}
+                  {s.notes && <p className="text-[13px] text-ash mt-2">{s.notes}</p>}
+                  <div className="text-caption text-smoke mt-2">From {s.submitter_name} · {s.submitter_email}</div>
+                  <div className="mt-2"><StatusPill status={s.status} /></div>
                 </div>
-                <div className="flex gap-2">
-                  <button onClick={() => edit(r)} className="text-caption text-frost hover:text-reactor-lime">Edit</button>
+                <div className="flex gap-3 items-start">
                   <button
-                    onClick={() => { if (confirm(`Delete "${r.name_en}"?`)) del.mutate(r.id); }}
-                    className="text-caption text-smoke hover:text-red-400"
-                  >Delete</button>
+                    onClick={() => {
+                      setForm({ ...emptyRaceForm, name_en: s.race_name, name_mn: s.race_name, race_date: s.race_date ?? "", location_en: s.location, location_mn: s.location, organizer_en: s.organizer_name, organizer_mn: s.organizer_name, register_url: s.link });
+                      setCreating(true); setEditingId(null);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="text-caption text-frost hover:text-reactor-lime"
+                  >Create race</button>
+                  <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "approved" })} className="text-caption text-frost hover:text-reactor-lime">Approve</button>
+                  <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "rejected", note: prompt("Reason (optional)") ?? "" })} className="text-caption text-smoke hover:text-red-400">Reject</button>
                 </div>
               </div>
             ))}
-            <div className="border-t border-frost/15" />
-          </div>
-        </section>
+            {(suggestions.data?.length ?? 0) === 0 && <Empty />}
+          </Section>
+        )}
+
+        {tab === "organizers" && (
+          <Section title={`ORGANIZER REQUESTS (${organizers.data?.length ?? 0})`}>
+            {(organizers.data ?? []).map((o) => (
+              <div key={o.id} className="border-t border-frost/15 py-4 flex flex-wrap gap-4 justify-between">
+                <div className="max-w-[640px]">
+                  <div className="flex items-center gap-3">
+                    <span className="text-[15px]">{o.org_name}</span>
+                    {o.status === "verified" ? <VerifiedBadge /> : <StatusPill status={o.status} />}
+                  </div>
+                  <div className="text-caption text-smoke mt-1">{o.contact_person} · {o.email} · {o.phone}</div>
+                  {o.website && <a href={o.website} target="_blank" rel="noreferrer" className="text-caption text-reactor-lime block mt-1">{o.website}</a>}
+                  <p className="text-[13px] text-ash mt-2">{o.proof}</p>
+                  {o.previous_event_url && <div className="text-caption text-smoke mt-1">Previous: {o.previous_event_url}</div>}
+                </div>
+                <div className="flex gap-3 items-start">
+                  <button onClick={() => reviewOrganizer.mutate({ id: o.id, status: "verified" })} className="text-caption text-frost hover:text-reactor-lime">Verify</button>
+                  <button onClick={() => reviewOrganizer.mutate({ id: o.id, status: "rejected", note: prompt("Reason (optional)") ?? "" })} className="text-caption text-smoke hover:text-red-400">Reject</button>
+                </div>
+              </div>
+            ))}
+            {(organizers.data?.length ?? 0) === 0 && <Empty />}
+          </Section>
+        )}
+
+        {tab === "reports" && (
+          <Section title={`REPORTED INFORMATION (${reports.data?.length ?? 0})`}>
+            {(reports.data ?? []).map((rep) => (
+              <div key={rep.id} className="border-t border-frost/15 py-4 flex flex-wrap gap-4 justify-between">
+                <div className="max-w-[640px]">
+                  <div className="text-[14px] text-ash">{rep.reason}</div>
+                  <div className="text-caption text-smoke mt-1">
+                    {(races.data ?? []).find((r) => r.id === rep.race_id)?.name_en ?? "—"} · {rep.reporter_email || "anonymous"}
+                  </div>
+                  <div className="mt-2"><StatusPill status={rep.resolved ? "approved" : "pending_verification"} /></div>
+                </div>
+                {!rep.resolved && (
+                  <button onClick={() => resolveReport.mutate(rep.id)} className="text-caption text-frost hover:text-reactor-lime">Resolve</button>
+                )}
+              </div>
+            ))}
+            {(reports.data?.length ?? 0) === 0 && <Empty />}
+          </Section>
+        )}
+
+        {tab === "duplicates" && (
+          <Section title={`DUPLICATE WARNINGS (${duplicates.length})`}>
+            {duplicates.map((group, i) => (
+              <div key={i} className="border-t border-frost/15 py-4">
+                <div className="text-caption text-smoke mb-2">Same name and date — merge by keeping one and deleting the others.</div>
+                {(group ?? []).map((r) => (
+                  <div key={r.id} className="flex items-center justify-between py-2">
+                    <div className="text-[14px]">{r.name_en} · {r.race_date} · <StatusPill status={r.review_status} /></div>
+                    <div className="flex gap-3">
+                      <button onClick={() => startEdit(r)} className="text-caption text-frost hover:text-reactor-lime">Keep & edit</button>
+                      <button onClick={() => { if (confirm("Merge by deleting this duplicate?")) delRace.mutate(r.id); }} className="text-caption text-smoke hover:text-red-400">Merge away</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+            {duplicates.length === 0 && <Empty />}
+          </Section>
+        )}
+
+        {tab === "races" && (
+          <Section title={`ALL RACES (${races.data?.length ?? 0})`}>
+            <div className="pb-4"><PrimaryButton onClick={() => { setForm(emptyRaceForm); setCreating(true); setEditingId(null); }}>NEW RACE</PrimaryButton></div>
+            {(races.data ?? []).map((r) => (
+              <RaceReviewRow
+                key={r.id}
+                race={r}
+                verifiedOrgs={verifiedOrgs}
+                onEdit={() => startEdit(r)}
+                onStatus={(status, note) => setReview.mutate({ id: r.id, status, note })}
+                onAssign={(ownerId) => assignOwner.mutate({ id: r.id, ownerId })}
+                onDelete={() => { if (confirm(`Delete "${r.name_en}"?`)) delRace.mutate(r.id); }}
+              />
+            ))}
+            {(races.data?.length ?? 0) === 0 && <Empty />}
+          </Section>
+        )}
       </main>
     </div>
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <label className="flex flex-col gap-1.5">
-      <span className="text-caption text-smoke">{label}</span>
+    <section>
+      <div className="text-caption text-smoke mb-4">— {title}</div>
+      <div className="border-t border-frost/40" />
       {children}
-    </label>
+      <div className="border-t border-frost/15" />
+    </section>
   );
 }
-function Row2({ children }: { children: React.ReactNode }) {
-  return <div className="grid grid-cols-2 gap-3">{children}</div>;
+
+function Empty() {
+  return <div className="py-6 text-caption text-smoke">Nothing here right now.</div>;
 }
-function Input({ value, onChange, type = "text", placeholder }: { value: string; onChange: (v: string) => void; type?: string; placeholder?: string }) {
+
+function RaceReviewRow({
+  race, verifiedOrgs, onEdit, onStatus, onAssign, onDelete,
+}: {
+  race: any;
+  verifiedOrgs: any[];
+  onEdit: () => void;
+  onStatus: (status: string, note?: string) => void;
+  onAssign: (ownerId: string) => void;
+  onDelete?: () => void;
+}) {
+  const [note, setNote] = useState(race.admin_notes ?? "");
+  const [open, setOpen] = useState(false);
+  const owner = verifiedOrgs.find((o) => o.user_id === race.owner_id);
   return (
-    <input
-      type={type}
-      value={value}
-      placeholder={placeholder}
-      onChange={(e) => onChange(e.target.value)}
-      className="bg-transparent border border-frost/30 px-3 py-2.5 text-[14px] text-frost focus:outline-none focus:border-reactor-lime"
-    />
+    <div className="border-t border-frost/15 py-4">
+      <div className="flex flex-wrap gap-4 justify-between items-start">
+        <div>
+          <div className="text-[15px]">{race.name_en}</div>
+          <div className="text-caption text-smoke mt-1">{race.race_date} · {race.category} · {(race.distances ?? []).join(", ")}</div>
+          <div className="mt-2 flex items-center gap-2 flex-wrap">
+            <StatusPill status={race.review_status} />
+            {owner && <VerifiedBadge label={`VERIFIED · ${owner.org_name}`} />}
+            <span className="text-caption text-smoke">{race.view_count ?? 0} views</span>
+            {race.published_at && <span className="text-caption text-smoke">published {new Date(race.published_at).toLocaleDateString()}</span>}
+          </div>
+        </div>
+        <div className="flex gap-3 items-start">
+          <button onClick={() => setOpen((o) => !o)} className="text-caption text-frost hover:text-reactor-lime">Review</button>
+          <button onClick={onEdit} className="text-caption text-frost hover:text-reactor-lime">Edit</button>
+          {onDelete && <button onClick={onDelete} className="text-caption text-smoke hover:text-red-400">Delete</button>}
+        </div>
+      </div>
+      {open && (
+        <div className="mt-4 border border-frost/20 p-4 flex flex-col gap-3">
+          <Field label="Internal review notes"><Textarea value={note} onChange={setNote} rows={2} /></Field>
+          <Field label="Status">
+            <Select value={race.review_status} onChange={(v) => onStatus(v, note)} options={REVIEW_STATUSES} />
+          </Field>
+          <Field label="Assign to verified organizer">
+            <select
+              value={race.owner_id ?? ""}
+              onChange={(e) => onAssign(e.target.value)}
+              className="bg-void-black border border-frost/30 px-3 py-2.5 text-[14px] text-frost focus:outline-none focus:border-reactor-lime"
+            >
+              <option value="">— unassigned —</option>
+              {verifiedOrgs.map((o) => <option key={o.id} value={o.user_id}>{o.org_name}</option>)}
+            </select>
+          </Field>
+          <div className="flex flex-wrap gap-3">
+            <PrimaryButton onClick={() => onStatus("published", note)}>PUBLISH</PrimaryButton>
+            <GhostButton onClick={() => onStatus("needs_changes", note)}>REQUEST CHANGES</GhostButton>
+            <GhostButton onClick={() => onStatus("approved", note)}>APPROVE</GhostButton>
+            <GhostButton onClick={() => onStatus("draft", note)}>UNPUBLISH</GhostButton>
+            <GhostButton onClick={() => onStatus("archived", note)}>ARCHIVE</GhostButton>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
-function Textarea({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  return (
-    <textarea
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      rows={3}
-      className="bg-transparent border border-frost/30 px-3 py-2.5 text-[14px] text-frost focus:outline-none focus:border-reactor-lime"
-    />
-  );
-}
-function Select({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: readonly string[] }) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="bg-void-black border border-frost/30 px-3 py-2.5 text-[14px] text-frost focus:outline-none focus:border-reactor-lime"
-    >
-      {options.map((o) => <option key={o} value={o}>{o}</option>)}
-    </select>
-  );
-}
+

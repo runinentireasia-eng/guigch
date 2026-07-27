@@ -27,7 +27,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/admin" });
+      if (data.user) navigate({ to: "/organizer" });
     });
   }, [navigate]);
 
@@ -47,7 +47,7 @@ function AuthPage() {
         if (error) throw error;
       }
       toast.success("Signed in");
-      navigate({ to: "/admin" });
+      navigate({ to: "/organizer" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Auth failed");
     } finally {
@@ -73,7 +73,7 @@ function AuthPage() {
         return;
       }
       toast.success("Signed in");
-      navigate({ to: "/admin" });
+      navigate({ to: "/organizer" });
     } catch (err) {
       console.error(err);
       toast.error(err instanceof Error ? err.message : "Google sign-in failed");
