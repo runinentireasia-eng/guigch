@@ -21,6 +21,7 @@ export interface Race {
   registerUrl: string;
   descriptionMn: string;
   descriptionEn: string;
+  ownerId?: string | null;
 }
 
 const MONTHS_EN = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
@@ -41,6 +42,7 @@ export type RaceRow = {
   register_url: string;
   description_mn: string;
   description_en: string;
+  owner_id?: string | null;
 };
 
 export function rowToRace(row: RaceRow, index: number): Race {
@@ -66,6 +68,7 @@ export function rowToRace(row: RaceRow, index: number): Race {
     registerUrl: row.register_url,
     descriptionMn: row.description_mn,
     descriptionEn: row.description_en,
+    ownerId: row.owner_id ?? null,
   };
 }
 

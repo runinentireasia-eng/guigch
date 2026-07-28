@@ -1,10 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
+import { CalendarDays, List as ListIcon, ArrowRight, Bookmark } from "lucide-react";
 import { useLang } from "@/lib/i18n";
+import { VerifiedBadge } from "./form-ui";
 import type { Race } from "@/lib/races";
+
+const SAVED_KEY = "guigch.saved-races";
+
+function useSavedRaces() {
+  const [saved, setSaved] = useState<string[]>([]);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(SAVED_KEY);
+      if (raw) setSaved(JSON.parse(raw));
+    } catch { /* ignore */ }
+  }, []);
+  const toggle = (id: string) =>
+    setSaved((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      try { localStorage.setItem(SAVED_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  return { saved, toggle };
+}
 
 /* ---------- Calendar Grid (month view) ---------- */
 export function CalendarGridSection({ races }: { races: Race[] }) {
   const { t, lang } = useLang();
+  const [view, setView] = useState<"calendar" | "list">("calendar");
   const today = useMemo(() => new Date(), []);
   const firstRaceMonth = useMemo(() => {
     const upcoming = races
@@ -78,6 +100,28 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             </h2>
           </div>
           <div className="flex items-center gap-2">
+            <div className="inline-flex border border-frost/30 mr-2">
+              <button
+                onClick={() => setView("calendar")}
+                aria-pressed={view === "calendar"}
+                className={`inline-flex items-center gap-2 px-4 py-2 text-[12px] tracking-[0.06em] uppercase ${
+                  view === "calendar" ? "bg-reactor-lime text-void-black" : "text-ash hover:text-frost"
+                }`}
+              >
+                <CalendarDays size={14} strokeWidth={1.5} /> {t("viewCalendar")}
+              </button>
+              <button
+                onClick={() => setView("list")}
+                aria-pressed={view === "list"}
+                className={`inline-flex items-center gap-2 px-4 py-2 text-[12px] tracking-[0.06em] uppercase border-l border-frost/30 ${
+                  view === "list" ? "bg-reactor-lime text-void-black" : "text-ash hover:text-frost"
+                }`}
+              >
+                <ListIcon size={14} strokeWidth={1.5} /> {t("viewList")}
+              </button>
+            </div>
+            {view === "calendar" && (
+            <>
             <button
               onClick={() => shiftMonth(-1)}
               className="px-4 py-2 text-[12px] tracking-[0.06em] uppercase border border-frost/30 text-ash hover:text-frost hover:border-frost"
@@ -96,9 +140,14 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             >
               {t("nextMonth")} →
             </button>
+            </>
+            )}
           </div>
         </div>
 
+        {view === "list" ? (
+          <RaceListView races={races} onSelect={setSelectedRace} />
+        ) : (
         <div className="border border-frost/15">
           <div className="flex items-center justify-between px-4 py-4 border-b border-frost/15">
             <button
@@ -177,6 +226,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             })}
           </div>
         </div>
+        )}
       </div>
 
       {selectedRace && (
@@ -190,6 +240,133 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
 }
 
 function RacePopup({ race, onClose }: { race: Race; onClose: () => void }) {
+  return <RacePopupInner race={race} onClose={onClose} />;
+}
+
+/* ---------- List view (chronological, grouped by month) ---------- */
+function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) => void }) {
+  const { t, lang } = useLang();
+  const { saved, toggle } = useSavedRaces();
+  const monthNames = t("monthNames").split("_");
+  const weekdays = t("weekdayShort").split("_");
+
+  const groups = useMemo(() => {
+    const sorted = [...races].sort((a, b) => a.dateISO.localeCompare(b.dateISO));
+    const map = new Map<string, Race[]>();
+    for (const r of sorted) {
+      const d = new Date(r.dateISO + "T00:00:00");
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      const arr = map.get(key) ?? [];
+      arr.push(r);
+      map.set(key, arr);
+    }
+    return [...map.entries()];
+  }, [races]);
+
+  const statusLabel = (s: Race["status"]) =>
+    s === "open" ? t("open") : s === "closing_soon" ? t("closingSoon") : t("waitlist");
+  const typeLabel = (c: Race["category"]) =>
+    c === "road" ? t("filterRoad") : c === "trail" ? t("filterTrail") : c === "ultra" ? t("filterUltra") : t("filterFun");
+
+  if (groups.length === 0) {
+    return <div className="border border-frost/15 px-6 py-10 text-[14px] text-smoke">{t("noRacesList")}</div>;
+  }
+
+  return (
+    <div className="border-t border-frost/25">
+      {groups.map(([key, items]) => {
+        const [y, m] = key.split("-").map(Number);
+        return (
+          <div key={key}>
+            <div className="flex items-baseline justify-between border-b border-frost/25 px-1 py-3">
+              <div className="text-[13px] tracking-[0.08em] uppercase text-frost">
+                {monthNames[m]} · {y}
+              </div>
+              <div className="text-caption text-smoke font-mono">n = {String(items.length).padStart(2, "0")}</div>
+            </div>
+            {items.map((r) => {
+              const d = new Date(r.dateISO + "T00:00:00");
+              const wd = weekdays[(d.getDay() + 6) % 7];
+              const isSaved = saved.includes(r.id);
+              return (
+                <div
+                  key={r.id}
+                  className="group grid grid-cols-1 md:grid-cols-[130px_1fr_auto] gap-4 md:gap-8 items-start px-1 py-6 border-b border-frost/15 transition-colors hover:bg-graphite/50"
+                >
+                  <div className="flex md:block items-baseline gap-3">
+                    <div className="font-mono text-[40px] leading-[1] tracking-[-0.04em] text-frost transition-colors group-hover:text-reactor-lime">
+                      {String(d.getDate()).padStart(2, "0")}
+                    </div>
+                    <div className="text-caption text-smoke mt-2 uppercase">{wd}</div>
+                  </div>
+
+                  <div className="min-w-0">
+                    <button
+                      onClick={() => onSelect(r)}
+                      className="text-left text-[20px] leading-[1.25] tracking-[-0.02em] font-[400] text-frost hover:text-reactor-lime"
+                    >
+                      {lang === "mn" ? r.nameMn : r.nameEn}
+                    </button>
+                    <div className="text-[13px] tracking-[0.02em] text-ash mt-1">
+                      {lang === "mn" ? r.locationMn : r.locationEn}
+                    </div>
+                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                      {r.distances.map((dist) => (
+                        <span key={dist} className="font-mono text-caption border border-frost/30 px-2 py-1 text-frost">
+                          {dist}
+                        </span>
+                      ))}
+                      <span className="text-caption border border-frost/20 px-2 py-1 text-smoke uppercase">
+                        {t("raceType")} / {typeLabel(r.category)}
+                      </span>
+                    </div>
+                    <div className="mt-3 flex flex-wrap items-center gap-4">
+                      <span
+                        className={`text-caption uppercase ${
+                          r.status === "open" ? "text-reactor-lime" : r.status === "closing_soon" ? "text-plasma-blue" : "text-smoke"
+                        }`}
+                      >
+                        ● {statusLabel(r.status)}
+                      </span>
+                      <span className="text-caption text-smoke uppercase">
+                        {t("regDeadline")} <span className="font-mono text-ash">{t("tba")}</span>
+                      </span>
+                      {r.ownerId && <VerifiedBadge />}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => toggle(r.id)}
+                      aria-pressed={isSaved}
+                      className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.06em] uppercase border ${
+                        isSaved
+                          ? "border-reactor-lime text-reactor-lime"
+                          : "border-frost/30 text-ash hover:text-frost hover:border-frost"
+                      }`}
+                    >
+                      <Bookmark size={13} strokeWidth={1.5} fill={isSaved ? "currentColor" : "none"} />
+                      {isSaved ? t("savedRace") : t("saveRace")}
+                    </button>
+                    <button
+                      onClick={() => onSelect(r)}
+                      aria-label={t("eventDetails")}
+                      className="size-9 flex items-center justify-center border border-frost/30 text-frost hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime transition-transform group-hover:translate-x-0.5"
+                    >
+                      <ArrowRight size={16} strokeWidth={1.5} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) {
   const { t, lang } = useLang();
 
   useEffect(() => {
