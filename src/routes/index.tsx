@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { useLang, type DictKey } from "@/lib/i18n";
+import { useLang } from "@/lib/i18n";
 import type { Race } from "@/lib/races";
 import { SiteShell, useRaces } from "@/components/site/shell";
 
