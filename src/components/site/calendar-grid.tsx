@@ -1,10 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
+import { CalendarDays, List as ListIcon, ArrowRight, Bookmark } from "lucide-react";
 import { useLang } from "@/lib/i18n";
+import { VerifiedBadge } from "./form-ui";
 import type { Race } from "@/lib/races";
+
+const SAVED_KEY = "guigch.saved-races";
+
+function useSavedRaces() {
+  const [saved, setSaved] = useState<string[]>([]);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(SAVED_KEY);
+      if (raw) setSaved(JSON.parse(raw));
+    } catch { /* ignore */ }
+  }, []);
+  const toggle = (id: string) =>
+    setSaved((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      try { localStorage.setItem(SAVED_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  return { saved, toggle };
+}
 
 /* ---------- Calendar Grid (month view) ---------- */
 export function CalendarGridSection({ races }: { races: Race[] }) {
   const { t, lang } = useLang();
+  const [view, setView] = useState<"calendar" | "list">("calendar");
   const today = useMemo(() => new Date(), []);
   const firstRaceMonth = useMemo(() => {
     const upcoming = races
@@ -78,6 +100,28 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             </h2>
           </div>
           <div className="flex items-center gap-2">
+            <div className="inline-flex border border-frost/30 mr-2">
+              <button
+                onClick={() => setView("calendar")}
+                aria-pressed={view === "calendar"}
+                className={`inline-flex items-center gap-2 px-4 py-2 text-[12px] tracking-[0.06em] uppercase ${
+                  view === "calendar" ? "bg-reactor-lime text-void-black" : "text-ash hover:text-frost"
+                }`}
+              >
+                <CalendarDays size={14} strokeWidth={1.5} /> {t("viewCalendar")}
+              </button>
+              <button
+                onClick={() => setView("list")}
+                aria-pressed={view === "list"}
+                className={`inline-flex items-center gap-2 px-4 py-2 text-[12px] tracking-[0.06em] uppercase border-l border-frost/30 ${
+                  view === "list" ? "bg-reactor-lime text-void-black" : "text-ash hover:text-frost"
+                }`}
+              >
+                <ListIcon size={14} strokeWidth={1.5} /> {t("viewList")}
+              </button>
+            </div>
+            {view === "calendar" && (
+            <>
             <button
               onClick={() => shiftMonth(-1)}
               className="px-4 py-2 text-[12px] tracking-[0.06em] uppercase border border-frost/30 text-ash hover:text-frost hover:border-frost"
@@ -96,9 +140,14 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             >
               {t("nextMonth")} →
             </button>
+            </>
+            )}
           </div>
         </div>
 
+        {view === "list" ? (
+          <RaceListView races={races} onSelect={setSelectedRace} />
+        ) : (
         <div className="border border-frost/15">
           <div className="flex items-center justify-between px-4 py-4 border-b border-frost/15">
             <button
@@ -177,6 +226,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             })}
           </div>
         </div>
+        )}
       </div>
 
       {selectedRace && (
