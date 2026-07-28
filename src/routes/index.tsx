@@ -21,7 +21,6 @@ function Index() {
   return (
     <SiteShell>
       <Hero races={races} />
-      <ManifestoSection />
     </SiteShell>
   );
 }
