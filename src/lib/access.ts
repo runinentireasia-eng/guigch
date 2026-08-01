@@ -55,9 +55,9 @@ export function useVerifiedOrganizerNames() {
     queryKey: ["verified-organizers"],
     queryFn: async () => {
       const { data } = await supabase
-        .from("organizer_profiles")
+        .from("organizer_directory")
         .select("org_name")
-        .eq("status", "verified");
+        .eq("verified", true);
       return new Set((data ?? []).map((r) => r.org_name.trim().toLowerCase()));
     },
   });
