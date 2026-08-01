@@ -75,6 +75,13 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
     [races, year, month],
   );
 
+  const yearOptions = useMemo(() => {
+    const raceYears = races.map((r) => new Date(r.dateISO + "T00:00:00").getFullYear());
+    const min = Math.min(...raceYears, today.getFullYear() - 1);
+    const max = Math.max(...raceYears, today.getFullYear() + 2);
+    return Array.from({ length: max - min + 1 }, (_, i) => min + i);
+  }, [races, today]);
+
   const cells: (number | null)[] = [
     ...Array.from({ length: startOffset }, () => null),
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
