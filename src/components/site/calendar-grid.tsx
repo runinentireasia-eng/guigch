@@ -127,17 +127,40 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
           <RaceListView races={races} onSelect={setSelectedRace} />
         ) : (
         <div className="border border-frost/15">
-          <div className="flex items-center justify-between px-4 py-4 border-b border-frost/15">
+          <div className="flex items-center justify-between px-4 py-4 border-b border-frost/15 gap-3">
             <button
               aria-label={t("prevMonth")}
               onClick={() => shiftMonth(-1)}
-              className="size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+              className="shrink-0 size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
             >
               ←
             </button>
-            <div className="flex flex-col items-center">
-              <div className="text-[20px] tracking-[-0.02em] font-[300]">
-                {monthNames[month]} · {year}
+            <div className="flex flex-col items-center min-w-0">
+              <div className="flex items-center gap-2">
+                <select
+                  aria-label={t("month")}
+                  value={month}
+                  onChange={(e) => setCursor(new Date(year, Number(e.target.value), 1))}
+                  className="bg-transparent border border-frost/30 text-frost text-[12px] tracking-[0.06em] uppercase px-3 py-2 cursor-pointer hover:border-frost focus:outline-none focus:border-reactor-lime"
+                >
+                  {monthNames.map((name, idx) => (
+                    <option key={name} value={idx} className="bg-void-black text-frost">
+                      {name}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  aria-label={t("year")}
+                  value={year}
+                  onChange={(e) => setCursor(new Date(Number(e.target.value), month, 1))}
+                  className="bg-transparent border border-frost/30 text-frost text-[12px] tracking-[0.06em] uppercase px-3 py-2 cursor-pointer hover:border-frost focus:outline-none focus:border-reactor-lime"
+                >
+                  {yearOptions.map((y) => (
+                    <option key={y} value={y} className="bg-void-black text-frost">
+                      {y}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="text-caption text-smoke mt-1">
                 n = {monthRaces.length.toString().padStart(2, "0")}
@@ -146,7 +169,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             <button
               aria-label={t("nextMonth")}
               onClick={() => shiftMonth(1)}
-              className="size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+              className="shrink-0 size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
             >
               →
             </button>
