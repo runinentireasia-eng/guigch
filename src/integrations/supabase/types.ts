@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      organizer_directory: {
+        Row: {
+          org_name: string
+          organizer_id: string
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
+          org_name: string
+          organizer_id: string
+          updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          org_name?: string
+          organizer_id?: string
+          updated_at?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
       organizer_profiles: {
         Row: {
           admin_notes: string
