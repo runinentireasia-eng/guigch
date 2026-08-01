@@ -305,7 +305,24 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      verified_organizers: {
+        Row: {
+          id: string | null
+          org_name: string | null
+          status: Database["public"]["Enums"]["organizer_status"] | null
+        }
+        Insert: {
+          id?: string | null
+          org_name?: string | null
+          status?: Database["public"]["Enums"]["organizer_status"] | null
+        }
+        Update: {
+          id?: string | null
+          org_name?: string | null
+          status?: Database["public"]["Enums"]["organizer_status"] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
