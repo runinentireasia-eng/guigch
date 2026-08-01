@@ -376,6 +376,8 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
 
 function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) {
   const { t, lang } = useLang();
+  const { saved, toggle } = useSavedRaces();
+  const isSaved = saved.includes(race.id);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -401,13 +403,27 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
           <div className="text-caption text-smoke">
             {lang === "mn" ? race.monthMn : race.monthEn} · {race.day} · {race.year}
           </div>
-          <button
-            onClick={onClose}
-            className="size-8 flex items-center justify-center border border-frost/30 text-frost text-[14px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
-            aria-label={t("close")}
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => toggle(race.id)}
+              aria-pressed={isSaved}
+              className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.06em] uppercase border ${
+                isSaved
+                  ? "border-reactor-lime text-reactor-lime"
+                  : "border-frost/30 text-ash hover:text-frost hover:border-frost"
+              }`}
+            >
+              <Bookmark size={13} strokeWidth={1.5} fill={isSaved ? "currentColor" : "none"} />
+              {isSaved ? t("savedRace") : t("saveRace")}
+            </button>
+            <button
+              onClick={onClose}
+              className="size-8 flex items-center justify-center border border-frost/30 text-frost text-[14px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+              aria-label={t("close")}
+            >
+              ✕
+            </button>
+          </div>
         </div>
         <h3 className="text-[24px] leading-[1.25] tracking-[-0.02em] font-[400] text-frost mt-4">
           {lang === "mn" ? race.nameMn : race.nameEn}
