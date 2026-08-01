@@ -29,7 +29,7 @@ function Index() {
 function Hero({ races }: { races: Race[] }) {
   const { t } = useLang();
   return (
-    <section className="border-b border-frost/15">
+    <section>
       <div className="max-w-[1280px] mx-auto px-6 py-[96px] grid lg:grid-cols-[1fr_400px] gap-16 items-start">
         <div>
           <div className="text-caption text-smoke mb-8">— 2026 УЛИРАЛ / 2026 SEASON</div>
