@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      organizer_directory: {
+        Row: {
+          org_name: string
+          organizer_id: string
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
+          org_name: string
+          organizer_id: string
+          updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          org_name?: string
+          organizer_id?: string
+          updated_at?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
       organizer_profiles: {
         Row: {
           admin_notes: string
@@ -308,12 +329,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_verified_organizer_names: {
-        Args: never
-        Returns: {
-          org_name: string
-        }[]
-      }
+      [_ in never]: never
     }
     Enums: {
       app_role: "admin" | "user"
