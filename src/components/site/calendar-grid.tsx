@@ -169,9 +169,6 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                   ))}
                 </select>
               </div>
-              <div className="text-caption text-smoke mt-1">
-                n = {monthRaces.length.toString().padStart(2, "0")}
-              </div>
             </div>
             <button
               aria-label={t("nextMonth")}
