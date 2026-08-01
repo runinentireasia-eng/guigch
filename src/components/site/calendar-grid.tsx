@@ -120,28 +120,6 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                 <ListIcon size={14} strokeWidth={1.5} /> {t("viewList")}
               </button>
             </div>
-            {view === "calendar" && (
-            <>
-            <button
-              onClick={() => shiftMonth(-1)}
-              className="px-4 py-2 text-[12px] tracking-[0.06em] uppercase border border-frost/30 text-ash hover:text-frost hover:border-frost"
-            >
-              ← {t("prevMonth")}
-            </button>
-            <button
-              onClick={() => setCursor(new Date(today.getFullYear(), today.getMonth(), 1))}
-              className="px-4 py-2 text-[12px] tracking-[0.06em] uppercase border border-frost/30 text-ash hover:text-frost hover:border-frost"
-            >
-              {t("today")}
-            </button>
-            <button
-              onClick={() => shiftMonth(1)}
-              className="px-4 py-2 text-[12px] tracking-[0.06em] uppercase border border-frost/30 text-ash hover:text-frost hover:border-frost"
-            >
-              {t("nextMonth")} →
-            </button>
-            </>
-            )}
           </div>
         </div>
 
