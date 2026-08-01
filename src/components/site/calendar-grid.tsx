@@ -169,9 +169,6 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                   ))}
                 </select>
               </div>
-              <div className="text-caption text-smoke mt-1">
-                n = {monthRaces.length.toString().padStart(2, "0")}
-              </div>
             </div>
             <button
               aria-label={t("nextMonth")}
@@ -286,11 +283,10 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
         const [y, m] = key.split("-").map(Number);
         return (
           <div key={key}>
-            <div className="flex items-baseline justify-between border-b border-frost/25 px-1 py-3">
+            <div className="flex items-baseline border-b border-frost/25 px-1 py-3">
               <div className="text-[13px] tracking-[0.08em] uppercase text-frost">
                 {monthNames[m]} · {y}
               </div>
-              <div className="text-caption text-smoke font-mono">n = {String(items.length).padStart(2, "0")}</div>
             </div>
             {items.map((r) => {
               const d = new Date(r.dateISO + "T00:00:00");
