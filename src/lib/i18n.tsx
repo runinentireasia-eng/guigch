@@ -96,7 +96,7 @@ export const dict = {
   },
   footerRights: {
     mn: "© 2026 гүйгч.mn — Монголын гүйгчдийн нээлттэй хуанли",
-    en: "© 2026 runner.mn — Open calendar for the Mongolian running community",
+    en: "© 2026 guigch.mn — Open calendar for the Mongolian running community",
   },
 } satisfies Dict;
 
