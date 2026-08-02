@@ -63,7 +63,7 @@ export function PageBanner({
   meta?: [string, string];
   height?: "md" | "sm";
 }) {
-  const h = height === "sm" ? "min-h-[46vh]" : "min-h-[62vh]";
+  const h = height === "sm" ? "min-h-[34vh]" : "min-h-[46vh]";
   return (
     <section
       className={`relative ${h} w-full flex items-center justify-center overflow-hidden bg-void-black text-frost border-b border-frost/15`}
@@ -87,7 +87,7 @@ export function PageBanner({
         <div className="absolute inset-0 bg-gradient-to-b from-void-black/50 via-transparent to-void-black" />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl py-24">
+      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl py-20">
         <div className="flex items-center gap-4 mb-7">
           <div className="h-px w-8 bg-frost/20" />
           <span className="text-caption text-smoke">
@@ -97,7 +97,7 @@ export function PageBanner({
           <div className="h-px w-8 bg-frost/20" />
         </div>
 
-        <h1 className="text-[38px] md:text-[60px] lg:text-[76px] leading-[0.98] tracking-[-0.035em] font-[300] select-none">
+        <h1 className="text-[34px] md:text-[52px] lg:text-[64px] leading-[1] tracking-[-0.035em] font-[300] select-none">
           {title}
         </h1>
 
