@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
 import { useLang } from "@/lib/i18n";
-import type { Race } from "@/lib/races";
-import { SiteShell, useRaces } from "@/components/site/shell";
+import { SiteShell } from "@/components/site/shell";
+import heroImage from "@/assets/hero-mongolia.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -11,87 +10,82 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Every sanctioned running race in Mongolia: dates, courses, organizers and registration links. Bilingual MN / EN." },
       { property: "og:title", content: "гүйгч.mn — Mongolian Race Calendar 2026" },
       { property: "og:description", content: "Marathons, ultras and trail runs across Mongolia in one calendar." },
+      { property: "og:image", content: "https://guigch.lovable.app/assets/hero-mongolia.jpg" },
+      { name: "twitter:image", content: "https://guigch.lovable.app/assets/hero-mongolia.jpg" },
     ],
   }),
   component: Index,
 });
 
 function Index() {
-  const races = useRaces();
   return (
     <SiteShell>
-      <Hero races={races} />
+      <Hero />
     </SiteShell>
   );
 }
 
-/* ---------- Hero ---------- */
-function Hero({ races }: { races: Race[] }) {
+function Hero() {
   const { t } = useLang();
   return (
-    <section>
-      <div className="max-w-[1280px] mx-auto px-6 py-[96px] grid lg:grid-cols-[1fr_400px] gap-16 items-start">
-        <div>
-          <div className="text-caption text-smoke mb-8">— 2026 УЛИРАЛ / 2026 SEASON</div>
-          <h1 className="text-[50px] leading-[1.2] tracking-[-0.025em] font-[300] text-frost max-w-[640px]">
-            {t("heroTitle")}
-          </h1>
-          <p className="mt-8 text-[15px] leading-[1.6] tracking-[0.025em] text-smoke max-w-[520px] font-[400]">
-            {t("heroSub")}
-          </p>
-          <div className="mt-12 flex flex-wrap items-center gap-4">
-            <Link
-              to="/calendar"
-              className="bg-reactor-lime text-void-black px-[30px] py-[14px] text-[14px] tracking-[0.04em] uppercase font-[400] hover:opacity-90"
-            >
-              {t("browseCalendar")}
-            </Link>
-            <div className="text-caption text-smoke pl-4 border-l border-frost/15">
-              {races.length.toString().padStart(2, "0")} · {t("sectionUpcoming")}
-            </div>
-          </div>
+    <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-void-black text-frost">
+      {/* Background image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={heroImage}
+          alt="Runner on the Mongolian steppe"
+          className="w-full h-full object-cover opacity-80 grayscale-[20%] scale-105"
+          width={1920}
+          height={1088}
+        />
+        {/* Cinematic overlays */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: "radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.75) 70%, rgba(0,0,0,0.95) 100%)",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-void-black/40 via-transparent to-void-black" />
+      </div>
+
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col items-center px-6 max-w-5xl text-center">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-px w-8 bg-frost/20" />
+          <span className="text-caption text-smoke">{t("heroPreLabel")}</span>
+          <div className="h-px w-8 bg-frost/20" />
         </div>
-            <ParticleField count={races.length} />
+
+        <h1 className="text-[56px] md:text-[90px] lg:text-[120px] leading-[0.95] tracking-[-0.04em] font-[300] mb-8 select-none">
+          {t("heroMainTitle")}
+        </h1>
+
+        <p className="max-w-2xl text-body-aaru text-smoke mb-14">
+          {t("heroMainSubtitle")}
+        </p>
+
+        <div className="group relative inline-flex items-center justify-center">
+          <div className="absolute -inset-px bg-reactor-lime/20 blur-sm transition-opacity opacity-0 group-hover:opacity-100" />
+          <Link
+            to="/calendar"
+            className="relative px-16 py-6 bg-void-black border border-frost/30 text-frost text-xs uppercase tracking-[0.5em] font-bold transition-all duration-500 hover:border-reactor-lime hover:bg-reactor-lime hover:text-void-black overflow-hidden"
+          >
+            <span className="relative z-10">{t("discoverRaces")}</span>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-frost/50" />
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-frost/50" />
+          </Link>
+        </div>
+      </div>
+
+      {/* Peripheral data points */}
+      <div className="absolute bottom-12 left-12 hidden lg:block text-[9px] font-mono text-smoke tracking-widest uppercase">
+        <div className="mb-1">UB · MGL · 2026</div>
+        <div>Live Calendar</div>
+      </div>
+      <div className="absolute bottom-12 right-12 hidden lg:block text-[9px] font-mono text-smoke tracking-widest uppercase text-right">
+        <div className="mb-1">Bilingual</div>
+        <div>MN / EN</div>
       </div>
     </section>
   );
 }
-
-function ParticleField({ count }: { count: number }) {
-  const dots = useMemo(() => {
-    const seed = 1337;
-    const rand = (i: number) => {
-      const x = Math.sin(seed + i * 12.9898) * 43758.5453;
-      return x - Math.floor(x);
-    };
-    return Array.from({ length: 220 }, (_, i) => ({
-      left: rand(i) * 100,
-      top: rand(i + 400) * 100,
-      w: rand(i + 800) > 0.85 ? 8 : 2,
-      h: 2,
-      op: 0.3 + rand(i + 1200) * 0.7,
-      lime: rand(i + 1600) > 0.97,
-    }));
-  }, []);
-  return (
-    <div className="relative h-[420px] w-full border border-frost/15">
-      <div className="absolute top-3 left-3 text-caption text-smoke">FIG. 01 · РАСЕ FIELD</div>
-      <div className="absolute bottom-3 right-3 text-caption text-smoke">n = {count}</div>
-      {dots.map((d, i) => (
-        <span
-          key={i}
-          className="absolute"
-          style={{
-            left: `${d.left}%`,
-            top: `${d.top}%`,
-            width: d.w,
-            height: d.h,
-            background: d.lime ? "#ebfb10" : "#ffffff",
-            opacity: d.op,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
