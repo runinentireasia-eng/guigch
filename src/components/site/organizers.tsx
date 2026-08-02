@@ -18,12 +18,8 @@ export function OrganizersSection({ races }: { races: Race[] }) {
   }, [races, lang]);
 
   return (
-    <section id="organizers" className="bg-void-black border-t border-frost/15 scroll-mt-24">
+    <section id="organizers" className="bg-void-black scroll-mt-24">
       <div className="max-w-[1280px] mx-auto px-6 py-20">
-        <div className="text-caption text-smoke mb-4">002 / {lang === "mn" ? "ЗОХИОН БАЙГУУЛАГЧИД" : "ORGANIZERS"}</div>
-        <h2 className="text-[clamp(28px,4vw,44px)] font-[330] tracking-[-0.02em] mb-10">
-          {lang === "mn" ? "Уралдаан зохион байгуулагчид" : "Race organizers"}
-        </h2>
         {organizers.length === 0 ? (
           <p className="text-[13px] text-smoke">{lang === "mn" ? "Мэдээлэл алга." : "No data yet."}</p>
         ) : (

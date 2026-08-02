@@ -14,12 +14,8 @@ export function ResultsSection({ races }: { races: Race[] }) {
   }, [races]);
 
   return (
-    <section id="results" className="bg-void-black border-t border-frost/15 scroll-mt-24">
+    <section id="results" className="bg-void-black scroll-mt-24">
       <div className="max-w-[1280px] mx-auto px-6 py-20">
-        <div className="text-caption text-smoke mb-4">003 / {lang === "mn" ? "ҮР ДҮН" : "RESULTS"}</div>
-        <h2 className="text-[clamp(28px,4vw,44px)] font-[330] tracking-[-0.02em] mb-10">
-          {lang === "mn" ? "Өнгөрсөн уралдаанууд" : "Past races"}
-        </h2>
         {past.length === 0 ? (
           <p className="text-[13px] text-smoke">
             {lang === "mn" ? "Одоогоор өнгөрсөн уралдаан бүртгэгдээгүй." : "No past races recorded yet."}

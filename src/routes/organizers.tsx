@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell, useRaces } from "@/components/site/shell";
 import { OrganizersSection } from "@/components/site/organizers";
+import { PageBanner, CtaButton } from "@/components/site/page-banner";
+import { useLang } from "@/lib/i18n";
+import bannerOrganizers from "@/assets/banner-organizers.jpg";
 
 export const Route = createFileRoute("/organizers")({
   head: () => ({
@@ -16,8 +19,27 @@ export const Route = createFileRoute("/organizers")({
 
 function OrganizersPage() {
   const races = useRaces();
+  const { lang } = useLang();
   return (
     <SiteShell>
+      <PageBanner
+        image={bannerOrganizers}
+        imageAlt="Organizers at a remote race start line at dusk"
+        index="002"
+        label={lang === "mn" ? "ЗОХИОН БАЙГУУЛАГЧИД" : "ORGANIZERS"}
+        title={lang === "mn" ? "ЗОХИОН БАЙГУУЛАГЧИД" : "THE ORGANIZERS"}
+        subtitle={
+          lang === "mn"
+            ? "Монголын уралдаануудыг бүтээж байгаа хүмүүс, клубууд, багууд."
+            : "The people, clubs and teams building the Mongolian race season."
+        }
+        cta={
+          <CtaButton to="/calendar" size="sm">
+            {lang === "mn" ? "ХУАНЛИ ХАРАХ" : "VIEW CALENDAR"}
+          </CtaButton>
+        }
+        meta={["Verified Partners", "MN / EN"]}
+      />
       <OrganizersSection races={races} />
     </SiteShell>
   );
