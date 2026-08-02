@@ -5,7 +5,14 @@ export type Lang = "mn" | "en";
 type Dict = Record<string, { mn: string; en: string }>;
 
 export const dict = {
-  brand: { mn: "гүйгч", en: "runner" },
+  heroPreLabel: { mn: "2026 УЛИРАЛ", en: "2026 SEASON" },
+  heroMainTitle: { mn: "МОНГОЛЫН ГҮЙЛТ", en: "MONGOLIA RUNS" },
+  heroMainSubtitle: {
+    mn: "Улаанбаатараас Говь, Хөвсгөл хүртэлх бүх уралдааны нэг л газар.",
+    en: "Every race from Ulaanbaatar to the Gobi and Khövsgöl, in one place.",
+  },
+  discoverRaces: { mn: "УРАЛДААНУУДЫГ ХАРАХ", en: "DISCOVER RACES" },
+  brand: { mn: "гүйгч", en: "guigch" },
   announcement: {
     mn: "МОНГОЛЫН УРАЛДААНЫ АЛБАН ЁСНЫ ХУАНЛИ · 2026 УЛИРАЛ НЭЭЛТТЭЙ",
     en: "OFFICIAL MONGOLIAN RACE CALENDAR · 2026 SEASON OPEN",
