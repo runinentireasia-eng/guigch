@@ -83,7 +83,7 @@ export function AnnouncementBar() {
   );
 }
 
-const navLinkClass = "text-[12px] tracking-[0.06em] uppercase text-ash hover:text-frost";
+const navLinkClass = "nav-link-scan text-[12px] tracking-[0.06em] uppercase text-ash hover:text-frost transition-colors duration-300";
 
 export function Nav() {
   const { t } = useLang();
@@ -97,13 +97,13 @@ export function Nav() {
           <span className="truncate text-[15px] md:text-[16px] font-[400] tracking-[0.02em] lowercase">гүйгч.mn</span>
         </Link>
         <div className="hidden md:flex items-center gap-8">
-          <Link to="/calendar" className={navLinkClass} activeProps={{ className: "text-[12px] tracking-[0.06em] uppercase text-frost" }}>
+          <Link to="/calendar" className={navLinkClass} activeProps={{ className: "nav-link-scan text-[12px] tracking-[0.06em] uppercase text-frost" }}>
             {t("navCalendar")}
           </Link>
-          <Link to="/organizers" className={navLinkClass} activeProps={{ className: "text-[12px] tracking-[0.06em] uppercase text-frost" }}>
+          <Link to="/organizers" className={navLinkClass} activeProps={{ className: "nav-link-scan text-[12px] tracking-[0.06em] uppercase text-frost" }}>
             {t("navOrganizers")}
           </Link>
-          <Link to="/results" className={navLinkClass} activeProps={{ className: "text-[12px] tracking-[0.06em] uppercase text-frost" }}>
+          <Link to="/results" className={navLinkClass} activeProps={{ className: "nav-link-scan text-[12px] tracking-[0.06em] uppercase text-frost" }}>
             {t("navResults")}
           </Link>
         </div>
@@ -111,12 +111,14 @@ export function Nav() {
           <Link
             to="/auth"
             className="nav-action nav-action-secondary"
+            data-cursor-hover
           >
             <span>{t("logIn")}</span>
           </Link>
           <button
             onClick={() => setAddOpen(true)}
             className="nav-action nav-action-primary"
+            data-cursor-hover
           >
             <span>{t("addRace")}</span>
           </button>
