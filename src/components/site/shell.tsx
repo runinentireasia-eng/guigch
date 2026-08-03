@@ -110,15 +110,15 @@ export function Nav() {
         <div className="hidden md:flex items-center gap-3">
           <Link
             to="/auth"
-            className="border border-frost text-frost px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:bg-frost/5"
+            className="nav-action nav-action-secondary"
           >
-            {t("logIn")}
+            <span>{t("logIn")}</span>
           </Link>
           <button
             onClick={() => setAddOpen(true)}
-            className="bg-frost text-void-black px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:opacity-90"
+            className="nav-action nav-action-primary"
           >
-            {t("addRace")}
+            <span>{t("addRace")}</span>
           </button>
         </div>
         <div className="flex shrink-0 items-center gap-2 md:hidden">
@@ -156,18 +156,18 @@ export function Nav() {
           <Link
             to="/auth"
             onClick={() => setMenuOpen(false)}
-            className="mt-3 border border-frost text-frost py-3 text-center text-[12px] tracking-[0.06em] uppercase"
+            className="nav-action nav-action-secondary w-full mt-3"
           >
-            {t("logIn")}
+            <span>{t("logIn")}</span>
           </Link>
           <button
             onClick={() => {
               setMenuOpen(false);
               setAddOpen(true);
             }}
-            className="mt-2 bg-frost text-void-black py-3 text-[12px] tracking-[0.06em] uppercase"
+            className="nav-action nav-action-primary w-full mt-2"
           >
-            {t("addRace")}
+            <span>{t("addRace")}</span>
           </button>
         </div>
       )}

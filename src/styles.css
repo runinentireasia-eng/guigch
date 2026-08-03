@@ -186,3 +186,68 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Uiverse-style nav button reveal animation, adapted to Aaru palette */
+.nav-action {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid currentColor;
+  padding: 12px 24px;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  font-size: 12px;
+  font-weight: 400;
+  transition: color 0.3s ease-in-out;
+  overflow: visible;
+}
+
+.nav-action::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% - 12px);
+  background-color: var(--color-void-black);
+  transition: transform 0.3s ease-in-out;
+  transform: scaleY(1);
+  z-index: 1;
+}
+
+.nav-action:hover::before {
+  transform: scaleY(0);
+}
+
+.nav-action::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: -2px;
+  height: calc(100% + 4px);
+  width: calc(100% - 12px);
+  background-color: var(--color-void-black);
+  transition: transform 0.3s ease-in-out;
+  transition-delay: 0.5s;
+  transform: scaleX(1);
+  z-index: 1;
+}
+
+.nav-action:hover::after {
+  transform: scaleX(0);
+}
+
+.nav-action > span {
+  position: relative;
+  z-index: 2;
+}
+
+.nav-action-primary {
+  color: var(--color-reactor-lime);
+}
+
+.nav-action-secondary {
+  color: var(--color-frost);
+}
