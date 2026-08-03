@@ -169,6 +169,9 @@ export function Footer() {
           <p className="mt-6 text-[13px] tracking-[0.02em] text-smoke max-w-[320px] font-[400]">
             {t("footerRights")}
           </p>
+          <div className="mt-6">
+            <LangToggle />
+          </div>
         </div>
         <div>
           <div className="text-caption text-smoke mb-4">CALENDAR</div>
