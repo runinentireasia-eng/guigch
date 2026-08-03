@@ -68,12 +68,13 @@ const navLinkClass = "text-[12px] tracking-[0.06em] uppercase text-ash hover:tex
 export function Nav() {
   const { t } = useLang();
   const [addOpen, setAddOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <nav className="border-b border-frost/15 bg-void-black">
-      <div className="max-w-[1280px] mx-auto px-6 h-[72px] flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3">
-          <DotCluster />
-          <span className="text-[16px] font-[400] tracking-[0.02em] lowercase">гүйгч.mn</span>
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 h-[60px] md:h-[72px] grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 md:flex md:justify-between">
+        <Link to="/" className="flex min-w-0 items-center gap-3">
+          <span className="shrink-0"><DotCluster /></span>
+          <span className="truncate text-[15px] md:text-[16px] font-[400] tracking-[0.02em] lowercase">гүйгч.mn</span>
         </Link>
         <div className="hidden md:flex items-center gap-8">
           <Link to="/calendar" className={navLinkClass} activeProps={{ className: "text-[12px] tracking-[0.06em] uppercase text-frost" }}>
@@ -86,7 +87,7 @@ export function Nav() {
             {t("navResults")}
           </Link>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3">
           <LangToggle />
           <Link
             to="/auth"
@@ -101,7 +102,57 @@ export function Nav() {
             {t("addRace")}
           </button>
         </div>
+        <div className="flex shrink-0 items-center gap-2 md:hidden">
+          <LangToggle />
+          <button
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            className="border border-frost/40 text-frost size-[38px] grid place-items-center"
+          >
+            <span className="grid gap-[5px]">
+              <span className="block h-px w-[18px] bg-frost" />
+              <span className="block h-px w-[18px] bg-frost" />
+              <span className="block h-px w-[18px] bg-frost" />
+            </span>
+          </button>
+        </div>
       </div>
+      {menuOpen && (
+        <div className="md:hidden border-t border-frost/15 px-4 py-5 flex flex-col gap-1">
+          {[
+            { to: "/calendar" as const, label: t("navCalendar") },
+            { to: "/organizers" as const, label: t("navOrganizers") },
+            { to: "/results" as const, label: t("navResults") },
+          ].map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              onClick={() => setMenuOpen(false)}
+              className="py-3 text-[13px] tracking-[0.06em] uppercase text-ash hover:text-frost"
+              activeProps={{ className: "py-3 text-[13px] tracking-[0.06em] uppercase text-frost" }}
+            >
+              {l.label}
+            </Link>
+          ))}
+          <Link
+            to="/auth"
+            onClick={() => setMenuOpen(false)}
+            className="mt-3 border border-frost text-frost py-3 text-center text-[12px] tracking-[0.06em] uppercase"
+          >
+            {t("logIn")}
+          </Link>
+          <button
+            onClick={() => {
+              setMenuOpen(false);
+              setAddOpen(true);
+            }}
+            className="mt-2 bg-frost text-void-black py-3 text-[12px] tracking-[0.06em] uppercase"
+          >
+            {t("addRace")}
+          </button>
+        </div>
+      )}
       {addOpen && <AddRaceModal onClose={() => setAddOpen(false)} />}
     </nav>
   );
