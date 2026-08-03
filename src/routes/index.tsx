@@ -50,29 +50,30 @@ function Hero() {
 
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center px-6 max-w-5xl text-center">
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-4 mb-8 animate-fade-in-up animate-delay-100">
           <div className="h-px w-8 bg-frost/20" />
           <span className="text-caption text-smoke">{t("heroPreLabel")}</span>
           <div className="h-px w-8 bg-frost/20" />
         </div>
 
-        <h1 className="text-[56px] md:text-[90px] lg:text-[120px] leading-[0.95] tracking-[-0.04em] font-[300] mb-8 select-none">
+        <h1 className="text-[56px] md:text-[90px] lg:text-[120px] leading-[0.95] tracking-[-0.04em] font-[300] mb-8 select-none animate-fade-in-up animate-delay-200 animate-text-shimmer">
           {t("heroMainTitle")}
         </h1>
 
-        <p className="max-w-2xl text-body-aaru text-smoke mb-14">
+        <p className="max-w-2xl text-body-aaru text-smoke mb-14 animate-fade-in-up animate-delay-300">
           {t("heroMainSubtitle")}
         </p>
 
-        <div className="group relative inline-flex items-center justify-center">
+        <div className="group relative inline-flex items-center justify-center animate-fade-in-up animate-delay-400 animate-cta-glow">
           <div className="absolute -inset-px bg-reactor-lime/20 blur-sm transition-opacity opacity-0 group-hover:opacity-100" />
           <Link
             to="/calendar"
-            className="relative px-16 py-6 bg-void-black border border-frost/30 text-frost text-xs uppercase tracking-[0.5em] font-bold transition-all duration-500 hover:border-reactor-lime hover:bg-reactor-lime hover:text-void-black overflow-hidden"
+            className="btn-cta relative px-16 py-6 bg-void-black border border-frost/30 text-frost text-xs uppercase tracking-[0.5em] font-bold transition-all duration-500 hover:border-reactor-lime hover:bg-reactor-lime hover:text-void-black"
+            data-cursor-hover
           >
             <span className="relative z-10">{t("discoverRaces")}</span>
-            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-frost/50" />
-            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-frost/50" />
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-frost/50 transition-colors duration-300 group-hover:border-void-black/50" />
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-frost/50 transition-colors duration-300 group-hover:border-void-black/50" />
           </Link>
         </div>
       </div>
