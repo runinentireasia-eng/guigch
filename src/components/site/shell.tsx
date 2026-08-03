@@ -169,7 +169,6 @@ export function Nav() {
           >
             <span>{t("addRace")}</span>
           </button>
-          </button>
         </div>
       )}
       {addOpen && <AddRaceModal onClose={() => setAddOpen(false)} />}
