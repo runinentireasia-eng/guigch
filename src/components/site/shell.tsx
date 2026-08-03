@@ -35,18 +35,38 @@ export function DotCluster() {
 
 function LangToggle() {
   const { lang, setLang } = useLang();
-  const opt = (l: Lang, label: string) => (
-    <button
-      key={l}
-      onClick={() => setLang(l)}
-      className={`px-2 py-1 text-[11px] tracking-[0.08em] uppercase ${
-        lang === l ? "text-void-black bg-frost" : "text-frost hover:text-ash"
-      }`}
-    >
-      {label}
-    </button>
+  const isEn = lang === "en";
+  return (
+    <label className="inline-flex items-center gap-3 cursor-pointer select-none">
+      <span className={`text-[11px] tracking-[0.08em] uppercase ${isEn ? "text-ash" : "text-frost"}`}>
+        MN
+      </span>
+      <input
+        id="langCheckbox"
+        type="checkbox"
+        checked={isEn}
+        onChange={(e) => setLang(e.target.checked ? "en" : "mn")}
+        className="hidden"
+      />
+      <span
+        className="relative flex items-center justify-center w-[90px] h-[30px] rounded-[40px] transition-colors duration-300"
+        style={{ backgroundColor: isEn ? "#3B82F6" : "#1a1a1a" }}
+      >
+        <span
+          className="absolute top-0 h-[30px] w-1/2 rounded-[40px] transition-transform duration-300"
+          style={{
+            left: 0,
+            transform: isEn ? "translateX(100%)" : "translateX(0)",
+            background: "conic-gradient(rgba(248,250,252,0.35),#F8FAFC,rgba(248,250,252,0.35),#F8FAFC,rgba(248,250,252,0.35))",
+            boxShadow: "2px 2px 10px rgba(0,0,0,0.28)",
+          }}
+        />
+      </span>
+      <span className={`text-[11px] tracking-[0.08em] uppercase ${isEn ? "text-frost" : "text-ash"}`}>
+        EN
+      </span>
+    </label>
   );
-  return <div className="inline-flex border border-frost">{opt("mn", "MN")}{opt("en", "EN")}</div>;
 }
 
 export function AnnouncementBar() {
