@@ -88,7 +88,6 @@ export function Nav() {
           </Link>
         </div>
         <div className="hidden md:flex items-center gap-3">
-          <LangToggle />
           <Link
             to="/auth"
             className="border border-frost text-frost px-6 py-3 text-[12px] tracking-[0.06em] uppercase hover:bg-frost/5"
@@ -103,7 +102,6 @@ export function Nav() {
           </button>
         </div>
         <div className="flex shrink-0 items-center gap-2 md:hidden">
-          <LangToggle />
           <button
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Menu"
@@ -171,6 +169,9 @@ export function Footer() {
           <p className="mt-6 text-[13px] tracking-[0.02em] text-smoke max-w-[320px] font-[400]">
             {t("footerRights")}
           </p>
+          <div className="mt-6">
+            <LangToggle />
+          </div>
         </div>
         <div>
           <div className="text-caption text-smoke mb-4">CALENDAR</div>
