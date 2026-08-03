@@ -156,18 +156,19 @@ export function Nav() {
           <Link
             to="/auth"
             onClick={() => setMenuOpen(false)}
-            className="mt-3 border border-frost text-frost py-3 text-center text-[12px] tracking-[0.06em] uppercase"
+            className="nav-action nav-action-secondary w-full mt-3"
           >
-            {t("logIn")}
+            <span>{t("logIn")}</span>
           </Link>
           <button
             onClick={() => {
               setMenuOpen(false);
               setAddOpen(true);
             }}
-            className="mt-2 bg-frost text-void-black py-3 text-[12px] tracking-[0.06em] uppercase"
+            className="nav-action nav-action-primary w-full mt-2"
           >
-            {t("addRace")}
+            <span>{t("addRace")}</span>
+          </button>
           </button>
         </div>
       )}
