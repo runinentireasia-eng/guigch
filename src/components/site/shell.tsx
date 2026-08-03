@@ -74,8 +74,8 @@ export function AnnouncementBar() {
   return (
     <div className="w-full bg-reactor-lime text-void-black">
       <div className="max-w-[1280px] mx-auto px-6 h-[40px] flex items-center justify-center gap-6">
-        <span className="text-[12px] tracking-[0.08em] uppercase font-[400]">{t("announcement")}</span>
-        <Link to="/calendar" className="text-[12px] tracking-[0.08em] uppercase font-[400] underline-offset-4 hover:underline">
+        <span className="text-[12px] tracking-[0.08em] uppercase font-[400] animate-fade-in-up">{t("announcement")}</span>
+        <Link to="/calendar" className="text-[12px] tracking-[0.08em] uppercase font-[400] underline-offset-4 hover:underline nav-link-scan text-void-black after:bg-void-black" data-cursor-hover>
           {t("readMore")}
         </Link>
       </div>
@@ -202,17 +202,17 @@ export function Footer() {
         <div>
           <div className="text-caption text-smoke mb-4">CALENDAR</div>
           <ul className="space-y-2">
-            <li><Link to="/calendar" className="text-[13px] text-ash hover:text-frost">{t("navCalendar")}</Link></li>
-            <li><Link to="/organizers" className="text-[13px] text-ash hover:text-frost">{t("navOrganizers")}</Link></li>
-            <li><Link to="/results" className="text-[13px] text-ash hover:text-frost">{t("navResults")}</Link></li>
+            <li><Link to="/calendar" className="text-[13px] text-ash hover:text-frost transition-colors duration-300 nav-link-scan" data-cursor-hover>{t("navCalendar")}</Link></li>
+            <li><Link to="/organizers" className="text-[13px] text-ash hover:text-frost transition-colors duration-300 nav-link-scan" data-cursor-hover>{t("navOrganizers")}</Link></li>
+            <li><Link to="/results" className="text-[13px] text-ash hover:text-frost transition-colors duration-300 nav-link-scan" data-cursor-hover>{t("navResults")}</Link></li>
           </ul>
         </div>
         <div>
           <div className="text-caption text-smoke mb-4">CONTACT</div>
           <ul className="space-y-2">
-            <li><a href="mailto:hi@guygch.mn" className="text-[13px] text-ash hover:text-frost">hi@guygch.mn</a></li>
-            <li><a href="#" className="text-[13px] text-ash hover:text-frost">Instagram</a></li>
-            <li><a href="#" className="text-[13px] text-ash hover:text-frost">Strava Club</a></li>
+            <li><a href="mailto:hi@guygch.mn" className="text-[13px] text-ash hover:text-frost transition-colors duration-300 nav-link-scan" data-cursor-hover>hi@guygch.mn</a></li>
+            <li><a href="#" className="text-[13px] text-ash hover:text-frost transition-colors duration-300 nav-link-scan" data-cursor-hover>Instagram</a></li>
+            <li><a href="#" className="text-[13px] text-ash hover:text-frost transition-colors duration-300 nav-link-scan" data-cursor-hover>Strava Club</a></li>
           </ul>
         </div>
       </div>
