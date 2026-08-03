@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
+function isFinePointer() {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(pointer: fine)").matches;
+}
+
 export function CustomCursor() {
   const [mounted, setMounted] = useState(false);
   const [hovering, setHovering] = useState(false);
@@ -10,6 +15,7 @@ export function CustomCursor() {
   const trailRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (!isFinePointer()) return;
     setMounted(true);
 
     const onMove = (e: MouseEvent) => {
