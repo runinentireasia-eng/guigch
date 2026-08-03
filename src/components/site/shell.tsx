@@ -128,9 +128,10 @@ export function Nav() {
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Menu"
             aria-expanded={menuOpen}
-            className="border border-frost/40 text-frost size-[38px] grid place-items-center"
+            className="border border-frost/40 text-frost size-[38px] grid place-items-center hover:border-reactor-lime hover:text-reactor-lime transition-colors duration-300"
+            data-cursor-hover
           >
-            <span className="grid gap-[5px]">
+            <span className="grid gap-[5px] transition-transform duration-300">
               <span className="block h-px w-[18px] bg-frost" />
               <span className="block h-px w-[18px] bg-frost" />
               <span className="block h-px w-[18px] bg-frost" />
@@ -149,8 +150,9 @@ export function Nav() {
               key={l.to}
               to={l.to}
               onClick={() => setMenuOpen(false)}
-              className="py-3 text-[13px] tracking-[0.06em] uppercase text-ash hover:text-frost"
-              activeProps={{ className: "py-3 text-[13px] tracking-[0.06em] uppercase text-frost" }}
+              className="nav-link-scan py-3 text-[13px] tracking-[0.06em] uppercase text-ash hover:text-frost transition-colors duration-300"
+              activeProps={{ className: "nav-link-scan py-3 text-[13px] tracking-[0.06em] uppercase text-frost" }}
+              data-cursor-hover
             >
               {l.label}
             </Link>
@@ -159,6 +161,7 @@ export function Nav() {
             to="/auth"
             onClick={() => setMenuOpen(false)}
             className="nav-action nav-action-secondary w-full mt-3"
+            data-cursor-hover
           >
             <span>{t("logIn")}</span>
           </Link>
@@ -168,6 +171,7 @@ export function Nav() {
               setAddOpen(true);
             }}
             className="nav-action nav-action-primary w-full mt-2"
+            data-cursor-hover
           >
             <span>{t("addRace")}</span>
           </button>
