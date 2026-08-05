@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, List as ListIcon, ArrowRight, Bookmark } from "lucide-react";
 import { useLang } from "@/lib/i18n";
 import { VerifiedBadge } from "./form-ui";
+import { CornerScroll, UlziiSeal, CloudBand } from "./zurkhai-ornament";
 import type { Race } from "@/lib/races";
 
 const SAVED_KEY = "guigch.saved-races";
