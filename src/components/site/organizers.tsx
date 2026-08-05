@@ -3,6 +3,7 @@ import { useLang } from "@/lib/i18n";
 import type { Race } from "@/lib/races";
 import { useVerifiedOrganizerNames } from "@/lib/access";
 import { VerifiedBadge } from "./form-ui";
+import { AlmanacFrame, CloudRule } from "./zurkhai-ornament";
 
 /* ---------- Organizers ---------- */
 export function OrganizersSection({ races }: { races: Race[] }) {
@@ -20,9 +21,11 @@ export function OrganizersSection({ races }: { races: Race[] }) {
   return (
     <section id="organizers" className="bg-void-black scroll-mt-24">
       <div className="max-w-[1280px] mx-auto px-6 py-20">
+        <CloudRule className="mb-10 text-zurkhai" />
         {organizers.length === 0 ? (
           <p className="text-[13px] text-smoke">{lang === "mn" ? "Мэдээлэл алга." : "No data yet."}</p>
         ) : (
+          <AlmanacFrame className="p-3">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-zurkhai/20 border border-zurkhai/20">
             {organizers.map(([name, list]) => (
               <div key={name} className="bg-void-black p-6">
@@ -43,6 +46,7 @@ export function OrganizersSection({ races }: { races: Race[] }) {
               </div>
             ))}
           </div>
+          </AlmanacFrame>
         )}
       </div>
     </section>
