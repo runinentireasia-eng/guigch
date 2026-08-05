@@ -212,7 +212,7 @@ function AdminPage() {
         <div className="max-w-[1280px] mx-auto px-6 py-20">
           <div className="text-caption text-smoke mb-4">— ADMIN</div>
           <p className="text-[15px] text-ash">You're signed in but not a platform admin.</p>
-          <div className="mt-6"><Link to="/organizer" className="text-caption text-reactor-lime">Go to organizer dashboard →</Link></div>
+          <div className="mt-6"><Link to="/organizer" className="text-caption text-zurkhai">Go to organizer dashboard →</Link></div>
         </div>
       </div>
     );
@@ -233,7 +233,7 @@ function AdminPage() {
             <button
               key={tb}
               onClick={() => setTab(tb)}
-              className={`text-caption uppercase ${tab === tb ? "text-reactor-lime" : "text-smoke hover:text-frost"}`}
+              className={`text-caption uppercase ${tab === tb ? "text-zurkhai" : "text-smoke hover:text-frost"}`}
             >
               {TAB_LABEL[tb]}
             </button>
@@ -280,7 +280,7 @@ function AdminPage() {
                 <div className="max-w-[640px]">
                   <div className="text-[15px]">{s.race_name}</div>
                   <div className="text-caption text-smoke mt-1">{s.race_date ?? "—"} · {s.location || "—"} · {s.organizer_name || "—"}</div>
-                  {s.link && <a href={s.link} target="_blank" rel="noreferrer" className="text-caption text-reactor-lime block mt-1">{s.link}</a>}
+                  {s.link && <a href={s.link} target="_blank" rel="noreferrer" className="text-caption text-zurkhai block mt-1">{s.link}</a>}
                   {s.notes && <p className="text-[13px] text-ash mt-2">{s.notes}</p>}
                   <div className="text-caption text-smoke mt-2">From {s.submitter_name} · {s.submitter_email}</div>
                   <div className="mt-2"><StatusPill status={s.status} /></div>
@@ -292,9 +292,9 @@ function AdminPage() {
                       setCreating(true); setEditingId(null);
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="text-caption text-frost hover:text-reactor-lime"
+                    className="text-caption text-frost hover:text-zurkhai"
                   >Create race</button>
-                  <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "approved" })} className="text-caption text-frost hover:text-reactor-lime">Approve</button>
+                  <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "approved" })} className="text-caption text-frost hover:text-zurkhai">Approve</button>
                   <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "rejected", note: prompt("Reason (optional)") ?? "" })} className="text-caption text-smoke hover:text-red-400">Reject</button>
                 </div>
               </div>
@@ -313,12 +313,12 @@ function AdminPage() {
                     {o.status === "verified" ? <VerifiedBadge /> : <StatusPill status={o.status} />}
                   </div>
                   <div className="text-caption text-smoke mt-1">{o.contact_person} · {o.email} · {o.phone}</div>
-                  {o.website && <a href={o.website} target="_blank" rel="noreferrer" className="text-caption text-reactor-lime block mt-1">{o.website}</a>}
+                  {o.website && <a href={o.website} target="_blank" rel="noreferrer" className="text-caption text-zurkhai block mt-1">{o.website}</a>}
                   <p className="text-[13px] text-ash mt-2">{o.proof}</p>
                   {o.previous_event_url && <div className="text-caption text-smoke mt-1">Previous: {o.previous_event_url}</div>}
                 </div>
                 <div className="flex gap-3 items-start">
-                  <button onClick={() => reviewOrganizer.mutate({ id: o.id, status: "verified" })} className="text-caption text-frost hover:text-reactor-lime">Verify</button>
+                  <button onClick={() => reviewOrganizer.mutate({ id: o.id, status: "verified" })} className="text-caption text-frost hover:text-zurkhai">Verify</button>
                   <button onClick={() => reviewOrganizer.mutate({ id: o.id, status: "rejected", note: prompt("Reason (optional)") ?? "" })} className="text-caption text-smoke hover:text-red-400">Reject</button>
                 </div>
               </div>
@@ -339,7 +339,7 @@ function AdminPage() {
                   <div className="mt-2"><StatusPill status={rep.resolved ? "approved" : "pending_verification"} /></div>
                 </div>
                 {!rep.resolved && (
-                  <button onClick={() => resolveReport.mutate(rep.id)} className="text-caption text-frost hover:text-reactor-lime">Resolve</button>
+                  <button onClick={() => resolveReport.mutate(rep.id)} className="text-caption text-frost hover:text-zurkhai">Resolve</button>
                 )}
               </div>
             ))}
@@ -356,7 +356,7 @@ function AdminPage() {
                   <div key={r.id} className="flex items-center justify-between py-2">
                     <div className="text-[14px]">{r.name_en} · {r.race_date} · <StatusPill status={r.review_status} /></div>
                     <div className="flex gap-3">
-                      <button onClick={() => startEdit(r)} className="text-caption text-frost hover:text-reactor-lime">Keep & edit</button>
+                      <button onClick={() => startEdit(r)} className="text-caption text-frost hover:text-zurkhai">Keep & edit</button>
                       <button onClick={() => { if (confirm("Merge by deleting this duplicate?")) delRace.mutate(r.id); }} className="text-caption text-smoke hover:text-red-400">Merge away</button>
                     </div>
                   </div>
@@ -431,8 +431,8 @@ function RaceReviewRow({
           </div>
         </div>
         <div className="flex gap-3 items-start">
-          <button onClick={() => setOpen((o) => !o)} className="text-caption text-frost hover:text-reactor-lime">Review</button>
-          <button onClick={onEdit} className="text-caption text-frost hover:text-reactor-lime">Edit</button>
+          <button onClick={() => setOpen((o) => !o)} className="text-caption text-frost hover:text-zurkhai">Review</button>
+          <button onClick={onEdit} className="text-caption text-frost hover:text-zurkhai">Edit</button>
           {onDelete && <button onClick={onDelete} className="text-caption text-smoke hover:text-red-400">Delete</button>}
         </div>
       </div>
@@ -446,7 +446,7 @@ function RaceReviewRow({
             <select
               value={race.owner_id ?? ""}
               onChange={(e) => onAssign(e.target.value)}
-              className="bg-void-black border border-frost/30 px-3 py-2.5 text-[14px] text-frost focus:outline-none focus:border-reactor-lime"
+              className="bg-void-black border border-frost/30 px-3 py-2.5 text-[14px] text-frost focus:outline-none focus:border-zurkhai"
             >
               <option value="">— unassigned —</option>
               {verifiedOrgs.map((o) => <option key={o.id} value={o.user_id}>{o.org_name}</option>)}

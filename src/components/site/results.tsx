@@ -24,7 +24,7 @@ export function ResultsSection({ races }: { races: Race[] }) {
           <ul className="border-t border-frost/15">
             {past.map((r) => (
               <li key={r.id} className="flex flex-wrap items-baseline gap-x-6 gap-y-1 border-b border-frost/15 py-4">
-                <span className="text-caption text-reactor-lime w-[110px]">{r.dateISO}</span>
+                <span className="text-caption text-zurkhai w-[110px]">{r.dateISO}</span>
                 <span className="text-[15px] font-[400] flex-1 min-w-[200px]">{lang === "mn" ? r.nameMn : r.nameEn}</span>
                 <span className="text-[13px] text-smoke">{lang === "mn" ? r.locationMn : r.locationEn}</span>
               </li>

@@ -28,7 +28,7 @@ export function DotCluster() {
       <span className="size-[6px] bg-frost" />
       <span className="size-[6px] bg-frost" />
       <span className="size-[6px] bg-frost" />
-      <span className="size-[6px] bg-reactor-lime" />
+      <span className="size-[6px] bg-zurkhai" />
     </div>
   );
 }
@@ -72,7 +72,7 @@ function LangToggle() {
 export function AnnouncementBar() {
   const { t } = useLang();
   return (
-    <div className="w-full bg-reactor-lime text-void-black">
+    <div className="w-full bg-zurkhai text-void-black">
       <div className="max-w-[1280px] mx-auto px-6 h-[40px] flex items-center justify-center gap-6">
         <span className="text-[12px] tracking-[0.08em] uppercase font-[400] animate-fade-in-up">{t("announcement")}</span>
         <Link to="/calendar" className="text-[12px] tracking-[0.08em] uppercase font-[400] underline-offset-4 hover:underline nav-link-scan text-void-black after:bg-void-black" data-cursor-hover>
@@ -128,7 +128,7 @@ export function Nav() {
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Menu"
             aria-expanded={menuOpen}
-            className="border border-frost/40 text-frost size-[38px] grid place-items-center hover:border-reactor-lime hover:text-reactor-lime transition-colors duration-300"
+            className="border border-frost/40 text-frost size-[38px] grid place-items-center hover:border-zurkhai hover:text-zurkhai transition-colors duration-300"
             data-cursor-hover
           >
             <span className="grid gap-[5px] transition-transform duration-300">

@@ -23,7 +23,7 @@ export function Input({
       required={required}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-transparent border border-frost/30 px-3 py-2.5 text-[14px] text-frost placeholder:text-smoke focus:outline-none focus:border-reactor-lime"
+      className="bg-transparent border border-frost/30 px-3 py-2.5 text-[14px] text-frost placeholder:text-smoke focus:outline-none focus:border-zurkhai"
     />
   );
 }
@@ -37,7 +37,7 @@ export function Textarea({
       rows={rows}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-transparent border border-frost/30 px-3 py-2.5 text-[14px] text-frost placeholder:text-smoke focus:outline-none focus:border-reactor-lime"
+      className="bg-transparent border border-frost/30 px-3 py-2.5 text-[14px] text-frost placeholder:text-smoke focus:outline-none focus:border-zurkhai"
     />
   );
 }
@@ -49,7 +49,7 @@ export function Select({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-void-black border border-frost/30 px-3 py-2.5 text-[14px] text-frost focus:outline-none focus:border-reactor-lime"
+      className="bg-void-black border border-frost/30 px-3 py-2.5 text-[14px] text-frost focus:outline-none focus:border-zurkhai"
     >
       {options.map((o) => <option key={o} value={o}>{o.replace(/_/g, " ")}</option>)}
     </select>
@@ -64,7 +64,7 @@ export function PrimaryButton({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className="bg-reactor-lime text-void-black px-[26px] py-[12px] text-[12px] tracking-[0.06em] uppercase font-[400] hover:opacity-90 disabled:opacity-50"
+      className="bg-zurkhai text-void-black px-[26px] py-[12px] text-[12px] tracking-[0.06em] uppercase font-[400] hover:opacity-90 disabled:opacity-50"
     >
       {children}
     </button>
@@ -88,7 +88,7 @@ export function GhostButton({
 
 export function StatusPill({ status }: { status: string }) {
   const tone =
-    status === "published" ? "border-reactor-lime text-reactor-lime"
+    status === "published" ? "border-zurkhai text-zurkhai"
     : status === "cancelled" || status === "rejected" ? "border-red-400/60 text-red-400"
     : status === "approved" || status === "verified" ? "border-plasma-blue text-plasma-blue"
     : "border-frost/30 text-smoke";
@@ -99,8 +99,8 @@ export function StatusPill({ status }: { status: string }) {
 
 export function VerifiedBadge({ label = "VERIFIED ORGANIZER" }: { label?: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 text-caption border border-reactor-lime text-reactor-lime px-2 py-1 uppercase">
-      <span className="size-[6px] bg-reactor-lime" />
+    <span className="inline-flex items-center gap-1.5 text-caption border border-zurkhai text-zurkhai px-2 py-1 uppercase">
+      <span className="size-[6px] bg-zurkhai" />
       {label}
     </span>
   );

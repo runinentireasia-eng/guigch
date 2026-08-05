@@ -82,7 +82,7 @@ export function CustomCursor() {
         style={{
           width: hovering ? 10 : 6,
           height: hovering ? 10 : 6,
-          backgroundColor: hovering ? "var(--color-reactor-lime)" : "var(--color-frost)",
+          backgroundColor: hovering ? "var(--color-zurkhai)" : "var(--color-frost)",
           boxShadow: hovering
             ? "0 0 18px rgba(235,251,16,0.55), 0 0 6px rgba(235,251,16,0.35)"
             : "0 0 12px rgba(255,255,255,0.35), 0 0 4px rgba(255,255,255,0.2)",

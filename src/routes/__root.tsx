@@ -29,7 +29,7 @@ function NotFoundComponent() {
         <div className="mt-10">
           <Link
             to="/"
-            className="inline-flex items-center bg-reactor-lime text-void-black px-[30px] py-[14px] text-[14px] tracking-[0.04em] uppercase font-[330] hover:opacity-90"
+            className="inline-flex items-center bg-zurkhai text-void-black px-[30px] py-[14px] text-[14px] tracking-[0.04em] uppercase font-[330] hover:opacity-90"
           >
             RETURN → HOME
           </Link>
@@ -59,7 +59,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="bg-reactor-lime text-void-black px-[30px] py-[14px] text-[14px] tracking-[0.04em] uppercase font-[330]"
+            className="bg-zurkhai text-void-black px-[30px] py-[14px] text-[14px] tracking-[0.04em] uppercase font-[330]"
           >
             TRY AGAIN
           </button>

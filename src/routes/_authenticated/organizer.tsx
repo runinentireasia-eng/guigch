@@ -264,7 +264,7 @@ function OrganizerWorkspace({ orgName }: { orgName: string }) {
             <div className="flex gap-3 items-center">
               <button
                 onClick={() => { setEditingId(r.id); setCreating(false); setForm(rowToRaceForm(r)); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                className="text-caption text-frost hover:text-reactor-lime"
+                className="text-caption text-frost hover:text-zurkhai"
               >Edit</button>
               <button
                 onClick={() => setStatus.mutate({ id: r.id, status: "postponed" })}
