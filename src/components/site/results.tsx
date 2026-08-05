@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useLang } from "@/lib/i18n";
 import type { Race } from "@/lib/races";
+import { CloudRule } from "./zurkhai-ornament";
 
 /* ---------- Results ---------- */
 export function ResultsSection({ races }: { races: Race[] }) {
@@ -16,6 +17,7 @@ export function ResultsSection({ races }: { races: Race[] }) {
   return (
     <section id="results" className="bg-void-black scroll-mt-24">
       <div className="max-w-[1280px] mx-auto px-6 py-20">
+        <CloudRule className="mb-10 text-zurkhai" />
         {past.length === 0 ? (
           <p className="text-[13px] text-smoke">
             {lang === "mn" ? "Одоогоор өнгөрсөн уралдаан бүртгэгдээгүй." : "No past races recorded yet."}
