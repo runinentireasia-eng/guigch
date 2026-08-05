@@ -3,7 +3,7 @@ import { Spotlight } from "./spotlight";
 export function SpotlightBasic() {
   return (
     <Spotlight
-      className="min-h-[480px] w-full bg-void-black border-y border-frost/15"
+      className="min-h-[480px] w-full bg-void-black border-y border-zurkhai/20"
       color="plasma"
       size="xl"
       intensity="normal"

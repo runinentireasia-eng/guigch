@@ -21,9 +21,9 @@ export function ResultsSection({ races }: { races: Race[] }) {
             {lang === "mn" ? "Одоогоор өнгөрсөн уралдаан бүртгэгдээгүй." : "No past races recorded yet."}
           </p>
         ) : (
-          <ul className="border-t border-frost/15">
+          <ul className="border-t border-zurkhai/20">
             {past.map((r) => (
-              <li key={r.id} className="flex flex-wrap items-baseline gap-x-6 gap-y-1 border-b border-frost/15 py-4">
+              <li key={r.id} className="flex flex-wrap items-baseline gap-x-6 gap-y-1 border-b border-zurkhai/20 py-4">
                 <span className="text-caption text-zurkhai w-[110px]">{r.dateISO}</span>
                 <span className="text-[15px] font-[400] flex-1 min-w-[200px]">{lang === "mn" ? r.nameMn : r.nameEn}</span>
                 <span className="text-[13px] text-smoke">{lang === "mn" ? r.locationMn : r.locationEn}</span>

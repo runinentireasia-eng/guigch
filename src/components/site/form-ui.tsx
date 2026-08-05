@@ -118,7 +118,7 @@ export function Modal({
       aria-label={label}
     >
       <div
-        className={`w-full ${wide ? "max-w-[720px]" : "max-w-[560px]"} border border-frost/15 bg-void-black p-6 sm:p-8`}
+        className={`w-full ${wide ? "max-w-[720px]" : "max-w-[560px]"} border border-zurkhai/20 bg-void-black p-6 sm:p-8`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

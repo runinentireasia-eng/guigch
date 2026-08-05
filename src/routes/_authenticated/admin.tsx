@@ -220,14 +220,14 @@ function AdminPage() {
 
   return (
     <div className="min-h-screen bg-void-black text-frost font-[300]">
-      <header className="border-b border-frost/15">
+      <header className="border-b border-zurkhai/20">
         <div className="max-w-[1280px] mx-auto px-6 h-[72px] flex items-center justify-between">
           <Link to="/" className="text-[16px] font-[400] lowercase">← гүйгч.mn / admin</Link>
           <button onClick={signOut} className="text-caption text-smoke hover:text-frost">Sign out</button>
         </div>
       </header>
 
-      <div className="border-b border-frost/15">
+      <div className="border-b border-zurkhai/20">
         <div className="max-w-[1280px] mx-auto px-6 flex flex-wrap gap-6 py-4">
           {TABS.map((tb) => (
             <button
@@ -276,7 +276,7 @@ function AdminPage() {
         {tab === "suggestions" && (
           <Section title={`COMMUNITY SUGGESTIONS (${suggestions.data?.length ?? 0})`}>
             {(suggestions.data ?? []).map((s) => (
-              <div key={s.id} className="border-t border-frost/15 py-4 flex flex-wrap gap-4 justify-between">
+              <div key={s.id} className="border-t border-zurkhai/20 py-4 flex flex-wrap gap-4 justify-between">
                 <div className="max-w-[640px]">
                   <div className="text-[15px]">{s.race_name}</div>
                   <div className="text-caption text-smoke mt-1">{s.race_date ?? "—"} · {s.location || "—"} · {s.organizer_name || "—"}</div>
@@ -306,7 +306,7 @@ function AdminPage() {
         {tab === "organizers" && (
           <Section title={`ORGANIZER REQUESTS (${organizers.data?.length ?? 0})`}>
             {(organizers.data ?? []).map((o) => (
-              <div key={o.id} className="border-t border-frost/15 py-4 flex flex-wrap gap-4 justify-between">
+              <div key={o.id} className="border-t border-zurkhai/20 py-4 flex flex-wrap gap-4 justify-between">
                 <div className="max-w-[640px]">
                   <div className="flex items-center gap-3">
                     <span className="text-[15px]">{o.org_name}</span>
@@ -330,7 +330,7 @@ function AdminPage() {
         {tab === "reports" && (
           <Section title={`REPORTED INFORMATION (${reports.data?.length ?? 0})`}>
             {(reports.data ?? []).map((rep) => (
-              <div key={rep.id} className="border-t border-frost/15 py-4 flex flex-wrap gap-4 justify-between">
+              <div key={rep.id} className="border-t border-zurkhai/20 py-4 flex flex-wrap gap-4 justify-between">
                 <div className="max-w-[640px]">
                   <div className="text-[14px] text-ash">{rep.reason}</div>
                   <div className="text-caption text-smoke mt-1">
@@ -350,7 +350,7 @@ function AdminPage() {
         {tab === "duplicates" && (
           <Section title={`DUPLICATE WARNINGS (${duplicates.length})`}>
             {duplicates.map((group, i) => (
-              <div key={i} className="border-t border-frost/15 py-4">
+              <div key={i} className="border-t border-zurkhai/20 py-4">
                 <div className="text-caption text-smoke mb-2">Same name and date — merge by keeping one and deleting the others.</div>
                 {(group ?? []).map((r) => (
                   <div key={r.id} className="flex items-center justify-between py-2">
@@ -395,7 +395,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <div className="text-caption text-smoke mb-4">— {title}</div>
       <div className="border-t border-frost/40" />
       {children}
-      <div className="border-t border-frost/15" />
+      <div className="border-t border-zurkhai/20" />
     </section>
   );
 }
@@ -418,7 +418,7 @@ function RaceReviewRow({
   const [open, setOpen] = useState(false);
   const owner = verifiedOrgs.find((o) => o.user_id === race.owner_id);
   return (
-    <div className="border-t border-frost/15 py-4">
+    <div className="border-t border-zurkhai/20 py-4">
       <div className="flex flex-wrap gap-4 justify-between items-start">
         <div>
           <div className="text-[15px]">{race.name_en}</div>

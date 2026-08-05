@@ -119,9 +119,9 @@ function AuthPage() {
         </form>
 
         <div className="my-6 flex items-center gap-4 text-caption text-smoke">
-          <div className="flex-1 border-t border-frost/15" />
+          <div className="flex-1 border-t border-zurkhai/20" />
           OR
-          <div className="flex-1 border-t border-frost/15" />
+          <div className="flex-1 border-t border-zurkhai/20" />
         </div>
 
         <button

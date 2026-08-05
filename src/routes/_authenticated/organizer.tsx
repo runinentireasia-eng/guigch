@@ -40,7 +40,7 @@ function Header() {
     navigate({ to: "/" });
   }
   return (
-    <header className="border-b border-frost/15">
+    <header className="border-b border-zurkhai/20">
       <div className="max-w-[1280px] mx-auto px-6 h-[72px] flex items-center justify-between">
         <Link to="/" className="text-[16px] font-[400] lowercase">← гүйгч.mn / organizer</Link>
         <div className="flex items-center gap-4">
@@ -249,7 +249,7 @@ function OrganizerWorkspace({ orgName }: { orgName: string }) {
         {races.isLoading && <div className="py-6 text-caption text-smoke">Loading…</div>}
         {races.data?.length === 0 && <div className="py-6 text-caption text-smoke">No races yet.</div>}
         {races.data?.map((r) => (
-          <div key={r.id} className="border-t border-frost/15 py-4 flex flex-wrap gap-4 items-start justify-between">
+          <div key={r.id} className="border-t border-zurkhai/20 py-4 flex flex-wrap gap-4 items-start justify-between">
             <div>
               <div className="text-[15px] text-frost">{r.name_en}</div>
               <div className="text-caption text-smoke mt-1">
@@ -277,7 +277,7 @@ function OrganizerWorkspace({ orgName }: { orgName: string }) {
             </div>
           </div>
         ))}
-        <div className="border-t border-frost/15" />
+        <div className="border-t border-zurkhai/20" />
       </section>
     </div>
   );

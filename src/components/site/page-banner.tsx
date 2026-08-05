@@ -67,7 +67,7 @@ export function PageBanner({
   const h = height === "sm" ? "min-h-[34vh]" : "min-h-[46vh]";
   return (
     <section
-      className={`relative ${h} w-full flex items-center justify-center overflow-hidden bg-void-black text-frost border-b border-frost/15`}
+      className={`relative ${h} w-full flex items-center justify-center overflow-hidden bg-void-black text-frost border-b border-zurkhai/20`}
     >
       <div className="absolute inset-0 z-0">
         <img

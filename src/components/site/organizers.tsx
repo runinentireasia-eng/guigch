@@ -23,7 +23,7 @@ export function OrganizersSection({ races }: { races: Race[] }) {
         {organizers.length === 0 ? (
           <p className="text-[13px] text-smoke">{lang === "mn" ? "Мэдээлэл алга." : "No data yet."}</p>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-frost/15 border border-frost/15">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-zurkhai/20 border border-zurkhai/20">
             {organizers.map(([name, list]) => (
               <div key={name} className="bg-void-black p-6">
                 <div className="flex flex-wrap items-center gap-2">

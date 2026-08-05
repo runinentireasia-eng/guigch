@@ -98,7 +98,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
     today.getDate() === day;
 
   return (
-    <section id="calendar" className="bg-void-black border-t border-frost/15 scroll-mt-24">
+    <section id="calendar" className="bg-void-black border-t border-zurkhai/20 scroll-mt-24">
       <div className="max-w-[1280px] mx-auto px-6 py-[96px]">
         <div className="flex items-end justify-between mb-6 flex-wrap gap-6">
           <div>
@@ -138,7 +138,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
         {view === "list" ? (
           <RaceListView races={races} onSelect={setSelectedRace} />
         ) : (
-        <div className="relative border border-frost/15">
+        <div className="relative border border-zurkhai/20">
           <div className="pointer-events-none absolute inset-0 z-10 text-zurkhai/55">
             <CornerScroll className="absolute top-0 left-0 size-12" />
             <CornerScroll className="absolute top-0 right-0 size-12 -scale-x-100" />
@@ -189,9 +189,9 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
               →
             </button>
           </div>
-          <div className="grid grid-cols-7 border-b border-frost/15">
+          <div className="grid grid-cols-7 border-b border-zurkhai/20">
             {weekdays.map((w) => (
-              <div key={w} className="text-caption text-smoke px-3 py-2 border-l border-frost/15 first:border-l-0">
+              <div key={w} className="text-caption text-smoke px-3 py-2 border-l border-zurkhai/20 first:border-l-0">
                 {w}
               </div>
             ))}
@@ -203,7 +203,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
               return (
                 <div
                   key={i}
-                  className={`min-h-[92px] text-left p-3 border-l border-t border-frost/15 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative ${
+                  className={`min-h-[92px] text-left p-3 border-l border-t border-zurkhai/20 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative ${
                     has ? "hover:bg-graphite/60" : ""
                   }`}
                 >
@@ -285,7 +285,7 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
     c === "road" ? t("filterRoad") : c === "trail" ? t("filterTrail") : c === "ultra" ? t("filterUltra") : t("filterFun");
 
   if (groups.length === 0) {
-    return <div className="border border-frost/15 px-6 py-10 text-[14px] text-smoke">{t("noRacesList")}</div>;
+    return <div className="border border-zurkhai/20 px-6 py-10 text-[14px] text-smoke">{t("noRacesList")}</div>;
   }
 
   return (
@@ -306,7 +306,7 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
               return (
                 <div
                   key={r.id}
-                  className="group grid grid-cols-1 md:grid-cols-[130px_1fr_auto] gap-4 md:gap-8 items-start px-1 py-6 border-b border-frost/15 transition-colors hover:bg-graphite/50"
+                  className="group grid grid-cols-1 md:grid-cols-[130px_1fr_auto] gap-4 md:gap-8 items-start px-1 py-6 border-b border-zurkhai/20 transition-colors hover:bg-graphite/50"
                 >
                   <div className="flex md:block items-baseline gap-3">
                     <div className="font-mono text-[40px] leading-[1] tracking-[-0.04em] text-frost transition-colors group-hover:text-zurkhai">
@@ -403,7 +403,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
       aria-label={t("eventDetails")}
     >
       <div
-        className="w-full max-w-[520px] border border-frost/15 bg-void-black p-6 sm:p-8 shadow-none"
+        className="w-full max-w-[520px] border border-zurkhai/20 bg-void-black p-6 sm:p-8 shadow-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
