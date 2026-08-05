@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
+import { CornerScroll, UlziiSeal, CloudRule } from "@/components/site/zurkhai-ornament";
 
 /* ---------- Cinematic CTA button (same language as the homepage hero) ---------- */
 export function CtaButton({
@@ -87,14 +88,25 @@ export function PageBanner({
         <div className="absolute inset-0 bg-gradient-to-b from-void-black/50 via-transparent to-void-black" />
       </div>
 
+      {/* Zurkhai almanac framing */}
+      <div className="pointer-events-none absolute inset-4 sm:inset-7 z-10 text-zurkhai/60">
+        <div className="absolute inset-0 border border-zurkhai/20" />
+        <div className="absolute inset-[5px] border border-zurkhai/10" />
+        <CornerScroll className="absolute top-0 left-0 size-14 sm:size-20" />
+        <CornerScroll className="absolute top-0 right-0 size-14 sm:size-20 -scale-x-100" />
+        <CornerScroll className="absolute bottom-0 left-0 size-14 sm:size-20 -scale-y-100" />
+        <CornerScroll className="absolute bottom-0 right-0 size-14 sm:size-20 -scale-100" />
+      </div>
+
       <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl py-20">
+        <UlziiSeal className="size-9 text-zurkhai/80 mb-5" />
         <div className="flex items-center gap-4 mb-7">
-          <div className="h-px w-8 bg-frost/20" />
+          <CloudRule className="w-16 opacity-80" />
           <span className="text-caption text-smoke">
             {index ? `${index} / ` : ""}
             {label}
           </span>
-          <div className="h-px w-8 bg-frost/20" />
+          <CloudRule className="w-16 opacity-80" />
         </div>
 
         <h1 className="text-[34px] md:text-[52px] lg:text-[64px] leading-[1] tracking-[-0.035em] font-[300] select-none">
@@ -102,6 +114,7 @@ export function PageBanner({
         </h1>
 
         {subtitle && <p className="mt-7 max-w-xl text-body-aaru text-smoke">{subtitle}</p>}
+        <CloudRule className="mt-9 w-48 opacity-60" />
         {cta && <div className="mt-11">{cta}</div>}
       </div>
 
