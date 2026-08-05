@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, List as ListIcon, ArrowRight, Bookmark } from "lucide-react";
 import { useLang } from "@/lib/i18n";
 import { VerifiedBadge } from "./form-ui";
-import { CornerScroll, UlziiSeal, CloudBand } from "./zurkhai-ornament";
+import { CornerScroll, UlziiSeal, CloudRule } from "./zurkhai-ornament";
 import type { Race } from "@/lib/races";
 
 const SAVED_KEY = "guigch.saved-races";
@@ -133,7 +133,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             </div>
           </div>
         </div>
-        <CloudBand className="h-4 w-full text-zurkhai/40 mb-12" />
+        <CloudRule className="mb-12 opacity-70" />
 
         {view === "list" ? (
           <RaceListView races={races} onSelect={setSelectedRace} />

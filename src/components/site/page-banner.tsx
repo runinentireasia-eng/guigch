@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { CornerScroll, UlziiSeal, CloudBand } from "@/components/site/zurkhai-ornament";
+import { CornerScroll, UlziiSeal, CloudRule } from "@/components/site/zurkhai-ornament";
 
 /* ---------- Cinematic CTA button (same language as the homepage hero) ---------- */
 export function CtaButton({
@@ -101,12 +101,12 @@ export function PageBanner({
       <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl py-20">
         <UlziiSeal className="size-9 text-zurkhai/80 mb-5" />
         <div className="flex items-center gap-4 mb-7">
-          <CloudBand className="h-3 w-14 text-zurkhai/60" />
+          <CloudRule className="w-16 opacity-80" />
           <span className="text-caption text-smoke">
             {index ? `${index} / ` : ""}
             {label}
           </span>
-          <CloudBand className="h-3 w-14 text-zurkhai/60 -scale-x-100" />
+          <CloudRule className="w-16 opacity-80" />
         </div>
 
         <h1 className="text-[34px] md:text-[52px] lg:text-[64px] leading-[1] tracking-[-0.035em] font-[300] select-none">
@@ -114,7 +114,7 @@ export function PageBanner({
         </h1>
 
         {subtitle && <p className="mt-7 max-w-xl text-body-aaru text-smoke">{subtitle}</p>}
-        <CloudBand className="mt-9 h-3 w-40 text-zurkhai/45" />
+        <CloudRule className="mt-9 w-48 opacity-60" />
         {cta && <div className="mt-11">{cta}</div>}
       </div>
 
