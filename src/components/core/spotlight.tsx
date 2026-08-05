@@ -16,7 +16,7 @@ interface SpotlightProps {
 
 const colorStops: Record<SpotlightColor, string> = {
   plasma: "rgba(16, 25, 236, 0.22)",
-  lime: "rgba(235, 251, 16, 0.14)",
+  lime: "rgba(74, 168, 224, 0.14)",
   frost: "rgba(255, 255, 255, 0.10)",
 };
 

@@ -98,7 +98,7 @@ function AuthPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email"
-            className="bg-transparent border border-frost/30 px-4 py-3 text-[14px] text-frost focus:outline-none focus:border-reactor-lime"
+            className="bg-transparent border border-frost/30 px-4 py-3 text-[14px] text-frost focus:outline-none focus:border-zurkhai"
           />
           <input
             type="password"
@@ -107,21 +107,21 @@ function AuthPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
-            className="bg-transparent border border-frost/30 px-4 py-3 text-[14px] text-frost focus:outline-none focus:border-reactor-lime"
+            className="bg-transparent border border-frost/30 px-4 py-3 text-[14px] text-frost focus:outline-none focus:border-zurkhai"
           />
           <button
             type="submit"
             disabled={busy}
-            className="bg-reactor-lime text-void-black px-[30px] py-[14px] text-[13px] tracking-[0.06em] uppercase font-[400] hover:opacity-90 disabled:opacity-50"
+            className="bg-zurkhai text-void-black px-[30px] py-[14px] text-[13px] tracking-[0.06em] uppercase font-[400] hover:opacity-90 disabled:opacity-50"
           >
             {busy ? "…" : mode === "in" ? "Sign in" : "Sign up"}
           </button>
         </form>
 
         <div className="my-6 flex items-center gap-4 text-caption text-smoke">
-          <div className="flex-1 border-t border-frost/15" />
+          <div className="flex-1 border-t border-zurkhai/20" />
           OR
-          <div className="flex-1 border-t border-frost/15" />
+          <div className="flex-1 border-t border-zurkhai/20" />
         </div>
 
         <button

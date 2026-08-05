@@ -28,7 +28,7 @@ export function DotCluster() {
       <span className="size-[6px] bg-frost" />
       <span className="size-[6px] bg-frost" />
       <span className="size-[6px] bg-frost" />
-      <span className="size-[6px] bg-reactor-lime" />
+      <span className="size-[6px] bg-zurkhai" />
     </div>
   );
 }
@@ -72,7 +72,7 @@ function LangToggle() {
 export function AnnouncementBar() {
   const { t } = useLang();
   return (
-    <div className="w-full bg-reactor-lime text-void-black">
+    <div className="w-full bg-zurkhai text-void-black">
       <div className="max-w-[1280px] mx-auto px-6 h-[40px] flex items-center justify-center gap-6">
         <span className="text-[12px] tracking-[0.08em] uppercase font-[400] animate-fade-in-up">{t("announcement")}</span>
         <Link to="/calendar" className="text-[12px] tracking-[0.08em] uppercase font-[400] underline-offset-4 hover:underline nav-link-scan text-void-black after:bg-void-black" data-cursor-hover>
@@ -90,7 +90,7 @@ export function Nav() {
   const [addOpen, setAddOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <nav className="border-b border-frost/15 bg-void-black">
+    <nav className="border-b border-zurkhai/20 bg-void-black">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 h-[60px] md:h-[72px] grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 md:flex md:justify-between">
         <Link to="/" className="flex min-w-0 items-center gap-3">
           <span className="shrink-0"><DotCluster /></span>
@@ -128,7 +128,7 @@ export function Nav() {
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Menu"
             aria-expanded={menuOpen}
-            className="border border-frost/40 text-frost size-[38px] grid place-items-center hover:border-reactor-lime hover:text-reactor-lime transition-colors duration-300"
+            className="border border-frost/40 text-frost size-[38px] grid place-items-center hover:border-zurkhai hover:text-zurkhai transition-colors duration-300"
             data-cursor-hover
           >
             <span className="grid gap-[5px] transition-transform duration-300">
@@ -140,7 +140,7 @@ export function Nav() {
         </div>
       </div>
       {menuOpen && (
-        <div className="md:hidden border-t border-frost/15 px-4 py-5 flex flex-col gap-1">
+        <div className="md:hidden border-t border-zurkhai/20 px-4 py-5 flex flex-col gap-1">
           {[
             { to: "/calendar" as const, label: t("navCalendar") },
             { to: "/organizers" as const, label: t("navOrganizers") },
@@ -185,7 +185,7 @@ export function Nav() {
 export function Footer() {
   const { t } = useLang();
   return (
-    <footer className="border-t border-frost/15 bg-void-black">
+    <footer className="border-t border-zurkhai/20 bg-void-black">
       <div className="max-w-[1280px] mx-auto px-6 py-16 grid md:grid-cols-4 gap-12">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3">

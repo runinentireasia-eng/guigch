@@ -98,7 +98,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
     today.getDate() === day;
 
   return (
-    <section id="calendar" className="bg-void-black border-t border-frost/15 scroll-mt-24">
+    <section id="calendar" className="bg-void-black border-t border-zurkhai/20 scroll-mt-24">
       <div className="max-w-[1280px] mx-auto px-6 py-[96px]">
         <div className="flex items-end justify-between mb-6 flex-wrap gap-6">
           <div>
@@ -116,7 +116,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                 onClick={() => setView("calendar")}
                 aria-pressed={view === "calendar"}
                 className={`inline-flex items-center gap-2 px-4 py-2 text-[12px] tracking-[0.06em] uppercase ${
-                  view === "calendar" ? "bg-reactor-lime text-void-black" : "text-ash hover:text-frost"
+                  view === "calendar" ? "bg-zurkhai text-void-black" : "text-ash hover:text-frost"
                 }`}
               >
                 <CalendarDays size={14} strokeWidth={1.5} /> {t("viewCalendar")}
@@ -125,7 +125,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                 onClick={() => setView("list")}
                 aria-pressed={view === "list"}
                 className={`inline-flex items-center gap-2 px-4 py-2 text-[12px] tracking-[0.06em] uppercase border-l border-frost/30 ${
-                  view === "list" ? "bg-reactor-lime text-void-black" : "text-ash hover:text-frost"
+                  view === "list" ? "bg-zurkhai text-void-black" : "text-ash hover:text-frost"
                 }`}
               >
                 <ListIcon size={14} strokeWidth={1.5} /> {t("viewList")}
@@ -138,7 +138,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
         {view === "list" ? (
           <RaceListView races={races} onSelect={setSelectedRace} />
         ) : (
-        <div className="relative border border-frost/15">
+        <div className="relative border border-zurkhai/20">
           <div className="pointer-events-none absolute inset-0 z-10 text-zurkhai/55">
             <CornerScroll className="absolute top-0 left-0 size-12" />
             <CornerScroll className="absolute top-0 right-0 size-12 -scale-x-100" />
@@ -149,7 +149,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             <button
               aria-label={t("prevMonth")}
               onClick={() => shiftMonth(-1)}
-              className="shrink-0 size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+              className="shrink-0 size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-zurkhai hover:text-void-black hover:border-zurkhai"
             >
               ←
             </button>
@@ -159,7 +159,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                   aria-label={t("month")}
                   value={month}
                   onChange={(e) => setCursor(new Date(year, Number(e.target.value), 1))}
-                  className="bg-transparent border border-frost/30 text-frost text-[12px] tracking-[0.06em] uppercase px-3 py-2 cursor-pointer hover:border-frost focus:outline-none focus:border-reactor-lime"
+                  className="bg-transparent border border-frost/30 text-frost text-[12px] tracking-[0.06em] uppercase px-3 py-2 cursor-pointer hover:border-frost focus:outline-none focus:border-zurkhai"
                 >
                   {monthNames.map((name, idx) => (
                     <option key={name} value={idx} className="bg-void-black text-frost">
@@ -171,7 +171,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                   aria-label={t("year")}
                   value={year}
                   onChange={(e) => setCursor(new Date(Number(e.target.value), month, 1))}
-                  className="bg-transparent border border-frost/30 text-frost text-[12px] tracking-[0.06em] uppercase px-3 py-2 cursor-pointer hover:border-frost focus:outline-none focus:border-reactor-lime"
+                  className="bg-transparent border border-frost/30 text-frost text-[12px] tracking-[0.06em] uppercase px-3 py-2 cursor-pointer hover:border-frost focus:outline-none focus:border-zurkhai"
                 >
                   {yearOptions.map((y) => (
                     <option key={y} value={y} className="bg-void-black text-frost">
@@ -184,14 +184,14 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             <button
               aria-label={t("nextMonth")}
               onClick={() => shiftMonth(1)}
-              className="shrink-0 size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+              className="shrink-0 size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-zurkhai hover:text-void-black hover:border-zurkhai"
             >
               →
             </button>
           </div>
-          <div className="grid grid-cols-7 border-b border-frost/15">
+          <div className="grid grid-cols-7 border-b border-zurkhai/20">
             {weekdays.map((w) => (
-              <div key={w} className="text-caption text-smoke px-3 py-2 border-l border-frost/15 first:border-l-0">
+              <div key={w} className="text-caption text-smoke px-3 py-2 border-l border-zurkhai/20 first:border-l-0">
                 {w}
               </div>
             ))}
@@ -203,7 +203,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
               return (
                 <div
                   key={i}
-                  className={`min-h-[92px] text-left p-3 border-l border-t border-frost/15 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative ${
+                  className={`min-h-[92px] text-left p-3 border-l border-t border-zurkhai/20 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative ${
                     has ? "hover:bg-graphite/60" : ""
                   }`}
                 >
@@ -211,7 +211,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                     <>
                       <div
                         className={`text-[15px] font-[300] tracking-[-0.02em] ${
-                          isToday(day) ? "text-reactor-lime" : has ? "text-frost" : "text-smoke"
+                          isToday(day) ? "text-zurkhai" : has ? "text-frost" : "text-smoke"
                         }`}
                       >
                         {String(day).padStart(2, "0")}
@@ -221,7 +221,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                           <button
                             key={r.id}
                             onClick={() => setSelectedRace(r)}
-                            className="text-[10px] tracking-[0.06em] uppercase text-void-black bg-reactor-lime px-1.5 py-[2px] truncate text-left hover:bg-frost transition-colors"
+                            className="text-[10px] tracking-[0.06em] uppercase text-void-black bg-zurkhai px-1.5 py-[2px] truncate text-left hover:bg-frost transition-colors"
                           >
                             {lang === "mn" ? r.nameMn : r.nameEn}
                           </button>
@@ -285,7 +285,7 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
     c === "road" ? t("filterRoad") : c === "trail" ? t("filterTrail") : c === "ultra" ? t("filterUltra") : t("filterFun");
 
   if (groups.length === 0) {
-    return <div className="border border-frost/15 px-6 py-10 text-[14px] text-smoke">{t("noRacesList")}</div>;
+    return <div className="border border-zurkhai/20 px-6 py-10 text-[14px] text-smoke">{t("noRacesList")}</div>;
   }
 
   return (
@@ -306,10 +306,10 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
               return (
                 <div
                   key={r.id}
-                  className="group grid grid-cols-1 md:grid-cols-[130px_1fr_auto] gap-4 md:gap-8 items-start px-1 py-6 border-b border-frost/15 transition-colors hover:bg-graphite/50"
+                  className="group grid grid-cols-1 md:grid-cols-[130px_1fr_auto] gap-4 md:gap-8 items-start px-1 py-6 border-b border-zurkhai/20 transition-colors hover:bg-graphite/50"
                 >
                   <div className="flex md:block items-baseline gap-3">
-                    <div className="font-mono text-[40px] leading-[1] tracking-[-0.04em] text-frost transition-colors group-hover:text-reactor-lime">
+                    <div className="font-mono text-[40px] leading-[1] tracking-[-0.04em] text-frost transition-colors group-hover:text-zurkhai">
                       {String(d.getDate()).padStart(2, "0")}
                     </div>
                     <div className="text-caption text-smoke mt-2 uppercase">{wd}</div>
@@ -318,7 +318,7 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
                   <div className="min-w-0">
                     <button
                       onClick={() => onSelect(r)}
-                      className="text-left text-[20px] leading-[1.25] tracking-[-0.02em] font-[400] text-frost hover:text-reactor-lime"
+                      className="text-left text-[20px] leading-[1.25] tracking-[-0.02em] font-[400] text-frost hover:text-zurkhai"
                     >
                       {lang === "mn" ? r.nameMn : r.nameEn}
                     </button>
@@ -338,7 +338,7 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
                     <div className="mt-3 flex flex-wrap items-center gap-4">
                       <span
                         className={`text-caption uppercase ${
-                          r.status === "open" ? "text-reactor-lime" : r.status === "closing_soon" ? "text-plasma-blue" : "text-smoke"
+                          r.status === "open" ? "text-zurkhai" : r.status === "closing_soon" ? "text-plasma-blue" : "text-smoke"
                         }`}
                       >
                         ● {statusLabel(r.status)}
@@ -356,7 +356,7 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
                       aria-pressed={isSaved}
                       className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.06em] uppercase border ${
                         isSaved
-                          ? "border-reactor-lime text-reactor-lime"
+                          ? "border-zurkhai text-zurkhai"
                           : "border-frost/30 text-ash hover:text-frost hover:border-frost"
                       }`}
                     >
@@ -366,7 +366,7 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
                     <button
                       onClick={() => onSelect(r)}
                       aria-label={t("eventDetails")}
-                      className="size-9 flex items-center justify-center border border-frost/30 text-frost hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime transition-transform group-hover:translate-x-0.5"
+                      className="size-9 flex items-center justify-center border border-frost/30 text-frost hover:bg-zurkhai hover:text-void-black hover:border-zurkhai transition-transform group-hover:translate-x-0.5"
                     >
                       <ArrowRight size={16} strokeWidth={1.5} />
                     </button>
@@ -403,7 +403,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
       aria-label={t("eventDetails")}
     >
       <div
-        className="w-full max-w-[520px] border border-frost/15 bg-void-black p-6 sm:p-8 shadow-none"
+        className="w-full max-w-[520px] border border-zurkhai/20 bg-void-black p-6 sm:p-8 shadow-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
@@ -416,7 +416,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
               aria-pressed={isSaved}
               className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.06em] uppercase border ${
                 isSaved
-                  ? "border-reactor-lime text-reactor-lime"
+                  ? "border-zurkhai text-zurkhai"
                   : "border-frost/30 text-ash hover:text-frost hover:border-frost"
               }`}
             >
@@ -425,7 +425,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
             </button>
             <button
               onClick={onClose}
-              className="size-8 flex items-center justify-center border border-frost/30 text-frost text-[14px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+              className="size-8 flex items-center justify-center border border-frost/30 text-frost text-[14px] hover:bg-zurkhai hover:text-void-black hover:border-zurkhai"
               aria-label={t("close")}
             >
               ✕
@@ -455,7 +455,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
           href={race.registerUrl}
           target="_blank"
           rel="noreferrer"
-          className="mt-6 block bg-reactor-lime text-void-black px-[24px] py-[12px] text-[13px] tracking-[0.04em] uppercase font-[400] text-center hover:opacity-90"
+          className="mt-6 block bg-zurkhai text-void-black px-[24px] py-[12px] text-[13px] tracking-[0.04em] uppercase font-[400] text-center hover:opacity-90"
         >
           {t("register")} →
         </a>

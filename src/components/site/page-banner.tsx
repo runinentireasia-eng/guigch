@@ -17,7 +17,7 @@ export function CtaButton({
   const pad = size === "sm" ? "px-8 py-4" : "px-12 py-5";
   const cls =
     `relative ${pad} bg-void-black border border-frost/30 text-frost text-xs uppercase tracking-[0.4em] font-bold ` +
-    "transition-all duration-500 hover:border-reactor-lime hover:bg-reactor-lime hover:text-void-black overflow-hidden";
+    "transition-all duration-500 hover:border-zurkhai hover:bg-zurkhai hover:text-void-black overflow-hidden";
   const corners = (
     <>
       <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-frost/50" />
@@ -26,7 +26,7 @@ export function CtaButton({
   );
   return (
     <div className="group relative inline-flex items-center justify-center">
-      <div className="absolute -inset-px bg-reactor-lime/20 blur-sm transition-opacity opacity-0 group-hover:opacity-100" />
+      <div className="absolute -inset-px bg-zurkhai/20 blur-sm transition-opacity opacity-0 group-hover:opacity-100" />
       {to ? (
         <Link to={to} className={cls}>
           <span className="relative z-10">{children}</span>
@@ -67,7 +67,7 @@ export function PageBanner({
   const h = height === "sm" ? "min-h-[34vh]" : "min-h-[46vh]";
   return (
     <section
-      className={`relative ${h} w-full flex items-center justify-center overflow-hidden bg-void-black text-frost border-b border-frost/15`}
+      className={`relative ${h} w-full flex items-center justify-center overflow-hidden bg-void-black text-frost border-b border-zurkhai/20`}
     >
       <div className="absolute inset-0 z-0">
         <img

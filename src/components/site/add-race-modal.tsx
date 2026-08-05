@@ -63,7 +63,7 @@ export function AddRaceModal({ onClose }: { onClose: () => void }) {
       <button
         onClick={onClose}
         aria-label={mn ? "Хаах" : "Close"}
-        className="size-8 flex items-center justify-center border border-frost/30 text-frost text-[14px] hover:bg-reactor-lime hover:text-void-black hover:border-reactor-lime"
+        className="size-8 flex items-center justify-center border border-frost/30 text-frost text-[14px] hover:bg-zurkhai hover:text-void-black hover:border-zurkhai"
       >✕</button>
     </div>
   );
@@ -132,7 +132,7 @@ export function AddRaceModal({ onClose }: { onClose: () => void }) {
   return (
     <Modal onClose={onClose} label="Add a race" wide>
       {header(mn ? "— УРАЛДААН НЭМЭХ" : "— ADD A RACE")}
-      <div className="grid sm:grid-cols-2 gap-px bg-frost/15 border border-frost/15">
+      <div className="grid sm:grid-cols-2 gap-px bg-zurkhai/20 border border-zurkhai/20">
         <div className="bg-void-black p-6 flex flex-col">
           <div className="text-[17px] font-[400] tracking-[0.01em]">
             {mn ? "Дутуу уралдаан санал болгох" : "Suggest a missing race"}
