@@ -57,6 +57,25 @@ export function UlziiSeal({ className = "" }: { className?: string }) {
 }
 
 /** Horizontal cloud band — a repeating ugalz rule used instead of a plain hairline. */
+const RULE_SVG = encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="60" height="14" viewBox="0 0 60 14" fill="none" stroke="%COLOR%" stroke-width="1" stroke-linecap="round"><path d="M0 7h60" opacity="0.28"/><path d="M24 7c0-3.3 2.7-6 6-6s6 2.7 6 6-2.7 6-6 6-6-2.7-6-6" opacity="0.8"/><path d="M12 7c3.3 0 6-2.7 6-6M42 7c0 3.3 2.7 6 6 6" opacity="0.55"/></svg>`,
+).replace(/%25COLOR%25/g, "%234aa8e0");
+
+/** Tiling cloud rule — use for full-width dividers so the motif never stretches. */
+export function CloudRule({ className = "" }: { className?: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      className={`h-[14px] w-full ${className}`}
+      style={{
+        backgroundImage: `url("data:image/svg+xml,${RULE_SVG}")`,
+        backgroundRepeat: "repeat-x",
+        backgroundPosition: "center",
+      }}
+    />
+  );
+}
+
 export function CloudBand({ className = "" }: { className?: string }) {
   return (
     <svg
