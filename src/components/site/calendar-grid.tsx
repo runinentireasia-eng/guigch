@@ -99,9 +99,12 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
   return (
     <section id="calendar" className="bg-void-black border-t border-frost/15 scroll-mt-24">
       <div className="max-w-[1280px] mx-auto px-6 py-[96px]">
-        <div className="flex items-end justify-between mb-12 flex-wrap gap-6">
+        <div className="flex items-end justify-between mb-6 flex-wrap gap-6">
           <div>
-            <div className="text-caption text-smoke mb-4">— {t("sectionCalendarLabel")}</div>
+            <div className="flex items-center gap-3 mb-4">
+              <UlziiSeal className="size-5 text-zurkhai/80 shrink-0" />
+              <span className="text-caption text-smoke">{t("sectionCalendarLabel")}</span>
+            </div>
             <h2 className="text-[40px] leading-[1.2] tracking-[-0.03em] font-[300] max-w-[560px]">
               {t("sectionCalendarTitle")}
             </h2>
@@ -129,12 +132,19 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             </div>
           </div>
         </div>
+        <CloudBand className="h-4 w-full text-zurkhai/40 mb-12" />
 
         {view === "list" ? (
           <RaceListView races={races} onSelect={setSelectedRace} />
         ) : (
-        <div className="border border-frost/15">
-          <div className="flex items-center justify-between px-4 py-4 border-b border-frost/15 gap-3">
+        <div className="relative border border-frost/15">
+          <div className="pointer-events-none absolute inset-0 z-10 text-zurkhai/55">
+            <CornerScroll className="absolute top-0 left-0 size-12" />
+            <CornerScroll className="absolute top-0 right-0 size-12 -scale-x-100" />
+            <CornerScroll className="absolute bottom-0 left-0 size-12 -scale-y-100" />
+            <CornerScroll className="absolute bottom-0 right-0 size-12 -scale-100" />
+          </div>
+          <div className="relative flex items-center justify-between px-4 py-4 border-b border-zurkhai/25 gap-3">
             <button
               aria-label={t("prevMonth")}
               onClick={() => shiftMonth(-1)}
