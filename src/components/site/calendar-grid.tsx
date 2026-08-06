@@ -45,6 +45,34 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
   const [focusDay, setFocusDay] = useState<number>(1);
   const gridRef = useRef<HTMLDivElement>(null);
   const pendingFocus = useRef(false);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  const returnDayRef = useRef<number | null>(null);
+
+  const openRace = (race: Race, day?: number) => {
+    returnFocusRef.current =
+      typeof document !== "undefined" ? (document.activeElement as HTMLElement | null) : null;
+    returnDayRef.current = day ?? null;
+    setSelectedRace(race);
+  };
+
+  const closeRace = () => {
+    setSelectedRace(null);
+    const prev = returnFocusRef.current;
+    const day = returnDayRef.current;
+    returnFocusRef.current = null;
+    returnDayRef.current = null;
+    requestAnimationFrame(() => {
+      if (prev && document.contains(prev)) {
+        prev.focus();
+        return;
+      }
+      const cell =
+        day != null
+          ? gridRef.current?.querySelector<HTMLElement>(`[data-day="${day}"]`)
+          : null;
+      cell?.focus();
+    });
+  };
   useEffect(() => {
     setSelectedDay(null);
     setFocusDay(1);
@@ -166,7 +194,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
       e.preventDefault();
       setSelectedDay(day);
       const dayRaces = racesByDay.get(day);
-      if (dayRaces?.length) setSelectedRace(dayRaces[0]);
+      if (dayRaces?.length) openRace(dayRaces[0], day);
     }
   };
 
@@ -209,7 +237,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
         <CloudRule className="mb-12 opacity-70" />
 
         {view === "list" ? (
-          <RaceListView races={races} onSelect={setSelectedRace} />
+          <RaceListView races={races} onSelect={(r) => openRace(r)} />
         ) : (
         <div className="relative border border-zurkhai/20">
           <div className="pointer-events-none absolute inset-0 z-10 text-zurkhai/55">
@@ -325,7 +353,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedDay(day);
-                              setSelectedRace(r);
+                              openRace(r, day);
                             }}
                             className="text-[10px] tracking-[0.06em] uppercase text-void-black bg-zurkhai px-1.5 py-[2px] truncate text-left hover:bg-frost transition-colors"
                           >
@@ -337,7 +365,8 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                             tabIndex={-1}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedRace(dayRaces[0]);
+                              setSelectedDay(day);
+                              openRace(dayRaces[0], day);
                             }}
                             className="text-caption text-smoke text-left hover:text-frost"
                           >
@@ -357,7 +386,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
       {selectedRace && (
         <RacePopup
           race={selectedRace}
-          onClose={() => setSelectedRace(null)}
+          onClose={closeRace}
         />
       )}
     </section>
