@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CalendarDays, List as ListIcon, ArrowRight, Bookmark } from "lucide-react";
 import { useLang } from "@/lib/i18n";
 import { VerifiedBadge } from "./form-ui";
@@ -41,6 +41,14 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
   const [cursor, setCursor] = useState<Date>(firstRaceMonth);
   useEffect(() => setCursor(firstRaceMonth), [firstRaceMonth]);
   const [selectedRace, setSelectedRace] = useState<Race | null>(null);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [focusDay, setFocusDay] = useState<number>(1);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const pendingFocus = useRef(false);
+  useEffect(() => {
+    setSelectedDay(null);
+    setFocusDay(1);
+  }, [cursor]);
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
@@ -96,6 +104,71 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
     today.getFullYear() === year &&
     today.getMonth() === month &&
     today.getDate() === day;
+
+  useEffect(() => {
+    if (!pendingFocus.current) return;
+    pendingFocus.current = false;
+    const el = gridRef.current?.querySelector<HTMLElement>(`[data-day="${focusDay}"]`);
+    el?.focus();
+  }, [focusDay, year, month]);
+
+  const moveFocus = (delta: number) => {
+    const next = focusDay + delta;
+    if (next < 1) {
+      const prevMonthDays = new Date(year, month, 0).getDate();
+      shiftMonth(-1);
+      pendingFocus.current = true;
+      setFocusDay(prevMonthDays + next);
+      return;
+    }
+    if (next > daysInMonth) {
+      shiftMonth(1);
+      pendingFocus.current = true;
+      setFocusDay(next - daysInMonth);
+      return;
+    }
+    pendingFocus.current = true;
+    setFocusDay(next);
+  };
+
+  const onCellKeyDown = (e: React.KeyboardEvent, day: number) => {
+    const keys: Record<string, number> = {
+      ArrowRight: 1,
+      ArrowLeft: -1,
+      ArrowDown: 7,
+      ArrowUp: -7,
+    };
+    if (e.key in keys) {
+      e.preventDefault();
+      moveFocus(keys[e.key]);
+      return;
+    }
+    if (e.key === "Home") {
+      e.preventDefault();
+      pendingFocus.current = true;
+      setFocusDay(1);
+      return;
+    }
+    if (e.key === "End") {
+      e.preventDefault();
+      pendingFocus.current = true;
+      setFocusDay(daysInMonth);
+      return;
+    }
+    if (e.key === "PageUp" || e.key === "PageDown") {
+      e.preventDefault();
+      shiftMonth(e.key === "PageUp" ? -1 : 1);
+      pendingFocus.current = true;
+      setFocusDay(1);
+      return;
+    }
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setSelectedDay(day);
+      const dayRaces = racesByDay.get(day);
+      if (dayRaces?.length) setSelectedRace(dayRaces[0]);
+    }
+  };
 
   return (
     <section id="calendar" className="bg-void-black border-t border-zurkhai/20 scroll-mt-24">
@@ -196,22 +269,50 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-7">
+          <div
+            className="grid grid-cols-7"
+            role="grid"
+            aria-label={`${monthNames[month]} ${year}`}
+            ref={gridRef}
+          >
             {cells.map((day, i) => {
               const dayRaces = day ? racesByDay.get(day) ?? [] : [];
               const has = dayRaces.length > 0;
+              if (!day) {
+                return (
+                  <div
+                    key={i}
+                    aria-hidden="true"
+                    className="min-h-[92px] p-3 border-l border-t border-zurkhai/20 first:border-l-0 [&:nth-child(7n+1)]:border-l-0"
+                  />
+                );
+              }
+              const isSelected = selectedDay === day;
               return (
                 <div
                   key={i}
-                  className={`min-h-[92px] text-left p-3 border-l border-t border-zurkhai/20 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative ${
-                    has ? "hover:bg-graphite/60" : ""
+                  role="gridcell"
+                  tabIndex={focusDay === day ? 0 : -1}
+                  data-day={day}
+                  aria-selected={isSelected}
+                  aria-current={isToday(day) ? "date" : undefined}
+                  aria-label={`${String(day).padStart(2, "0")} ${monthNames[month]} ${year}${
+                    has ? ` — ${dayRaces.length}` : ""
+                  }`}
+                  onClick={() => setSelectedDay(day)}
+                  onKeyDown={(e) => onCellKeyDown(e, day)}
+                  className={`group min-h-[92px] text-left p-3 border-l border-t border-zurkhai/20 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative cursor-pointer outline-none transition-[background-color,box-shadow,border-color] duration-300 ease-out focus-visible:ring-1 focus-visible:ring-zurkhai focus-visible:ring-inset ${
+                    isSelected
+                      ? "bg-zurkhai/10 shadow-[inset_0_0_0_1px_var(--color-zurkhai)]"
+                      : has
+                        ? "hover:bg-graphite/60 hover:shadow-[inset_0_0_24px_-6px_var(--color-zurkhai)]"
+                        : "hover:bg-graphite/30"
                   }`}
                 >
-                  {day && (
-                    <>
+                  <>
                       <div
-                        className={`text-[15px] font-[300] tracking-[-0.02em] ${
-                          isToday(day) ? "text-zurkhai" : has ? "text-frost" : "text-smoke"
+                        className={`text-[15px] font-[300] tracking-[-0.02em] transition-colors duration-300 ${
+                          isToday(day) || isSelected ? "text-zurkhai" : has ? "text-frost" : "text-smoke"
                         }`}
                       >
                         {String(day).padStart(2, "0")}
@@ -220,7 +321,12 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                         {dayRaces.slice(0, 2).map((r) => (
                           <button
                             key={r.id}
-                            onClick={() => setSelectedRace(r)}
+                            tabIndex={-1}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedDay(day);
+                              setSelectedRace(r);
+                            }}
                             className="text-[10px] tracking-[0.06em] uppercase text-void-black bg-zurkhai px-1.5 py-[2px] truncate text-left hover:bg-frost transition-colors"
                           >
                             {lang === "mn" ? r.nameMn : r.nameEn}
@@ -228,15 +334,18 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                         ))}
                         {dayRaces.length > 2 && (
                           <button
-                            onClick={() => setSelectedRace(dayRaces[0])}
+                            tabIndex={-1}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedRace(dayRaces[0]);
+                            }}
                             className="text-caption text-smoke text-left hover:text-frost"
                           >
                             +{dayRaces.length - 2}
                           </button>
                         )}
                       </div>
-                    </>
-                  )}
+                  </>
                 </div>
               );
             })}
