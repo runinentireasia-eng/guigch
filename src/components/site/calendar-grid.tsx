@@ -45,6 +45,34 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
   const [focusDay, setFocusDay] = useState<number>(1);
   const gridRef = useRef<HTMLDivElement>(null);
   const pendingFocus = useRef(false);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  const returnDayRef = useRef<number | null>(null);
+
+  const openRace = (race: Race, day?: number) => {
+    returnFocusRef.current =
+      typeof document !== "undefined" ? (document.activeElement as HTMLElement | null) : null;
+    returnDayRef.current = day ?? null;
+    setSelectedRace(race);
+  };
+
+  const closeRace = () => {
+    setSelectedRace(null);
+    const prev = returnFocusRef.current;
+    const day = returnDayRef.current;
+    returnFocusRef.current = null;
+    returnDayRef.current = null;
+    requestAnimationFrame(() => {
+      if (prev && document.contains(prev)) {
+        prev.focus();
+        return;
+      }
+      const cell =
+        day != null
+          ? gridRef.current?.querySelector<HTMLElement>(`[data-day="${day}"]`)
+          : null;
+      cell?.focus();
+    });
+  };
   useEffect(() => {
     setSelectedDay(null);
     setFocusDay(1);
@@ -166,7 +194,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
       e.preventDefault();
       setSelectedDay(day);
       const dayRaces = racesByDay.get(day);
-      if (dayRaces?.length) setSelectedRace(dayRaces[0]);
+      if (dayRaces?.length) openRace(dayRaces[0], day);
     }
   };
 
@@ -209,7 +237,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
         <CloudRule className="mb-12 opacity-70" />
 
         {view === "list" ? (
-          <RaceListView races={races} onSelect={setSelectedRace} />
+          <RaceListView races={races} onSelect={(r) => openRace(r)} />
         ) : (
         <div className="relative border border-zurkhai/20">
           <div className="pointer-events-none absolute inset-0 z-10 text-zurkhai/55">
@@ -325,7 +353,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                             onClick={(e) => {
                               e.stopPropagation();
                               setSelectedDay(day);
-                              setSelectedRace(r);
+                              openRace(r, day);
                             }}
                             className="text-[10px] tracking-[0.06em] uppercase text-void-black bg-zurkhai px-1.5 py-[2px] truncate text-left hover:bg-frost transition-colors"
                           >
@@ -337,7 +365,8 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                             tabIndex={-1}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedRace(dayRaces[0]);
+                              setSelectedDay(day);
+                              openRace(dayRaces[0], day);
                             }}
                             className="text-caption text-smoke text-left hover:text-frost"
                           >
@@ -357,7 +386,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
       {selectedRace && (
         <RacePopup
           race={selectedRace}
-          onClose={() => setSelectedRace(null)}
+          onClose={closeRace}
         />
       )}
     </section>
@@ -494,10 +523,48 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
   const { t, lang } = useLang();
   const { saved, toggle } = useSavedRaces();
   const isSaved = saved.includes(race.id);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const panel = panelRef.current;
+    const focusables = () =>
+      Array.from(
+        panel?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      ).filter((el) => el.offsetParent !== null || el === document.activeElement);
+
+    // move focus into the dialog on open
+    (focusables()[0] ?? panel)?.focus();
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const items = focusables();
+      if (items.length === 0) {
+        e.preventDefault();
+        panel?.focus();
+        return;
+      }
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (!panel?.contains(active)) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+        return;
+      }
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -507,12 +574,14 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-6 py-8 bg-void-black/80 backdrop-blur-sm"
       onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={t("eventDetails")}
     >
       <div
-        className="w-full max-w-[520px] border border-zurkhai/20 bg-void-black p-6 sm:p-8 shadow-none"
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("eventDetails")}
+        tabIndex={-1}
+        className="w-full max-w-[520px] border border-zurkhai/20 bg-void-black p-6 sm:p-8 shadow-none outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
