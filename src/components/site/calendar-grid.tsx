@@ -41,6 +41,14 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
   const [cursor, setCursor] = useState<Date>(firstRaceMonth);
   useEffect(() => setCursor(firstRaceMonth), [firstRaceMonth]);
   const [selectedRace, setSelectedRace] = useState<Race | null>(null);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [focusDay, setFocusDay] = useState<number>(1);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const pendingFocus = useRef(false);
+  useEffect(() => {
+    setSelectedDay(null);
+    setFocusDay(1);
+  }, [cursor]);
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
@@ -96,6 +104,71 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
     today.getFullYear() === year &&
     today.getMonth() === month &&
     today.getDate() === day;
+
+  useEffect(() => {
+    if (!pendingFocus.current) return;
+    pendingFocus.current = false;
+    const el = gridRef.current?.querySelector<HTMLElement>(`[data-day="${focusDay}"]`);
+    el?.focus();
+  }, [focusDay, year, month]);
+
+  const moveFocus = (delta: number) => {
+    const next = focusDay + delta;
+    if (next < 1) {
+      const prevMonthDays = new Date(year, month, 0).getDate();
+      shiftMonth(-1);
+      pendingFocus.current = true;
+      setFocusDay(prevMonthDays + next);
+      return;
+    }
+    if (next > daysInMonth) {
+      shiftMonth(1);
+      pendingFocus.current = true;
+      setFocusDay(next - daysInMonth);
+      return;
+    }
+    pendingFocus.current = true;
+    setFocusDay(next);
+  };
+
+  const onCellKeyDown = (e: React.KeyboardEvent, day: number) => {
+    const keys: Record<string, number> = {
+      ArrowRight: 1,
+      ArrowLeft: -1,
+      ArrowDown: 7,
+      ArrowUp: -7,
+    };
+    if (e.key in keys) {
+      e.preventDefault();
+      moveFocus(keys[e.key]);
+      return;
+    }
+    if (e.key === "Home") {
+      e.preventDefault();
+      pendingFocus.current = true;
+      setFocusDay(1);
+      return;
+    }
+    if (e.key === "End") {
+      e.preventDefault();
+      pendingFocus.current = true;
+      setFocusDay(daysInMonth);
+      return;
+    }
+    if (e.key === "PageUp" || e.key === "PageDown") {
+      e.preventDefault();
+      shiftMonth(e.key === "PageUp" ? -1 : 1);
+      pendingFocus.current = true;
+      setFocusDay(1);
+      return;
+    }
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setSelectedDay(day);
+      const dayRaces = racesByDay.get(day);
+      if (dayRaces?.length) setSelectedRace(dayRaces[0]);
+    }
+  };
 
   return (
     <section id="calendar" className="bg-void-black border-t border-zurkhai/20 scroll-mt-24">
