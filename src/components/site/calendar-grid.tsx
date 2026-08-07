@@ -240,6 +240,9 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
         </div>
         <CloudRule className="mb-12 opacity-70" />
 
+        <PullToRefresh
+          onRefresh={() => queryClient.refetchQueries({ queryKey: ["races"] })}
+        >
         {view === "list" ? (
           <RaceListView races={races} onSelect={(r) => openRace(r)} />
         ) : (
@@ -385,6 +388,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
           </div>
         </div>
         )}
+        </PullToRefresh>
       </div>
 
       {selectedRace && (
