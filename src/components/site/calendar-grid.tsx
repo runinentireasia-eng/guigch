@@ -437,7 +437,17 @@ function RacePopup({ race, onClose }: { race: Race; onClose: () => void }) {
 }
 
 /* ---------- List view (chronological, grouped by month) ---------- */
-function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) => void }) {
+function RaceListView({
+  races,
+  onSelect,
+  compareIds,
+  onToggleCompare,
+}: {
+  races: Race[];
+  onSelect: (r: Race) => void;
+  compareIds: string[];
+  onToggleCompare: (id: string) => void;
+}) {
   const { t, lang } = useLang();
   const { saved, toggle } = useSavedRaces();
   const monthNames = t("monthNames").split("_");
@@ -525,8 +535,18 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
                         ● {statusLabel(r.status)}
                       </span>
                       <span className="text-caption text-smoke uppercase">
-                        {t("regDeadline")} <span className="font-mono text-ash">{t("tba")}</span>
+                        {t("regDeadline")} <span className="font-mono text-ash">{r.regDeadline ?? t("tba")}</span>
                       </span>
+                      {r.elevationGainM != null && (
+                        <span className="text-caption text-smoke uppercase">
+                          {t("elevation")} <span className="font-mono text-ash">{r.elevationGainM}m</span>
+                        </span>
+                      )}
+                      {r.priceInfo && (
+                        <span className="text-caption text-smoke uppercase">
+                          {t("price")} <span className="font-mono text-ash">{r.priceInfo}</span>
+                        </span>
+                      )}
                       <span className="hidden md:inline">{r.ownerId && <VerifiedBadge />}</span>
                     </div>
                   </div>
@@ -554,6 +574,22 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
                   </div>
 
                   <div className="hidden md:flex items-center gap-2">
+                    <button
+                      onClick={() => onToggleCompare(r.id)}
+                      aria-pressed={compareIds.includes(r.id)}
+                      className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.06em] uppercase border ${
+                        compareIds.includes(r.id)
+                          ? "border-zurkhai text-zurkhai"
+                          : "border-frost/30 text-ash hover:text-frost hover:border-frost"
+                      }`}
+                    >
+                      {compareIds.includes(r.id) ? (
+                        <Check size={13} strokeWidth={1.5} />
+                      ) : (
+                        <Scale size={13} strokeWidth={1.5} />
+                      )}
+                      {compareIds.includes(r.id) ? t("inCompare") : t("addToCompare")}
+                    </button>
                     <button
                       onClick={() => toggle(r.id)}
                       aria-pressed={isSaved}
