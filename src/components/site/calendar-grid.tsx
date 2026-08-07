@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CalendarDays, List as ListIcon, ArrowRight, Bookmark } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { CalendarDays, List as ListIcon, ArrowRight, Bookmark, MapPin } from "lucide-react";
 import { useLang } from "@/lib/i18n";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { PullToRefresh } from "./pull-to-refresh";
 import { VerifiedBadge } from "./form-ui";
 import { CornerScroll, UlziiSeal, CloudRule } from "./zurkhai-ornament";
 import type { Race } from "@/lib/races";
@@ -27,6 +30,7 @@ function useSavedRaces() {
 /* ---------- Calendar Grid (month view) ---------- */
 export function CalendarGridSection({ races }: { races: Race[] }) {
   const { t, lang } = useLang();
+  const queryClient = useQueryClient();
   const [view, setView] = useState<"calendar" | "list">("calendar");
   const today = useMemo(() => new Date(), []);
   const firstRaceMonth = useMemo(() => {
