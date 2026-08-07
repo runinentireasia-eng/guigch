@@ -22,7 +22,7 @@ export interface Race {
   descriptionMn: string;
   descriptionEn: string;
   elevationGainM?: number | null;
-  priceInfo: string;
+  priceInfo?: string;
   regDeadline?: string | null;
   ownerId?: string | null;
 }
