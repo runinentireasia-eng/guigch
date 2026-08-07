@@ -21,6 +21,9 @@ export interface Race {
   registerUrl: string;
   descriptionMn: string;
   descriptionEn: string;
+  elevationGainM?: number | null;
+  priceInfo: string;
+  regDeadline?: string | null;
   ownerId?: string | null;
 }
 
@@ -42,6 +45,9 @@ export type RaceRow = {
   register_url: string;
   description_mn: string;
   description_en: string;
+  elevation_gain_m?: number | null;
+  price_info?: string | null;
+  reg_deadline?: string | null;
   owner_id?: string | null;
 };
 
@@ -68,6 +74,9 @@ export function rowToRace(row: RaceRow, index: number): Race {
     registerUrl: row.register_url,
     descriptionMn: row.description_mn,
     descriptionEn: row.description_en,
+    elevationGainM: row.elevation_gain_m ?? null,
+    priceInfo: row.price_info ?? "",
+    regDeadline: row.reg_deadline ?? null,
     ownerId: row.owner_id ?? null,
   };
 }
