@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { CalendarDays, List as ListIcon, ArrowRight, Bookmark, MapPin } from "lucide-react";
+import { CalendarDays, List as ListIcon, ArrowRight, Bookmark, MapPin, Download, Scale, Check } from "lucide-react";
 import { useLang } from "@/lib/i18n";
+import { downloadIcs, googleCalendarUrl } from "@/lib/ics";
+import { RaceCompareTable } from "./race-compare";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PullToRefresh } from "./pull-to-refresh";
 import { VerifiedBadge } from "./form-ui";
@@ -45,6 +47,15 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
   const [cursor, setCursor] = useState<Date>(firstRaceMonth);
   useEffect(() => setCursor(firstRaceMonth), [firstRaceMonth]);
   const [selectedRace, setSelectedRace] = useState<Race | null>(null);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const compareRaces = useMemo(
+    () => compareIds.map((id) => races.find((r) => r.id === id)).filter(Boolean) as Race[],
+    [compareIds, races],
+  );
+  const toggleCompare = (id: string) =>
+    setCompareIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : prev.length >= 4 ? prev : [...prev, id],
+    );
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [focusDay, setFocusDay] = useState<number>(1);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -236,6 +247,13 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                 <ListIcon size={14} strokeWidth={1.5} /> {t("viewList")}
               </button>
             </div>
+            <button
+              onClick={() => downloadIcs(races, lang)}
+              className="inline-flex items-center gap-2 border border-frost/30 px-4 py-2 text-[12px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
+              data-cursor-hover
+            >
+              <Download size={14} strokeWidth={1.5} /> {t("exportAll")}
+            </button>
           </div>
         </div>
         <CloudRule className="mb-12 opacity-70" />
@@ -244,7 +262,12 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
           onRefresh={() => queryClient.refetchQueries({ queryKey: ["races"] })}
         >
         {view === "list" ? (
-          <RaceListView races={races} onSelect={(r) => openRace(r)} />
+          <RaceListView
+            races={races}
+            onSelect={(r) => openRace(r)}
+            compareIds={compareIds}
+            onToggleCompare={toggleCompare}
+          />
         ) : (
         <div className="relative border border-zurkhai/20">
           <div className="pointer-events-none absolute inset-0 z-10 text-zurkhai/55">
@@ -389,6 +412,14 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
         </div>
         )}
         </PullToRefresh>
+
+        {compareIds.length > 0 && (
+          <RaceCompareTable
+            races={compareRaces}
+            onRemove={(id) => setCompareIds((prev) => prev.filter((x) => x !== id))}
+            onClear={() => setCompareIds([])}
+          />
+        )}
       </div>
 
       {selectedRace && (
