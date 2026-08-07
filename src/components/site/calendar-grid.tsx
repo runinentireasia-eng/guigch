@@ -554,6 +554,16 @@ function RaceListView({
                   {/* Mobile: one-tap save / register */}
                   <div className="grid grid-cols-2 gap-2 md:hidden">
                     <button
+                      onClick={() => onToggleCompare(r.id)}
+                      aria-pressed={compareIds.includes(r.id)}
+                      className={`col-span-2 inline-flex items-center justify-center gap-2 px-3 py-3 text-[11px] tracking-[0.06em] uppercase border ${
+                        compareIds.includes(r.id) ? "border-zurkhai text-zurkhai" : "border-frost/30 text-ash"
+                      }`}
+                    >
+                      {compareIds.includes(r.id) ? <Check size={14} strokeWidth={1.5} /> : <Scale size={14} strokeWidth={1.5} />}
+                      {compareIds.includes(r.id) ? t("inCompare") : t("addToCompare")}
+                    </button>
+                    <button
                       onClick={() => toggle(r.id)}
                       aria-pressed={isSaved}
                       className={`inline-flex items-center justify-center gap-2 px-3 py-3 text-[11px] tracking-[0.06em] uppercase border ${
