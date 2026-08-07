@@ -452,13 +452,16 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
               return (
                 <div
                   key={r.id}
-                  className="group grid grid-cols-1 md:grid-cols-[130px_1fr_auto] gap-4 md:gap-8 items-start px-1 py-6 border-b border-zurkhai/20 transition-colors hover:bg-graphite/50"
+                  className="group grid grid-cols-1 md:grid-cols-[130px_1fr_auto] gap-4 md:gap-8 items-start mt-4 border border-zurkhai/25 p-4 md:mt-0 md:border-0 md:border-b md:border-zurkhai/20 md:px-1 md:py-6 transition-colors hover:bg-graphite/50"
                 >
-                  <div className="flex md:block items-baseline gap-3">
+                  <div className="flex md:block items-baseline gap-3 min-w-0">
                     <div className="font-mono text-[40px] leading-[1] tracking-[-0.04em] text-frost transition-colors group-hover:text-zurkhai">
                       {String(d.getDate()).padStart(2, "0")}
                     </div>
-                    <div className="text-caption text-smoke mt-2 uppercase">{wd}</div>
+                    <div className="text-caption text-smoke md:mt-2 uppercase">{wd}</div>
+                    <div className="md:hidden ml-auto shrink-0">
+                      {r.ownerId && <VerifiedBadge />}
+                    </div>
                   </div>
 
                   <div className="min-w-0">
@@ -468,8 +471,9 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
                     >
                       {lang === "mn" ? r.nameMn : r.nameEn}
                     </button>
-                    <div className="text-[13px] tracking-[0.02em] text-ash mt-1">
-                      {lang === "mn" ? r.locationMn : r.locationEn}
+                    <div className="flex items-center gap-1.5 text-[13px] tracking-[0.02em] text-ash mt-1">
+                      <MapPin size={12} strokeWidth={1.5} className="shrink-0 text-smoke md:hidden" />
+                      <span className="truncate">{lang === "mn" ? r.locationMn : r.locationEn}</span>
                     </div>
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {r.distances.map((dist) => (
@@ -492,11 +496,33 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
                       <span className="text-caption text-smoke uppercase">
                         {t("regDeadline")} <span className="font-mono text-ash">{t("tba")}</span>
                       </span>
-                      {r.ownerId && <VerifiedBadge />}
+                      <span className="hidden md:inline">{r.ownerId && <VerifiedBadge />}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  {/* Mobile: one-tap save / register */}
+                  <div className="grid grid-cols-2 gap-2 md:hidden">
+                    <button
+                      onClick={() => toggle(r.id)}
+                      aria-pressed={isSaved}
+                      className={`inline-flex items-center justify-center gap-2 px-3 py-3 text-[11px] tracking-[0.06em] uppercase border ${
+                        isSaved ? "border-zurkhai text-zurkhai" : "border-frost/30 text-ash"
+                      }`}
+                    >
+                      <Bookmark size={14} strokeWidth={1.5} fill={isSaved ? "currentColor" : "none"} />
+                      {isSaved ? t("savedRace") : t("saveRace")}
+                    </button>
+                    <a
+                      href={r.registerUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center gap-2 bg-zurkhai text-void-black px-3 py-3 text-[11px] tracking-[0.06em] uppercase"
+                    >
+                      {t("register")} <ArrowRight size={14} strokeWidth={1.5} />
+                    </a>
+                  </div>
+
+                  <div className="hidden md:flex items-center gap-2">
                     <button
                       onClick={() => toggle(r.id)}
                       aria-pressed={isSaved}
