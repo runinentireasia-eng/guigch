@@ -747,9 +747,41 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
             </span>
           ))}
         </div>
+        <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-zurkhai/20 pt-4">
+          <div>
+            <dt className="text-caption uppercase text-smoke">{t("elevation")}</dt>
+            <dd className="font-mono text-[13px] text-ash">
+              {race.elevationGainM != null ? `${race.elevationGainM} m` : t("tba")}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-caption uppercase text-smoke">{t("price")}</dt>
+            <dd className="font-mono text-[13px] text-ash">{race.priceInfo || t("tba")}</dd>
+          </div>
+          <div>
+            <dt className="text-caption uppercase text-smoke">{t("regDeadline")}</dt>
+            <dd className="font-mono text-[13px] text-ash">{race.regDeadline ?? t("tba")}</dd>
+          </div>
+        </dl>
         <p className="text-[14px] leading-[1.6] text-ash mt-5 font-[400]">
           {lang === "mn" ? race.descriptionMn : race.descriptionEn}
         </p>
+        <div className="mt-5 grid grid-cols-2 gap-2">
+          <button
+            onClick={() => downloadIcs([race], lang, `${race.id}.ics`)}
+            className="inline-flex items-center justify-center gap-2 border border-frost/30 px-3 py-3 text-[11px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
+          >
+            <Download size={13} strokeWidth={1.5} /> {t("exportIcs")}
+          </button>
+          <a
+            href={googleCalendarUrl(race, lang)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 border border-frost/30 px-3 py-3 text-[11px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
+          >
+            <CalendarDays size={13} strokeWidth={1.5} /> {t("addToGoogle")}
+          </a>
+        </div>
         <a
           href={race.registerUrl}
           target="_blank"
