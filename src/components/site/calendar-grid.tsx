@@ -558,6 +558,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
   const { saved, toggle } = useSavedRaces();
   const isSaved = saved.includes(race.id);
   const panelRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const panel = panelRef.current;
@@ -606,7 +607,9 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center px-6 py-8 bg-void-black/80 backdrop-blur-sm"
+      className={`fixed inset-0 z-50 flex bg-void-black/80 backdrop-blur-sm ${
+        isMobile ? "items-end justify-stretch" : "items-center justify-center px-6 py-8"
+      }`}
       onClick={onClose}
     >
       <div
@@ -615,9 +618,16 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
         aria-modal="true"
         aria-label={t("eventDetails")}
         tabIndex={-1}
-        className="w-full max-w-[520px] border border-zurkhai/20 bg-void-black p-6 sm:p-8 shadow-none outline-none"
+        className={`w-full bg-void-black outline-none shadow-none ${
+          isMobile
+            ? "max-h-[85vh] overflow-y-auto border-t border-zurkhai/40 px-5 pb-8 pt-3 animate-in slide-in-from-bottom duration-300"
+            : "max-w-[520px] border border-zurkhai/20 p-6 sm:p-8"
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
+        {isMobile && (
+          <div className="mx-auto mb-4 h-[3px] w-12 rounded-full bg-frost/30" aria-hidden="true" />
+        )}
         <div className="flex items-start justify-between gap-4">
           <div className="text-caption text-smoke">
             {lang === "mn" ? race.monthMn : race.monthEn} · {race.day} · {race.year}
@@ -667,7 +677,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
           href={race.registerUrl}
           target="_blank"
           rel="noreferrer"
-          className="mt-6 block bg-zurkhai text-void-black px-[24px] py-[12px] text-[13px] tracking-[0.04em] uppercase font-[400] text-center hover:opacity-90"
+          className="mt-6 block bg-zurkhai text-void-black px-[24px] py-[14px] text-[13px] tracking-[0.04em] uppercase font-[400] text-center hover:opacity-90"
         >
           {t("register")} →
         </a>
