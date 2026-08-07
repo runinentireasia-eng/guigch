@@ -228,6 +228,7 @@ export type Database = {
           description_en: string
           description_mn: string
           distances: string[]
+          elevation_gain_m: number | null
           id: string
           location_en: string
           location_mn: string
@@ -236,9 +237,11 @@ export type Database = {
           organizer_en: string
           organizer_mn: string
           owner_id: string | null
+          price_info: string
           published_at: string | null
           published_by: string | null
           race_date: string
+          reg_deadline: string | null
           register_url: string
           results_info: string
           review_status: Database["public"]["Enums"]["race_review_status"]
@@ -255,6 +258,7 @@ export type Database = {
           description_en?: string
           description_mn?: string
           distances?: string[]
+          elevation_gain_m?: number | null
           id?: string
           location_en?: string
           location_mn?: string
@@ -263,9 +267,11 @@ export type Database = {
           organizer_en?: string
           organizer_mn?: string
           owner_id?: string | null
+          price_info?: string
           published_at?: string | null
           published_by?: string | null
           race_date: string
+          reg_deadline?: string | null
           register_url?: string
           results_info?: string
           review_status?: Database["public"]["Enums"]["race_review_status"]
@@ -282,6 +288,7 @@ export type Database = {
           description_en?: string
           description_mn?: string
           distances?: string[]
+          elevation_gain_m?: number | null
           id?: string
           location_en?: string
           location_mn?: string
@@ -290,9 +297,11 @@ export type Database = {
           organizer_en?: string
           organizer_mn?: string
           owner_id?: string | null
+          price_info?: string
           published_at?: string | null
           published_by?: string | null
           race_date?: string
+          reg_deadline?: string | null
           register_url?: string
           results_info?: string
           review_status?: Database["public"]["Enums"]["race_review_status"]

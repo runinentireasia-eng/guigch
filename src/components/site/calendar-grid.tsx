@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { CalendarDays, List as ListIcon, ArrowRight, Bookmark, MapPin } from "lucide-react";
+import { CalendarDays, List as ListIcon, ArrowRight, Bookmark, MapPin, Download, Scale, Check } from "lucide-react";
 import { useLang } from "@/lib/i18n";
+import { downloadIcs, googleCalendarUrl } from "@/lib/ics";
+import { RaceCompareTable } from "./race-compare";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PullToRefresh } from "./pull-to-refresh";
 import { VerifiedBadge } from "./form-ui";
@@ -45,6 +47,15 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
   const [cursor, setCursor] = useState<Date>(firstRaceMonth);
   useEffect(() => setCursor(firstRaceMonth), [firstRaceMonth]);
   const [selectedRace, setSelectedRace] = useState<Race | null>(null);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const compareRaces = useMemo(
+    () => compareIds.map((id) => races.find((r) => r.id === id)).filter(Boolean) as Race[],
+    [compareIds, races],
+  );
+  const toggleCompare = (id: string) =>
+    setCompareIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : prev.length >= 4 ? prev : [...prev, id],
+    );
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const [focusDay, setFocusDay] = useState<number>(1);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -236,6 +247,13 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                 <ListIcon size={14} strokeWidth={1.5} /> {t("viewList")}
               </button>
             </div>
+            <button
+              onClick={() => downloadIcs(races, lang)}
+              className="inline-flex items-center gap-2 border border-frost/30 px-4 py-2 text-[12px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
+              data-cursor-hover
+            >
+              <Download size={14} strokeWidth={1.5} /> {t("exportAll")}
+            </button>
           </div>
         </div>
         <CloudRule className="mb-12 opacity-70" />
@@ -244,7 +262,12 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
           onRefresh={() => queryClient.refetchQueries({ queryKey: ["races"] })}
         >
         {view === "list" ? (
-          <RaceListView races={races} onSelect={(r) => openRace(r)} />
+          <RaceListView
+            races={races}
+            onSelect={(r) => openRace(r)}
+            compareIds={compareIds}
+            onToggleCompare={toggleCompare}
+          />
         ) : (
         <div className="relative border border-zurkhai/20">
           <div className="pointer-events-none absolute inset-0 z-10 text-zurkhai/55">
@@ -389,6 +412,14 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
         </div>
         )}
         </PullToRefresh>
+
+        {compareIds.length > 0 && (
+          <RaceCompareTable
+            races={compareRaces}
+            onRemove={(id) => setCompareIds((prev) => prev.filter((x) => x !== id))}
+            onClear={() => setCompareIds([])}
+          />
+        )}
       </div>
 
       {selectedRace && (
@@ -406,7 +437,17 @@ function RacePopup({ race, onClose }: { race: Race; onClose: () => void }) {
 }
 
 /* ---------- List view (chronological, grouped by month) ---------- */
-function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) => void }) {
+function RaceListView({
+  races,
+  onSelect,
+  compareIds,
+  onToggleCompare,
+}: {
+  races: Race[];
+  onSelect: (r: Race) => void;
+  compareIds: string[];
+  onToggleCompare: (id: string) => void;
+}) {
   const { t, lang } = useLang();
   const { saved, toggle } = useSavedRaces();
   const monthNames = t("monthNames").split("_");
@@ -494,14 +535,34 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
                         ● {statusLabel(r.status)}
                       </span>
                       <span className="text-caption text-smoke uppercase">
-                        {t("regDeadline")} <span className="font-mono text-ash">{t("tba")}</span>
+                        {t("regDeadline")} <span className="font-mono text-ash">{r.regDeadline ?? t("tba")}</span>
                       </span>
+                      {r.elevationGainM != null && (
+                        <span className="text-caption text-smoke uppercase">
+                          {t("elevation")} <span className="font-mono text-ash">{r.elevationGainM}m</span>
+                        </span>
+                      )}
+                      {r.priceInfo && (
+                        <span className="text-caption text-smoke uppercase">
+                          {t("price")} <span className="font-mono text-ash">{r.priceInfo}</span>
+                        </span>
+                      )}
                       <span className="hidden md:inline">{r.ownerId && <VerifiedBadge />}</span>
                     </div>
                   </div>
 
                   {/* Mobile: one-tap save / register */}
                   <div className="grid grid-cols-2 gap-2 md:hidden">
+                    <button
+                      onClick={() => onToggleCompare(r.id)}
+                      aria-pressed={compareIds.includes(r.id)}
+                      className={`col-span-2 inline-flex items-center justify-center gap-2 px-3 py-3 text-[11px] tracking-[0.06em] uppercase border ${
+                        compareIds.includes(r.id) ? "border-zurkhai text-zurkhai" : "border-frost/30 text-ash"
+                      }`}
+                    >
+                      {compareIds.includes(r.id) ? <Check size={14} strokeWidth={1.5} /> : <Scale size={14} strokeWidth={1.5} />}
+                      {compareIds.includes(r.id) ? t("inCompare") : t("addToCompare")}
+                    </button>
                     <button
                       onClick={() => toggle(r.id)}
                       aria-pressed={isSaved}
@@ -523,6 +584,22 @@ function RaceListView({ races, onSelect }: { races: Race[]; onSelect: (r: Race) 
                   </div>
 
                   <div className="hidden md:flex items-center gap-2">
+                    <button
+                      onClick={() => onToggleCompare(r.id)}
+                      aria-pressed={compareIds.includes(r.id)}
+                      className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.06em] uppercase border ${
+                        compareIds.includes(r.id)
+                          ? "border-zurkhai text-zurkhai"
+                          : "border-frost/30 text-ash hover:text-frost hover:border-frost"
+                      }`}
+                    >
+                      {compareIds.includes(r.id) ? (
+                        <Check size={13} strokeWidth={1.5} />
+                      ) : (
+                        <Scale size={13} strokeWidth={1.5} />
+                      )}
+                      {compareIds.includes(r.id) ? t("inCompare") : t("addToCompare")}
+                    </button>
                     <button
                       onClick={() => toggle(r.id)}
                       aria-pressed={isSaved}
@@ -670,9 +747,41 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
             </span>
           ))}
         </div>
+        <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-zurkhai/20 pt-4">
+          <div>
+            <dt className="text-caption uppercase text-smoke">{t("elevation")}</dt>
+            <dd className="font-mono text-[13px] text-ash">
+              {race.elevationGainM != null ? `${race.elevationGainM} m` : t("tba")}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-caption uppercase text-smoke">{t("price")}</dt>
+            <dd className="font-mono text-[13px] text-ash">{race.priceInfo || t("tba")}</dd>
+          </div>
+          <div>
+            <dt className="text-caption uppercase text-smoke">{t("regDeadline")}</dt>
+            <dd className="font-mono text-[13px] text-ash">{race.regDeadline ?? t("tba")}</dd>
+          </div>
+        </dl>
         <p className="text-[14px] leading-[1.6] text-ash mt-5 font-[400]">
           {lang === "mn" ? race.descriptionMn : race.descriptionEn}
         </p>
+        <div className="mt-5 grid grid-cols-2 gap-2">
+          <button
+            onClick={() => downloadIcs([race], lang, `${race.id}.ics`)}
+            className="inline-flex items-center justify-center gap-2 border border-frost/30 px-3 py-3 text-[11px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
+          >
+            <Download size={13} strokeWidth={1.5} /> {t("exportIcs")}
+          </button>
+          <a
+            href={googleCalendarUrl(race, lang)}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 border border-frost/30 px-3 py-3 text-[11px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
+          >
+            <CalendarDays size={13} strokeWidth={1.5} /> {t("addToGoogle")}
+          </a>
+        </div>
         <a
           href={race.registerUrl}
           target="_blank"

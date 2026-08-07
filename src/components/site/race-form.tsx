@@ -18,6 +18,9 @@ export const raceSchema = z.object({
   organizer_en: z.string().trim().max(200),
   category: z.enum(CATEGORIES),
   distances: z.string().max(200),
+  elevation_gain_m: z.string().regex(/^\d*$/, "Numbers only").max(6),
+  price_info: z.string().trim().max(200),
+  reg_deadline: z.string().regex(/^(\d{4}-\d{2}-\d{2})?$/, "Use YYYY-MM-DD"),
   status: z.enum(REG_STATUSES),
   register_url: z.string().trim().url("Must be a valid URL").max(500).or(z.literal("")),
   description_mn: z.string().trim().max(2000),
@@ -32,6 +35,7 @@ export type RaceFormValues = z.infer<typeof raceSchema>;
 export const emptyRaceForm: RaceFormValues = {
   name_mn: "", name_en: "", race_date: "", location_mn: "", location_en: "",
   organizer_mn: "", organizer_en: "", category: "road", distances: "",
+  elevation_gain_m: "", price_info: "", reg_deadline: "",
   status: "open", register_url: "", description_mn: "", description_en: "",
   schedule_info: "", course_info: "", results_info: "",
 };
@@ -41,6 +45,8 @@ export function toRacePayload(values: RaceFormValues) {
   return {
     ...parsed,
     distances: parsed.distances.split(",").map((s) => s.trim()).filter(Boolean),
+    elevation_gain_m: parsed.elevation_gain_m === "" ? null : Number(parsed.elevation_gain_m),
+    reg_deadline: parsed.reg_deadline === "" ? null : parsed.reg_deadline,
   };
 }
 
@@ -50,6 +56,8 @@ export function rowToRaceForm(row: any): RaceFormValues {
     location_mn: row.location_mn ?? "", location_en: row.location_en ?? "",
     organizer_mn: row.organizer_mn ?? "", organizer_en: row.organizer_en ?? "",
     category: row.category ?? "road", distances: (row.distances ?? []).join(", "),
+    elevation_gain_m: row.elevation_gain_m != null ? String(row.elevation_gain_m) : "",
+    price_info: row.price_info ?? "", reg_deadline: row.reg_deadline ?? "",
     status: row.status ?? "open", register_url: row.register_url ?? "",
     description_mn: row.description_mn ?? "", description_en: row.description_en ?? "",
     schedule_info: row.schedule_info ?? "", course_info: row.course_info ?? "",
@@ -77,6 +85,17 @@ export function RaceFields({
       </Row2>
       <Field label="Distances (comma-separated, e.g. 5K, 10K, 21K)">
         <Input value={form.distances} onChange={(v) => set("distances", v)} />
+      </Field>
+      <Row2>
+        <Field label="Elevation gain (m)">
+          <Input value={form.elevation_gain_m} onChange={(v) => set("elevation_gain_m", v)} placeholder="e.g. 1200" />
+        </Field>
+        <Field label="Entry price">
+          <Input value={form.price_info} onChange={(v) => set("price_info", v)} placeholder="e.g. 45,000₮ / 10K" />
+        </Field>
+      </Row2>
+      <Field label="Registration deadline">
+        <Input type="date" value={form.reg_deadline} onChange={(v) => set("reg_deadline", v)} />
       </Field>
       <Row2>
         <Field label="Location (MN)"><Input value={form.location_mn} onChange={(v) => set("location_mn", v)} /></Field>
