@@ -224,6 +224,7 @@ export type Database = {
           admin_notes: string
           category: string
           course_info: string
+          course_map_url: string
           created_at: string
           description_en: string
           description_mn: string
@@ -254,6 +255,7 @@ export type Database = {
           admin_notes?: string
           category: string
           course_info?: string
+          course_map_url?: string
           created_at?: string
           description_en?: string
           description_mn?: string
@@ -284,6 +286,7 @@ export type Database = {
           admin_notes?: string
           category?: string
           course_info?: string
+          course_map_url?: string
           created_at?: string
           description_en?: string
           description_mn?: string
