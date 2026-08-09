@@ -21,6 +21,7 @@ export const raceSchema = z.object({
   elevation_gain_m: z.string().regex(/^\d*$/, "Numbers only").max(6),
   price_info: z.string().trim().max(200),
   reg_deadline: z.string().regex(/^(\d{4}-\d{2}-\d{2})?$/, "Use YYYY-MM-DD"),
+  course_map_url: z.string().trim().url("Must be a valid URL").max(500).or(z.literal("")),
   status: z.enum(REG_STATUSES),
   register_url: z.string().trim().url("Must be a valid URL").max(500).or(z.literal("")),
   description_mn: z.string().trim().max(2000),
@@ -35,7 +36,7 @@ export type RaceFormValues = z.infer<typeof raceSchema>;
 export const emptyRaceForm: RaceFormValues = {
   name_mn: "", name_en: "", race_date: "", location_mn: "", location_en: "",
   organizer_mn: "", organizer_en: "", category: "road", distances: "",
-  elevation_gain_m: "", price_info: "", reg_deadline: "",
+  elevation_gain_m: "", price_info: "", reg_deadline: "", course_map_url: "",
   status: "open", register_url: "", description_mn: "", description_en: "",
   schedule_info: "", course_info: "", results_info: "",
 };
@@ -58,6 +59,7 @@ export function rowToRaceForm(row: any): RaceFormValues {
     category: row.category ?? "road", distances: (row.distances ?? []).join(", "),
     elevation_gain_m: row.elevation_gain_m != null ? String(row.elevation_gain_m) : "",
     price_info: row.price_info ?? "", reg_deadline: row.reg_deadline ?? "",
+    course_map_url: row.course_map_url ?? "",
     status: row.status ?? "open", register_url: row.register_url ?? "",
     description_mn: row.description_mn ?? "", description_en: row.description_en ?? "",
     schedule_info: row.schedule_info ?? "", course_info: row.course_info ?? "",
@@ -96,6 +98,9 @@ export function RaceFields({
       </Row2>
       <Field label="Registration deadline">
         <Input type="date" value={form.reg_deadline} onChange={(v) => set("reg_deadline", v)} />
+      </Field>
+      <Field label="Course map / GPX link">
+        <Input value={form.course_map_url} onChange={(v) => set("course_map_url", v)} placeholder="https://… (Strava, Google Maps, GPX file)" />
       </Field>
       <Row2>
         <Field label="Location (MN)"><Input value={form.location_mn} onChange={(v) => set("location_mn", v)} /></Field>

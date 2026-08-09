@@ -25,12 +25,13 @@ export function RaceCompareTable({
   const typeLabel = (c: Race["category"]) =>
     c === "road" ? t("filterRoad") : c === "trail" ? t("filterTrail") : c === "ultra" ? t("filterUltra") : t("filterFun");
 
-  const rows: { label: string; render: (r: Race) => string }[] = [
+  const rows: { label: string; render: (r: Race) => string; href?: (r: Race) => string }[] = [
     { label: t("date"), render: dateLabel },
     { label: t("distances"), render: (r) => (r.distances.length ? r.distances.join(" · ") : t("tba")) },
     { label: t("elevation"), render: (r) => (r.elevationGainM != null ? `${r.elevationGainM} m` : t("tba")) },
     { label: t("price"), render: (r) => r.priceInfo || t("tba") },
     { label: t("regDeadline"), render: (r) => r.regDeadline || t("tba") },
+    { label: t("courseMap"), render: () => t("tba"), href: (r) => r.courseMapUrl || "" },
     { label: t("raceType"), render: (r) => typeLabel(r.category) },
     { label: t("location"), render: (r) => (lang === "mn" ? r.locationMn : r.locationEn) || t("tba") },
     { label: t("organizer"), render: (r) => (lang === "mn" ? r.organizerMn : r.organizerEn) || t("tba") },
@@ -97,7 +98,18 @@ export function RaceCompareTable({
                       key={r.id}
                       className="border-b border-l border-zurkhai/15 px-4 py-3 text-[13px] text-ash align-top"
                     >
-                      {row.render(r)}
+                      {row.href?.(r) ? (
+                        <a
+                          href={row.href(r)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-zurkhai underline underline-offset-2 hover:opacity-80"
+                        >
+                          {t("viewMap")}
+                        </a>
+                      ) : (
+                        row.render(r)
+                      )}
                     </td>
                   ))}
                 </tr>

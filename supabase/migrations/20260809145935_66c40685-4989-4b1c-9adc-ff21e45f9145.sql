@@ -1,0 +1,1 @@
+ALTER TABLE public.races ADD COLUMN IF NOT EXISTS course_map_url text NOT NULL DEFAULT ''::text;

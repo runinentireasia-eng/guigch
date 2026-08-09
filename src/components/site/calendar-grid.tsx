@@ -762,6 +762,23 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
             <dt className="text-caption uppercase text-smoke">{t("regDeadline")}</dt>
             <dd className="font-mono text-[13px] text-ash">{race.regDeadline ?? t("tba")}</dd>
           </div>
+          <div>
+            <dt className="text-caption uppercase text-smoke">{t("courseMap")}</dt>
+            <dd className="font-mono text-[13px] text-ash">
+              {race.courseMapUrl ? (
+                <a
+                  href={race.courseMapUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-zurkhai underline underline-offset-2 hover:opacity-80"
+                >
+                  {t("viewMap")}
+                </a>
+              ) : (
+                t("tba")
+              )}
+            </dd>
+          </div>
         </dl>
         <p className="text-[14px] leading-[1.6] text-ash mt-5 font-[400]">
           {lang === "mn" ? race.descriptionMn : race.descriptionEn}
