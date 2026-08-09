@@ -59,6 +59,8 @@ export const dict = {
   saveRace: { mn: "ХАДГАЛАХ", en: "SAVE" },
   savedRace: { mn: "ХАДГАЛСАН", en: "SAVED" },
   regDeadline: { mn: "БҮРТГЭЛ ХААГДАХ", en: "REG. DEADLINE" },
+  courseMap: { mn: "ЗАМЫН ЗУРАГ", en: "COURSE MAP" },
+  viewMap: { mn: "ЗАМ ХАРАХ", en: "VIEW MAP" },
   elevation: { mn: "ӨНДӨРЛӨГ", en: "ELEVATION" },
   price: { mn: "ХУРААМЖ", en: "PRICE" },
   compare: { mn: "ХАРЬЦУУЛАХ", en: "COMPARE" },
