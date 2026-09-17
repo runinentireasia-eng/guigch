@@ -36,12 +36,10 @@ export function CtaButton({
 export function PageBanner({
   image,
   imageAlt,
-  index,
   label,
   title,
   subtitle,
   cta,
-  meta,
   height = "md",
 }: {
   image: string;
