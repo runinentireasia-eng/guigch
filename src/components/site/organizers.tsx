@@ -3,7 +3,6 @@ import { useLang } from "@/lib/i18n";
 import type { Race } from "@/lib/races";
 import { useVerifiedOrganizerNames } from "@/lib/access";
 import { VerifiedBadge } from "./form-ui";
-import { AlmanacFrame, CloudRule } from "./zurkhai-ornament";
 
 /* ---------- Organizers ---------- */
 export function OrganizersSection({ races }: { races: Race[] }) {
@@ -20,23 +19,19 @@ export function OrganizersSection({ races }: { races: Race[] }) {
 
   return (
     <section id="organizers" className="bg-void-black scroll-mt-24">
-      <div className="max-w-[1280px] mx-auto px-6 py-20">
-        <CloudRule className="mb-10 text-zurkhai" />
+      <div className="max-w-[960px] mx-auto px-6 py-14 md:py-20">
         {organizers.length === 0 ? (
           <p className="text-[13px] text-smoke">{lang === "mn" ? "Мэдээлэл алга." : "No data yet."}</p>
         ) : (
-          <AlmanacFrame className="p-3">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-zurkhai/20 border border-zurkhai/20">
+          <div className="border-t border-frost/20">
             {organizers.map(([name, list]) => (
-              <div key={name} className="bg-void-black p-6">
+              <div key={name} className="grid gap-3 border-b border-frost/15 py-5 sm:grid-cols-[minmax(200px,1fr)_2fr] sm:gap-8">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-[15px] font-[400] tracking-[0.01em]">{name}</span>
                   {verified?.has(name.trim().toLowerCase()) && <VerifiedBadge />}
+                  <span className="text-[12px] text-smoke">{list.length}</span>
                 </div>
-                <div className="mt-2 text-caption text-smoke">
-                  {list.length} {lang === "mn" ? "уралдаан" : list.length === 1 ? "race" : "races"}
-                </div>
-                <ul className="mt-4 space-y-1">
+                <ul className="space-y-1">
                   {list.map((r) => (
                     <li key={r.id} className="text-[13px] text-ash">
                       {lang === "mn" ? r.nameMn : r.nameEn}
@@ -46,7 +41,6 @@ export function OrganizersSection({ races }: { races: Race[] }) {
               </div>
             ))}
           </div>
-          </AlmanacFrame>
         )}
       </div>
     </section>

@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useLang } from "@/lib/i18n";
 import type { Race } from "@/lib/races";
-import { CloudRule } from "./zurkhai-ornament";
 
 /* ---------- Results ---------- */
 export function ResultsSection({ races }: { races: Race[] }) {
@@ -16,17 +15,16 @@ export function ResultsSection({ races }: { races: Race[] }) {
 
   return (
     <section id="results" className="bg-void-black scroll-mt-24">
-      <div className="max-w-[1280px] mx-auto px-6 py-20">
-        <CloudRule className="mb-10 text-zurkhai" />
+      <div className="max-w-[960px] mx-auto px-6 py-14 md:py-20">
         {past.length === 0 ? (
           <p className="text-[13px] text-smoke">
             {lang === "mn" ? "Одоогоор өнгөрсөн уралдаан бүртгэгдээгүй." : "No past races recorded yet."}
           </p>
         ) : (
-          <ul className="border-t border-zurkhai/20">
+          <ul className="border-t border-frost/20">
             {past.map((r) => (
-              <li key={r.id} className="flex flex-wrap items-baseline gap-x-6 gap-y-1 border-b border-zurkhai/20 py-4">
-                <span className="text-caption text-zurkhai w-[110px]">{r.dateISO}</span>
+              <li key={r.id} className="grid gap-1 border-b border-frost/15 py-4 sm:grid-cols-[110px_1fr_auto] sm:items-baseline sm:gap-6">
+                <span className="text-[12px] text-zurkhai">{r.dateISO}</span>
                 <span className="text-[15px] font-[400] flex-1 min-w-[200px]">{lang === "mn" ? r.nameMn : r.nameEn}</span>
                 <span className="text-[13px] text-smoke">{lang === "mn" ? r.locationMn : r.locationEn}</span>
               </li>
