@@ -84,14 +84,12 @@ function AuthPage() {
 
   return (
     <div className="min-h-screen bg-void-black text-frost flex items-center justify-center px-6">
-      <div className="w-full max-w-[420px] border border-frost/20 p-8">
+      <div className="w-full max-w-[400px]">
         <Link to="/" className="text-caption text-smoke hover:text-frost">← гүйгч.mn</Link>
         <h1 className="mt-6 text-[28px] tracking-[-0.02em] font-[330]">
           {mode === "in" ? "Sign in" : "Create account"}
         </h1>
-        <p className="mt-2 text-caption text-smoke">Admin access for race management.</p>
-
-        <form onSubmit={submit} className="mt-8 flex flex-col gap-3">
+        <form onSubmit={submit} className="mt-7 flex flex-col gap-3">
           <input
             type="email"
             required
@@ -118,9 +116,9 @@ function AuthPage() {
           </button>
         </form>
 
-        <div className="my-6 flex items-center gap-4 text-caption text-smoke">
+        <div className="my-5 flex items-center gap-4 text-[11px] text-smoke">
           <div className="flex-1 border-t border-zurkhai/20" />
-          OR
+          or
           <div className="flex-1 border-t border-zurkhai/20" />
         </div>
 
@@ -128,7 +126,7 @@ function AuthPage() {
           onClick={google}
           type="button"
           disabled={busy}
-          className="w-full border border-frost text-frost px-[30px] py-[14px] text-[13px] tracking-[0.06em] uppercase font-[400] hover:bg-frost/5 disabled:opacity-50"
+          className="w-full border border-frost/30 text-frost px-[30px] py-[14px] text-[13px] font-[400] hover:border-frost disabled:opacity-50"
         >
           Continue with Google
         </button>

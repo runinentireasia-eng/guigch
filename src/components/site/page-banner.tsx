@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import { CornerScroll, UlziiSeal, CloudRule } from "@/components/site/zurkhai-ornament";
 
 /* ---------- Cinematic CTA button (same language as the homepage hero) ---------- */
 export function CtaButton({
@@ -14,28 +13,19 @@ export function CtaButton({
   children: ReactNode;
   size?: "md" | "sm";
 }) {
-  const pad = size === "sm" ? "px-8 py-4" : "px-12 py-5";
+  const pad = size === "sm" ? "px-5 py-3" : "px-7 py-3.5";
   const cls =
-    `relative ${pad} bg-void-black border border-frost/30 text-frost text-xs uppercase tracking-[0.4em] font-bold ` +
-    "transition-all duration-500 hover:border-zurkhai hover:bg-zurkhai hover:text-void-black overflow-hidden";
-  const corners = (
-    <>
-      <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-frost/50" />
-      <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-frost/50" />
-    </>
-  );
+    `inline-flex items-center justify-center ${pad} bg-zurkhai text-void-black text-[12px] font-[500] ` +
+    "transition-colors hover:bg-frost focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zurkhai";
   return (
-    <div className="group relative inline-flex items-center justify-center">
-      <div className="absolute -inset-px bg-zurkhai/20 blur-sm transition-opacity opacity-0 group-hover:opacity-100" />
+    <div className="inline-flex">
       {to ? (
         <Link to={to} className={cls}>
-          <span className="relative z-10">{children}</span>
-          {corners}
+          {children}
         </Link>
       ) : (
         <a href={href} target="_blank" rel="noreferrer" className={cls}>
-          <span className="relative z-10">{children}</span>
-          {corners}
+          {children}
         </a>
       )}
     </div>
@@ -46,12 +36,10 @@ export function CtaButton({
 export function PageBanner({
   image,
   imageAlt,
-  index,
   label,
   title,
   subtitle,
   cta,
-  meta,
   height = "md",
 }: {
   image: string;
@@ -64,10 +52,10 @@ export function PageBanner({
   meta?: [string, string];
   height?: "md" | "sm";
 }) {
-  const h = height === "sm" ? "min-h-[34vh]" : "min-h-[46vh]";
+  const h = height === "sm" ? "min-h-[240px]" : "min-h-[300px]";
   return (
     <section
-      className={`relative ${h} w-full flex items-center justify-center overflow-hidden bg-void-black text-frost border-b border-zurkhai/20`}
+      className={`relative ${h} w-full flex items-end overflow-hidden bg-void-black text-frost border-b border-frost/15`}
     >
       <div className="absolute inset-0 z-0">
         <img
@@ -76,58 +64,23 @@ export function PageBanner({
           loading="lazy"
           width={1920}
           height={912}
-          className="w-full h-full object-cover opacity-70 grayscale-[25%] scale-105"
+          className="w-full h-full object-cover opacity-55 grayscale-[20%]"
         />
         <div
           className="absolute inset-0"
           style={{
-            background:
-              "radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.75) 70%, rgba(0,0,0,0.95) 100%)",
+            background: "linear-gradient(to top, rgba(0,0,0,0.94), rgba(0,0,0,0.18))",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-void-black/50 via-transparent to-void-black" />
       </div>
-
-      {/* Zurkhai almanac framing */}
-      <div className="pointer-events-none absolute inset-4 sm:inset-7 z-10 text-zurkhai/60">
-        <div className="absolute inset-0 border border-zurkhai/20" />
-        <div className="absolute inset-[5px] border border-zurkhai/10" />
-        <CornerScroll className="absolute top-0 left-0 size-14 sm:size-20" />
-        <CornerScroll className="absolute top-0 right-0 size-14 sm:size-20 -scale-x-100" />
-        <CornerScroll className="absolute bottom-0 left-0 size-14 sm:size-20 -scale-y-100" />
-        <CornerScroll className="absolute bottom-0 right-0 size-14 sm:size-20 -scale-100" />
-      </div>
-
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl py-20">
-        <UlziiSeal className="size-9 text-zurkhai/80 mb-5" />
-        <div className="flex items-center gap-4 mb-7">
-          <CloudRule className="w-16 opacity-80" />
-          <span className="text-caption text-smoke">
-            {index ? `${index} / ` : ""}
-            {label}
-          </span>
-          <CloudRule className="w-16 opacity-80" />
-        </div>
-
-        <h1 className="text-[34px] md:text-[52px] lg:text-[64px] leading-[1] tracking-[-0.035em] font-[300] select-none">
+      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 py-10 md:py-14">
+        <div className="text-[12px] text-ash mb-3">{label}</div>
+        <h1 className="text-[36px] md:text-[52px] leading-[1.05] font-[400] max-w-3xl">
           {title}
         </h1>
-
-        {subtitle && <p className="mt-7 max-w-xl text-body-aaru text-smoke">{subtitle}</p>}
-        <CloudRule className="mt-9 w-48 opacity-60" />
-        {cta && <div className="mt-11">{cta}</div>}
+        {subtitle && <p className="mt-4 max-w-xl text-[14px] leading-6 text-ash">{subtitle}</p>}
+        {cta && <div className="mt-6">{cta}</div>}
       </div>
-
-      {meta && (
-        <>
-          <div className="absolute bottom-8 left-8 hidden lg:block text-[9px] font-mono text-smoke tracking-widest uppercase">
-            {meta[0]}
-          </div>
-          <div className="absolute bottom-8 right-8 hidden lg:block text-[9px] font-mono text-smoke tracking-widest uppercase text-right">
-            {meta[1]}
-          </div>
-        </>
-      )}
     </section>
   );
 }

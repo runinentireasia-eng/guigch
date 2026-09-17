@@ -169,21 +169,21 @@
 @utility text-caption {
   font-size: 12px;
   line-height: 1.33;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 @utility text-label {
   font-size: 13px;
   line-height: 1.3;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 @utility text-body-aaru {
   font-size: 15px;
   line-height: 1.5;
-  letter-spacing: 0.025em;
+  letter-spacing: 0;
   font-weight: 400;
 }
 
@@ -206,6 +206,15 @@ html {
   font-weight: 400;
   transition: color 0.3s ease-in-out;
   overflow: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .nav-action::before {
