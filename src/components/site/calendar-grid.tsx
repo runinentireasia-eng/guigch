@@ -7,7 +7,6 @@ import { RaceCompareTable } from "./race-compare";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PullToRefresh } from "./pull-to-refresh";
 import { VerifiedBadge } from "./form-ui";
-import { CornerScroll, UlziiSeal, CloudRule } from "./zurkhai-ornament";
 import type { Race } from "@/lib/races";
 
 const SAVED_KEY = "guigch.saved-races";
@@ -214,24 +213,14 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
   };
 
   return (
-    <section id="calendar" className="bg-void-black border-t border-zurkhai/20 scroll-mt-24">
-      <div className="max-w-[1280px] mx-auto px-6 py-[96px]">
-        <div className="flex items-end justify-between mb-6 flex-wrap gap-6">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <UlziiSeal className="size-5 text-zurkhai/80 shrink-0" />
-              <span className="text-caption text-smoke">{t("sectionCalendarLabel")}</span>
-            </div>
-            <h2 className="text-[40px] leading-[1.2] tracking-[-0.03em] font-[300] max-w-[560px]">
-              {t("sectionCalendarTitle")}
-            </h2>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="inline-flex border border-frost/30 mr-2">
+    <section id="calendar" className="bg-void-black scroll-mt-20">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 py-10 md:py-14">
+        <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+          <div className="inline-flex border border-frost/20">
               <button
                 onClick={() => setView("calendar")}
                 aria-pressed={view === "calendar"}
-                className={`inline-flex items-center gap-2 px-4 py-2 text-[12px] tracking-[0.06em] uppercase ${
+                className={`inline-flex items-center gap-2 px-3 py-2 text-[12px] ${
                   view === "calendar" ? "bg-zurkhai text-void-black" : "text-ash hover:text-frost"
                 }`}
               >
@@ -240,23 +229,22 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
               <button
                 onClick={() => setView("list")}
                 aria-pressed={view === "list"}
-                className={`inline-flex items-center gap-2 px-4 py-2 text-[12px] tracking-[0.06em] uppercase border-l border-frost/30 ${
+                className={`inline-flex items-center gap-2 px-3 py-2 text-[12px] border-l border-frost/20 ${
                   view === "list" ? "bg-zurkhai text-void-black" : "text-ash hover:text-frost"
                 }`}
               >
                 <ListIcon size={14} strokeWidth={1.5} /> {t("viewList")}
               </button>
-            </div>
-            <button
-              onClick={() => downloadIcs(races, lang)}
-              className="inline-flex items-center gap-2 border border-frost/30 px-4 py-2 text-[12px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
-              data-cursor-hover
-            >
-              <Download size={14} strokeWidth={1.5} /> {t("exportAll")}
-            </button>
           </div>
+          <button
+            onClick={() => downloadIcs(races, lang)}
+            aria-label={t("exportAll")}
+            title={t("exportAll")}
+            className="inline-flex size-9 items-center justify-center border border-frost/20 text-ash hover:border-zurkhai hover:text-zurkhai"
+          >
+            <Download size={15} strokeWidth={1.5} />
+          </button>
         </div>
-        <CloudRule className="mb-12 opacity-70" />
 
         <PullToRefresh
           onRefresh={() => queryClient.refetchQueries({ queryKey: ["races"] })}
@@ -269,18 +257,12 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             onToggleCompare={toggleCompare}
           />
         ) : (
-        <div className="relative border border-zurkhai/20">
-          <div className="pointer-events-none absolute inset-0 z-10 text-zurkhai/55">
-            <CornerScroll className="absolute top-0 left-0 size-12" />
-            <CornerScroll className="absolute top-0 right-0 size-12 -scale-x-100" />
-            <CornerScroll className="absolute bottom-0 left-0 size-12 -scale-y-100" />
-            <CornerScroll className="absolute bottom-0 right-0 size-12 -scale-100" />
-          </div>
-          <div className="relative flex items-center justify-between px-4 py-4 border-b border-zurkhai/25 gap-3">
+        <div className="border border-frost/15">
+          <div className="flex items-center justify-between px-3 py-3 border-b border-frost/15 gap-3">
             <button
               aria-label={t("prevMonth")}
               onClick={() => shiftMonth(-1)}
-              className="shrink-0 size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-zurkhai hover:text-void-black hover:border-zurkhai"
+              className="shrink-0 size-9 flex items-center justify-center text-ash hover:text-frost"
             >
               ←
             </button>
@@ -290,7 +272,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                   aria-label={t("month")}
                   value={month}
                   onChange={(e) => setCursor(new Date(year, Number(e.target.value), 1))}
-                  className="bg-transparent border border-frost/30 text-frost text-[12px] tracking-[0.06em] uppercase px-3 py-2 cursor-pointer hover:border-frost focus:outline-none focus:border-zurkhai"
+                  className="bg-transparent border border-frost/20 text-frost text-[12px] px-3 py-2 cursor-pointer focus:outline-none focus:border-zurkhai"
                 >
                   {monthNames.map((name, idx) => (
                     <option key={name} value={idx} className="bg-void-black text-frost">
@@ -302,7 +284,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                   aria-label={t("year")}
                   value={year}
                   onChange={(e) => setCursor(new Date(Number(e.target.value), month, 1))}
-                  className="bg-transparent border border-frost/30 text-frost text-[12px] tracking-[0.06em] uppercase px-3 py-2 cursor-pointer hover:border-frost focus:outline-none focus:border-zurkhai"
+                  className="bg-transparent border border-frost/20 text-frost text-[12px] px-3 py-2 cursor-pointer focus:outline-none focus:border-zurkhai"
                 >
                   {yearOptions.map((y) => (
                     <option key={y} value={y} className="bg-void-black text-frost">
@@ -315,14 +297,14 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
             <button
               aria-label={t("nextMonth")}
               onClick={() => shiftMonth(1)}
-              className="shrink-0 size-9 flex items-center justify-center border border-frost/30 text-frost text-[16px] hover:bg-zurkhai hover:text-void-black hover:border-zurkhai"
+              className="shrink-0 size-9 flex items-center justify-center text-ash hover:text-frost"
             >
               →
             </button>
           </div>
-          <div className="grid grid-cols-7 border-b border-zurkhai/20">
+          <div className="grid grid-cols-7 border-b border-frost/15">
             {weekdays.map((w) => (
-              <div key={w} className="text-caption text-smoke px-3 py-2 border-l border-zurkhai/20 first:border-l-0">
+              <div key={w} className="text-[11px] text-smoke px-2 py-2 border-l border-frost/15 first:border-l-0">
                 {w}
               </div>
             ))}
@@ -341,7 +323,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                   <div
                     key={i}
                     aria-hidden="true"
-                    className="min-h-[92px] p-3 border-l border-t border-zurkhai/20 first:border-l-0 [&:nth-child(7n+1)]:border-l-0"
+                    className="min-h-[76px] md:min-h-[92px] p-2 border-l border-t border-frost/15 first:border-l-0 [&:nth-child(7n+1)]:border-l-0"
                   />
                 );
               }
@@ -359,11 +341,11 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                   }`}
                   onClick={() => setSelectedDay(day)}
                   onKeyDown={(e) => onCellKeyDown(e, day)}
-                  className={`group min-h-[92px] text-left p-3 border-l border-t border-zurkhai/20 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative cursor-pointer outline-none transition-[background-color,box-shadow,border-color] duration-300 ease-out focus-visible:ring-1 focus-visible:ring-zurkhai focus-visible:ring-inset ${
+                  className={`group min-h-[76px] md:min-h-[92px] text-left p-2 border-l border-t border-frost/15 first:border-l-0 [&:nth-child(7n+1)]:border-l-0 relative cursor-pointer outline-none transition-colors focus-visible:ring-1 focus-visible:ring-zurkhai focus-visible:ring-inset ${
                     isSelected
-                      ? "bg-zurkhai/10 shadow-[inset_0_0_0_1px_var(--color-zurkhai)]"
+                      ? "bg-zurkhai/10"
                       : has
-                        ? "hover:bg-graphite/60 hover:shadow-[inset_0_0_24px_-6px_var(--color-zurkhai)]"
+                        ? "hover:bg-graphite/60"
                         : "hover:bg-graphite/30"
                   }`}
                 >
@@ -385,7 +367,7 @@ export function CalendarGridSection({ races }: { races: Race[] }) {
                               setSelectedDay(day);
                               openRace(r, day);
                             }}
-                            className="text-[10px] tracking-[0.06em] uppercase text-void-black bg-zurkhai px-1.5 py-[2px] truncate text-left hover:bg-frost transition-colors"
+                            className="w-full text-[10px] text-void-black bg-zurkhai px-1.5 py-1 truncate text-left hover:bg-frost"
                           >
                             {lang === "mn" ? r.nameMn : r.nameEn}
                           </button>

@@ -71,7 +71,7 @@ export function AddRaceModal({ onClose }: { onClose: () => void }) {
   if (step === "done") {
     return (
       <Modal onClose={onClose} label="Suggestion received">
-        {header(mn ? "— ХҮЛЭЭН АВЛАА" : "— RECEIVED")}
+        {header(mn ? "ХҮЛЭЭН АВЛАА" : "RECEIVED")}
         <h3 className="text-[24px] leading-[1.25] tracking-[-0.02em] font-[400]">
           {mn
             ? "Баярлалаа. Бид уралдааныг хуанлид нэмэхээсээ өмнө шалгана."
@@ -85,10 +85,7 @@ export function AddRaceModal({ onClose }: { onClose: () => void }) {
   if (step === "suggest") {
     return (
       <Modal onClose={onClose} label="Suggest a race" wide>
-        {header(mn ? "— УРАЛДААН САНАЛ БОЛГОХ" : "— SUGGEST A RACE")}
-        <h3 className="text-[24px] leading-[1.25] tracking-[-0.02em] font-[400] mb-6">
-          {mn ? "Дутуу уралдаан олсон уу?" : "Found a race we're missing?"}
-        </h3>
+        {header(mn ? "УРАЛДААН САНАЛ БОЛГОХ" : "SUGGEST A RACE")}
         <form onSubmit={submitSuggestion} className="flex flex-col gap-3">
           <Field label={mn ? "Уралдааны нэр" : "Race name"}>
             <Input value={form.race_name} onChange={(v) => set("race_name", v)} required />
@@ -131,29 +128,19 @@ export function AddRaceModal({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal onClose={onClose} label="Add a race" wide>
-      {header(mn ? "— УРАЛДААН НЭМЭХ" : "— ADD A RACE")}
-      <div className="grid sm:grid-cols-2 gap-px bg-zurkhai/20 border border-zurkhai/20">
-        <div className="bg-void-black p-6 flex flex-col">
+      {header(mn ? "УРАЛДААН НЭМЭХ" : "ADD A RACE")}
+      <div className="grid sm:grid-cols-2 border border-frost/15">
+        <div className="p-5 flex flex-col border-b border-frost/15 sm:border-b-0 sm:border-r">
           <div className="text-[17px] font-[400] tracking-[0.01em]">
             {mn ? "Дутуу уралдаан санал болгох" : "Suggest a missing race"}
           </div>
-          <p className="mt-3 text-[13px] leading-[1.6] text-smoke flex-1">
-            {mn
-              ? "Жагсаалтад ороогүй уралдаан олсон гүйгчид болон олон нийтэд зориулав."
-              : "For runners and community members who found an event that isn't listed."}
-          </p>
-          <div className="mt-6"><PrimaryButton onClick={() => setStep("suggest")}>{mn ? "УРАЛДААН САНАЛ БОЛГОХ" : "SUGGEST A RACE"}</PrimaryButton></div>
+          <div className="mt-5"><PrimaryButton onClick={() => setStep("suggest")}>{mn ? "САНАЛ БОЛГОХ" : "SUGGEST"}</PrimaryButton></div>
         </div>
-        <div className="bg-void-black p-6 flex flex-col">
+        <div className="p-5 flex flex-col">
           <div className="text-[17px] font-[400] tracking-[0.01em]">
             {mn ? "Албан ёсны уралдаан үүсгэх" : "Create an official race"}
           </div>
-          <p className="mt-3 text-[13px] leading-[1.6] text-smoke flex-1">
-            {mn
-              ? "Өөрийн арга хэмжээний хуудсыг үүсгэж, удирдахыг хүссэн зохион байгуулагчдад."
-              : "For organizers who want to create and manage their event page."}
-          </p>
-          <div className="mt-6"><GhostButton onClick={continueAsOrganizer}>{mn ? "ЗОХИОН БАЙГУУЛАГЧААР ҮРГЭЛЖЛҮҮЛЭХ" : "CONTINUE AS ORGANIZER"}</GhostButton></div>
+          <div className="mt-5"><GhostButton onClick={continueAsOrganizer}>{mn ? "ҮРГЭЛЖЛҮҮЛЭХ" : "CONTINUE"}</GhostButton></div>
         </div>
       </div>
     </Modal>
