@@ -67,7 +67,7 @@ function OrganizerPage() {
           <OrganizerWorkspace orgName={profile.org_name} />
         ) : (
           <div className="max-w-[560px]">
-            <div className="text-caption text-smoke mb-4">— ORGANIZER VERIFICATION</div>
+            <div className="text-caption text-smoke mb-4">ORGANIZER VERIFICATION</div>
             <div className="flex items-center gap-3 mb-4">
               <span className="text-[20px] font-[400]">{profile.org_name}</span>
               <StatusPill status={profile.status} />
@@ -117,10 +117,10 @@ function VerificationForm() {
 
   return (
     <div className="max-w-[620px]">
-      <div className="text-caption text-smoke mb-4">— ORGANIZER VERIFICATION</div>
+      <div className="text-caption text-smoke mb-4">ORGANIZER VERIFICATION</div>
       <h1 className="text-[28px] leading-[1.2] tracking-[-0.02em] font-[400] mb-3">Are you the organizer?</h1>
       <p className="text-[14px] leading-[1.6] text-ash mb-8">
-        Verify your organization to create and manage official race pages. New races still require admin approval before their first publication.
+        Verify your organization to manage official race pages.
       </p>
       <form onSubmit={(e) => { e.preventDefault(); apply.mutate(); }} className="flex flex-col gap-3">
         <Field label="Organizer or organization name"><Input value={form.org_name} onChange={(v) => set("org_name", v)} /></Field>
@@ -218,7 +218,7 @@ function OrganizerWorkspace({ orgName }: { orgName: string }) {
     <div className="grid lg:grid-cols-[520px_1fr] gap-12">
       <section>
         <div className="flex items-center gap-3 mb-4">
-          <div className="text-caption text-smoke">— {orgName}</div>
+           <div className="text-caption text-smoke">{orgName}</div>
           <VerifiedBadge />
         </div>
         {showForm ? (
@@ -235,16 +235,13 @@ function OrganizerWorkspace({ orgName }: { orgName: string }) {
           </form>
         ) : (
           <div>
-            <p className="text-[14px] leading-[1.6] text-ash mb-6">
-              Create official race pages for your events. New races require admin approval before their first publication.
-            </p>
             <PrimaryButton onClick={() => { setForm(emptyRaceForm); setCreating(true); }}>CREATE OFFICIAL RACE</PrimaryButton>
           </div>
         )}
       </section>
 
       <section>
-        <div className="text-caption text-smoke mb-4">— MY RACES ({races.data?.length ?? 0})</div>
+        <div className="text-caption text-smoke mb-4">MY RACES ({races.data?.length ?? 0})</div>
         <div className="border-t border-frost/40" />
         {races.isLoading && <div className="py-6 text-caption text-smoke">Loading…</div>}
         {races.data?.length === 0 && <div className="py-6 text-caption text-smoke">No races yet.</div>}

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell, useRaces } from "@/components/site/shell";
 import { OrganizersSection } from "@/components/site/organizers";
-import { PageBanner, CtaButton } from "@/components/site/page-banner";
+import { PageBanner } from "@/components/site/page-banner";
 import { useLang } from "@/lib/i18n";
 import bannerOrganizers from "@/assets/banner-organizers.jpg";
 
@@ -33,12 +33,6 @@ function OrganizersPage() {
             ? "Монголын уралдаануудыг бүтээж байгаа хүмүүс, клубууд, багууд."
             : "The people, clubs and teams building the Mongolian race season."
         }
-        cta={
-          <CtaButton to="/calendar" size="sm">
-            {lang === "mn" ? "ХУАНЛИ ХАРАХ" : "VIEW CALENDAR"}
-          </CtaButton>
-        }
-        meta={["Verified Partners", "MN / EN"]}
       />
       <OrganizersSection races={races} />
     </SiteShell>

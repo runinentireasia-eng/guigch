@@ -448,11 +448,6 @@ function RaceListView({
     return [...map.entries()];
   }, [races]);
 
-  const statusLabel = (s: Race["status"]) =>
-    s === "open" ? t("open") : s === "closing_soon" ? t("closingSoon") : t("waitlist");
-  const typeLabel = (c: Race["category"]) =>
-    c === "road" ? t("filterRoad") : c === "trail" ? t("filterTrail") : c === "ultra" ? t("filterUltra") : t("filterFun");
-
   if (groups.length === 0) {
     return <div className="border border-zurkhai/20 px-6 py-10 text-[14px] text-smoke">{t("noRacesList")}</div>;
   }
@@ -500,35 +495,10 @@ function RaceListView({
                     </div>
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {r.distances.map((dist) => (
-                        <span key={dist} className="font-mono text-caption border border-frost/30 px-2 py-1 text-frost">
+                        <span key={dist} className="font-mono text-[11px] text-ash">
                           {dist}
                         </span>
                       ))}
-                      <span className="text-caption border border-frost/20 px-2 py-1 text-smoke uppercase">
-                        {t("raceType")} / {typeLabel(r.category)}
-                      </span>
-                    </div>
-                    <div className="mt-3 flex flex-wrap items-center gap-4">
-                      <span
-                        className={`text-caption uppercase ${
-                          r.status === "open" ? "text-zurkhai" : r.status === "closing_soon" ? "text-plasma-blue" : "text-smoke"
-                        }`}
-                      >
-                        ● {statusLabel(r.status)}
-                      </span>
-                      <span className="text-caption text-smoke uppercase">
-                        {t("regDeadline")} <span className="font-mono text-ash">{r.regDeadline ?? t("tba")}</span>
-                      </span>
-                      {r.elevationGainM != null && (
-                        <span className="text-caption text-smoke uppercase">
-                          {t("elevation")} <span className="font-mono text-ash">{r.elevationGainM}m</span>
-                        </span>
-                      )}
-                      {r.priceInfo && (
-                        <span className="text-caption text-smoke uppercase">
-                          {t("price")} <span className="font-mono text-ash">{r.priceInfo}</span>
-                        </span>
-                      )}
                       <span className="hidden md:inline">{r.ownerId && <VerifiedBadge />}</span>
                     </div>
                   </div>
@@ -538,7 +508,7 @@ function RaceListView({
                     <button
                       onClick={() => onToggleCompare(r.id)}
                       aria-pressed={compareIds.includes(r.id)}
-                      className={`col-span-2 inline-flex items-center justify-center gap-2 px-3 py-3 text-[11px] tracking-[0.06em] uppercase border ${
+                       className={`col-span-2 inline-flex items-center justify-center gap-2 px-3 py-3 text-[11px] border ${
                         compareIds.includes(r.id) ? "border-zurkhai text-zurkhai" : "border-frost/30 text-ash"
                       }`}
                     >
@@ -548,7 +518,7 @@ function RaceListView({
                     <button
                       onClick={() => toggle(r.id)}
                       aria-pressed={isSaved}
-                      className={`inline-flex items-center justify-center gap-2 px-3 py-3 text-[11px] tracking-[0.06em] uppercase border ${
+                       className={`inline-flex items-center justify-center gap-2 px-3 py-3 text-[11px] border ${
                         isSaved ? "border-zurkhai text-zurkhai" : "border-frost/30 text-ash"
                       }`}
                     >
@@ -559,7 +529,7 @@ function RaceListView({
                       href={r.registerUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center justify-center gap-2 bg-zurkhai text-void-black px-3 py-3 text-[11px] tracking-[0.06em] uppercase"
+                       className="inline-flex items-center justify-center gap-2 bg-zurkhai text-void-black px-3 py-3 text-[11px]"
                     >
                       {t("register")} <ArrowRight size={14} strokeWidth={1.5} />
                     </a>
@@ -569,7 +539,7 @@ function RaceListView({
                     <button
                       onClick={() => onToggleCompare(r.id)}
                       aria-pressed={compareIds.includes(r.id)}
-                      className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.06em] uppercase border ${
+                       className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] border ${
                         compareIds.includes(r.id)
                           ? "border-zurkhai text-zurkhai"
                           : "border-frost/30 text-ash hover:text-frost hover:border-frost"
@@ -585,7 +555,7 @@ function RaceListView({
                     <button
                       onClick={() => toggle(r.id)}
                       aria-pressed={isSaved}
-                      className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.06em] uppercase border ${
+                       className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] border ${
                         isSaved
                           ? "border-zurkhai text-zurkhai"
                           : "border-frost/30 text-ash hover:text-frost hover:border-frost"
@@ -666,7 +636,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex bg-void-black/80 backdrop-blur-sm ${
+      className={`fixed inset-0 z-50 flex bg-void-black/85 ${
         isMobile ? "items-end justify-stretch" : "items-center justify-center px-6 py-8"
       }`}
       onClick={onClose}
@@ -680,7 +650,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
         className={`w-full bg-void-black outline-none shadow-none ${
           isMobile
             ? "max-h-[85vh] overflow-y-auto border-t border-zurkhai/40 px-5 pb-8 pt-3 animate-in slide-in-from-bottom duration-300"
-            : "max-w-[520px] border border-zurkhai/20 p-6 sm:p-8"
+            : "max-w-[520px] border border-frost/20 p-6 sm:p-8"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -729,7 +699,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
             </span>
           ))}
         </div>
-        <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-zurkhai/20 pt-4">
+        <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-frost/15 pt-4">
           <div>
             <dt className="text-caption uppercase text-smoke">{t("elevation")}</dt>
             <dd className="font-mono text-[13px] text-ash">

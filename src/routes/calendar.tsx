@@ -33,7 +33,6 @@ function CalendarPage() {
             ? "Монголын бүх уралдаан сар сараар. Өдөр дээр дарж дэлгэрэнгүйг хараарай."
             : "Every race in Mongolia, month by month. Tap a day for details and registration."
         }
-        meta={["UB · MGL · 2026", "Live Calendar"]}
       />
       <CalendarGridSection races={races} />
     </SiteShell>

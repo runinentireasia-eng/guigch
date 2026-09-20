@@ -74,7 +74,6 @@ export function PageBanner({
         />
       </div>
       <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 py-10 md:py-14">
-        <div className="text-[12px] text-ash mb-3">{label}</div>
         <h1 className="text-[36px] md:text-[52px] leading-[1.05] font-[400] max-w-3xl">
           {title}
         </h1>
