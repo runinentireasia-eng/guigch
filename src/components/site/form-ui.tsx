@@ -64,7 +64,7 @@ export function PrimaryButton({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className="bg-zurkhai text-void-black px-[26px] py-[12px] text-[12px] tracking-[0.06em] uppercase font-[400] hover:opacity-90 disabled:opacity-50"
+      className="bg-zurkhai text-void-black px-5 py-3 text-[12px] font-[500] hover:bg-frost disabled:opacity-50"
     >
       {children}
     </button>
@@ -79,7 +79,7 @@ export function GhostButton({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className="border border-frost/40 text-frost px-[26px] py-[12px] text-[12px] tracking-[0.06em] uppercase font-[400] hover:bg-frost/5 disabled:opacity-50"
+      className="border border-frost/25 text-frost px-5 py-3 text-[12px] font-[400] hover:border-frost disabled:opacity-50"
     >
       {children}
     </button>
@@ -93,14 +93,14 @@ export function StatusPill({ status }: { status: string }) {
     : status === "approved" || status === "verified" ? "border-plasma-blue text-plasma-blue"
     : "border-frost/30 text-smoke";
   return (
-    <span className={`text-caption border px-2 py-1 uppercase ${tone}`}>{status.replace(/_/g, " ")}</span>
+    <span className={`text-[11px] border px-2 py-1 ${tone}`}>{status.replace(/_/g, " ")}</span>
   );
 }
 
 export function VerifiedBadge({ label = "VERIFIED ORGANIZER" }: { label?: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 text-caption border border-zurkhai text-zurkhai px-2 py-1 uppercase">
-      <span className="size-[6px] bg-zurkhai" />
+    <span className="inline-flex items-center gap-1.5 text-[11px] text-zurkhai">
+      <span className="size-1.5 bg-zurkhai" />
       {label}
     </span>
   );
@@ -111,14 +111,14 @@ export function Modal({
 }: { children: ReactNode; onClose: () => void; label: string; wide?: boolean }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto px-6 py-10 bg-void-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto px-4 py-8 bg-void-black/85"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label={label}
     >
       <div
-        className={`w-full ${wide ? "max-w-[720px]" : "max-w-[560px]"} border border-zurkhai/20 bg-void-black p-6 sm:p-8`}
+        className={`w-full ${wide ? "max-w-[720px]" : "max-w-[560px]"} border border-frost/20 bg-void-black p-5 sm:p-7`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

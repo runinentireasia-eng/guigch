@@ -39,19 +39,19 @@ export function RaceCompareTable({
   ];
 
   return (
-    <div className="mt-10 border border-zurkhai/25">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zurkhai/25 px-4 py-3">
-        <div className="text-[13px] tracking-[0.08em] uppercase text-frost">{t("compareTitle")}</div>
+    <div className="mt-8 border border-frost/15">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-frost/15 px-4 py-3">
+        <div className="text-[13px] text-frost">{t("compareTitle")}</div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => downloadIcs(races, lang, "guigch-compare.ics")}
-            className="inline-flex items-center gap-2 border border-frost/30 px-3 py-2 text-[11px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
+            className="inline-flex items-center gap-2 px-2 py-2 text-[11px] text-ash hover:text-zurkhai"
           >
             <Download size={13} strokeWidth={1.5} /> {t("exportIcs")}
           </button>
           <button
             onClick={onClear}
-            className="border border-frost/30 px-3 py-2 text-[11px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
+            className="px-2 py-2 text-[11px] text-ash hover:text-zurkhai"
           >
             {t("clearCompare")}
           </button>

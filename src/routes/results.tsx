@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell, useRaces } from "@/components/site/shell";
 import { ResultsSection } from "@/components/site/results";
-import { PageBanner, CtaButton } from "@/components/site/page-banner";
+import { PageBanner } from "@/components/site/page-banner";
 import { useLang } from "@/lib/i18n";
 import bannerResults from "@/assets/banner-results.jpg";
 
@@ -33,12 +33,6 @@ function ResultsPage() {
             ? "Аль хэдийн болж өнгөрсөн уралдаануудын архив."
             : "An archive of races already run across the steppe, desert and mountains."
         }
-        cta={
-          <CtaButton to="/calendar" size="sm">
-            {lang === "mn" ? "ДАРААХ УРАЛДААН" : "UPCOMING RACES"}
-          </CtaButton>
-        }
-        meta={["Archive", "MN / EN"]}
       />
       <ResultsSection races={races} />
     </SiteShell>
