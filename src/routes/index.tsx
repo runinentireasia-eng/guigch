@@ -10,6 +10,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Every sanctioned running race in Mongolia: dates, courses, organizers and registration links. Bilingual MN / EN." },
       { property: "og:title", content: "гүйгч.mn — Mongolian Race Calendar 2026" },
       { property: "og:description", content: "Marathons, ultras and trail runs across Mongolia in one calendar." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:image", content: "https://guigch.lovable.app/assets/hero-mongolia.jpg" },
       { name: "twitter:image", content: "https://guigch.lovable.app/assets/hero-mongolia.jpg" },
     ],
@@ -38,13 +40,7 @@ function Hero() {
           width={1920}
           height={1088}
         />
-        {/* Cinematic overlays */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: "linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.08) 70%)",
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-t from-void-black via-void-black/45 to-transparent" />
       </div>
 
       {/* Main content */}
@@ -59,7 +55,6 @@ function Hero() {
           <Link
             to="/calendar"
             className="inline-flex bg-zurkhai px-7 py-3.5 text-[13px] font-[500] text-void-black transition-colors hover:bg-frost"
-            data-cursor-hover
           >
             {t("discoverRaces")}
           </Link>

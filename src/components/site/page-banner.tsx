@@ -36,7 +36,6 @@ export function CtaButton({
 export function PageBanner({
   image,
   imageAlt,
-  label,
   title,
   subtitle,
   cta,
@@ -66,12 +65,7 @@ export function PageBanner({
           height={912}
           className="w-full h-full object-cover opacity-55 grayscale-[20%]"
         />
-        <div
-          className="absolute inset-0"
-          style={{
-            background: "linear-gradient(to top, rgba(0,0,0,0.94), rgba(0,0,0,0.18))",
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-t from-void-black via-void-black/55 to-transparent" />
       </div>
       <div className="relative z-10 w-full max-w-[1280px] mx-auto px-6 py-10 md:py-14">
         <h1 className="text-[36px] md:text-[52px] leading-[1.05] font-[400] max-w-3xl">

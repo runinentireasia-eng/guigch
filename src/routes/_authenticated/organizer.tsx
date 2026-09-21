@@ -40,7 +40,7 @@ function Header() {
     navigate({ to: "/" });
   }
   return (
-    <header className="border-b border-zurkhai/20">
+    <header className="border-b border-frost/15">
       <div className="max-w-[1280px] mx-auto px-6 h-[72px] flex items-center justify-between">
         <Link to="/" className="text-[16px] font-[400] lowercase">← гүйгч.mn / organizer</Link>
         <div className="flex items-center gap-4">
@@ -118,7 +118,7 @@ function VerificationForm() {
   return (
     <div className="max-w-[620px]">
       <div className="text-caption text-smoke mb-4">ORGANIZER VERIFICATION</div>
-      <h1 className="text-[28px] leading-[1.2] tracking-[-0.02em] font-[400] mb-3">Are you the organizer?</h1>
+      <h1 className="text-[28px] leading-[1.2] font-[400] mb-3">Are you the organizer?</h1>
       <p className="text-[14px] leading-[1.6] text-ash mb-8">
         Verify your organization to manage official race pages.
       </p>
@@ -242,11 +242,11 @@ function OrganizerWorkspace({ orgName }: { orgName: string }) {
 
       <section>
         <div className="text-caption text-smoke mb-4">MY RACES ({races.data?.length ?? 0})</div>
-        <div className="border-t border-frost/40" />
+        <div className="border-t border-frost/20" />
         {races.isLoading && <div className="py-6 text-caption text-smoke">Loading…</div>}
         {races.data?.length === 0 && <div className="py-6 text-caption text-smoke">No races yet.</div>}
         {races.data?.map((r) => (
-          <div key={r.id} className="border-t border-zurkhai/20 py-4 flex flex-wrap gap-4 items-start justify-between">
+          <div key={r.id} className="border-t border-frost/15 py-4 flex flex-wrap gap-4 items-start justify-between">
             <div>
               <div className="text-[15px] text-frost">{r.name_en}</div>
               <div className="text-caption text-smoke mt-1">
@@ -269,12 +269,12 @@ function OrganizerWorkspace({ orgName }: { orgName: string }) {
               >Postpone</button>
               <button
                 onClick={() => { if (confirm(`Cancel "${r.name_en}"?`)) setStatus.mutate({ id: r.id, status: "cancelled" }); }}
-                className="text-caption text-smoke hover:text-red-400"
+                className="text-caption text-smoke hover:text-frost"
               >Cancel</button>
             </div>
           </div>
         ))}
-        <div className="border-t border-zurkhai/20" />
+        <div className="border-t border-frost/15" />
       </section>
     </div>
   );

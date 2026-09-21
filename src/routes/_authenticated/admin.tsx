@@ -210,7 +210,7 @@ function AdminPage() {
     return (
       <div className="min-h-screen bg-void-black text-frost font-[300]">
         <div className="max-w-[1280px] mx-auto px-6 py-20">
-          <div className="text-caption text-smoke mb-4">— ADMIN</div>
+          <div className="text-caption text-smoke mb-4">ADMIN</div>
           <p className="text-[15px] text-ash">You're signed in but not a platform admin.</p>
           <div className="mt-6"><Link to="/organizer" className="text-caption text-zurkhai">Go to organizer dashboard →</Link></div>
         </div>
@@ -220,20 +220,20 @@ function AdminPage() {
 
   return (
     <div className="min-h-screen bg-void-black text-frost font-[300]">
-      <header className="border-b border-zurkhai/20">
+      <header className="border-b border-frost/15">
         <div className="max-w-[1280px] mx-auto px-6 h-[72px] flex items-center justify-between">
           <Link to="/" className="text-[16px] font-[400] lowercase">← гүйгч.mn / admin</Link>
           <button onClick={signOut} className="text-caption text-smoke hover:text-frost">Sign out</button>
         </div>
       </header>
 
-      <div className="border-b border-zurkhai/20">
+      <div className="border-b border-frost/15">
         <div className="max-w-[1280px] mx-auto px-6 flex flex-wrap gap-6 py-4">
           {TABS.map((tb) => (
             <button
               key={tb}
               onClick={() => setTab(tb)}
-              className={`text-caption uppercase ${tab === tb ? "text-zurkhai" : "text-smoke hover:text-frost"}`}
+              className={`text-[12px] ${tab === tb ? "text-zurkhai" : "text-smoke hover:text-frost"}`}
             >
               {TAB_LABEL[tb]}
             </button>
@@ -244,7 +244,7 @@ function AdminPage() {
       <main className="max-w-[1280px] mx-auto px-6 py-12 flex flex-col gap-12">
         {(creating || editingId) && (
           <section className="max-w-[620px]">
-            <div className="text-caption text-smoke mb-4">— {editingId ? "EDIT RACE" : "NEW RACE"}</div>
+            <div className="text-caption text-smoke mb-4">{editingId ? "EDIT RACE" : "NEW RACE"}</div>
             <form onSubmit={(e) => { e.preventDefault(); saveRace.mutate(); }} className="flex flex-col gap-3">
               <RaceFields form={form} set={set} />
               <div className="flex flex-wrap gap-3 mt-2">
@@ -295,7 +295,7 @@ function AdminPage() {
                     className="text-caption text-frost hover:text-zurkhai"
                   >Create race</button>
                   <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "approved" })} className="text-caption text-frost hover:text-zurkhai">Approve</button>
-                  <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "rejected", note: prompt("Reason (optional)") ?? "" })} className="text-caption text-smoke hover:text-red-400">Reject</button>
+                     <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "rejected", note: prompt("Reason (optional)") ?? "" })} className="text-caption text-smoke hover:text-frost">Reject</button>
                 </div>
               </div>
             ))}
@@ -319,7 +319,7 @@ function AdminPage() {
                 </div>
                 <div className="flex gap-3 items-start">
                   <button onClick={() => reviewOrganizer.mutate({ id: o.id, status: "verified" })} className="text-caption text-frost hover:text-zurkhai">Verify</button>
-                  <button onClick={() => reviewOrganizer.mutate({ id: o.id, status: "rejected", note: prompt("Reason (optional)") ?? "" })} className="text-caption text-smoke hover:text-red-400">Reject</button>
+                   <button onClick={() => reviewOrganizer.mutate({ id: o.id, status: "rejected", note: prompt("Reason (optional)") ?? "" })} className="text-caption text-smoke hover:text-frost">Reject</button>
                 </div>
               </div>
             ))}
@@ -350,7 +350,7 @@ function AdminPage() {
         {tab === "duplicates" && (
           <Section title={`DUPLICATE WARNINGS (${duplicates.length})`}>
             {duplicates.map((group, i) => (
-              <div key={i} className="border-t border-zurkhai/20 py-4">
+              <div key={i} className="border-t border-frost/15 py-4">
                 <div className="text-caption text-smoke mb-2">Same name and date — merge by keeping one and deleting the others.</div>
                 {(group ?? []).map((r) => (
                   <div key={r.id} className="flex items-center justify-between py-2">
@@ -392,10 +392,10 @@ function AdminPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <div className="text-caption text-smoke mb-4">— {title}</div>
-      <div className="border-t border-frost/40" />
+      <div className="text-caption text-smoke mb-4">{title}</div>
+      <div className="border-t border-frost/20" />
       {children}
-      <div className="border-t border-zurkhai/20" />
+      <div className="border-t border-frost/15" />
     </section>
   );
 }
@@ -418,7 +418,7 @@ function RaceReviewRow({
   const [open, setOpen] = useState(false);
   const owner = verifiedOrgs.find((o) => o.user_id === race.owner_id);
   return (
-    <div className="border-t border-zurkhai/20 py-4">
+    <div className="border-t border-frost/15 py-4">
       <div className="flex flex-wrap gap-4 justify-between items-start">
         <div>
           <div className="text-[15px]">{race.name_en}</div>
@@ -433,7 +433,7 @@ function RaceReviewRow({
         <div className="flex gap-3 items-start">
           <button onClick={() => setOpen((o) => !o)} className="text-caption text-frost hover:text-zurkhai">Review</button>
           <button onClick={onEdit} className="text-caption text-frost hover:text-zurkhai">Edit</button>
-          {onDelete && <button onClick={onDelete} className="text-caption text-smoke hover:text-red-400">Delete</button>}
+          {onDelete && <button onClick={onDelete} className="text-caption text-smoke hover:text-frost">Delete</button>}
         </div>
       </div>
       {open && (
