@@ -4,4 +4,4 @@
 - [x] Simplify homepage and page headers
 - [x] Simplify calendar, list, race details, and comparison
 - [x] Simplify organizers, results, sign-in, Add Race, and management screens
-- [ ] Verify public flows and responsive layouts
+- [x] Verify public flows and responsive layouts
