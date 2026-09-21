@@ -86,7 +86,7 @@ function AuthPage() {
     <div className="min-h-screen bg-void-black text-frost flex items-center justify-center px-6">
       <div className="w-full max-w-[400px]">
         <Link to="/" className="text-caption text-smoke hover:text-frost">← гүйгч.mn</Link>
-        <h1 className="mt-6 text-[28px] tracking-[-0.02em] font-[330]">
+        <h1 className="mt-6 text-[28px] font-[400]">
           {mode === "in" ? "Sign in" : "Create account"}
         </h1>
         <form onSubmit={submit} className="mt-7 flex flex-col gap-3">
@@ -110,16 +110,16 @@ function AuthPage() {
           <button
             type="submit"
             disabled={busy}
-            className="bg-zurkhai text-void-black px-[30px] py-[14px] text-[13px] tracking-[0.06em] uppercase font-[400] hover:opacity-90 disabled:opacity-50"
+            className="bg-zurkhai text-void-black px-7 py-3.5 text-[13px] font-[500] hover:bg-frost disabled:opacity-50"
           >
             {busy ? "…" : mode === "in" ? "Sign in" : "Sign up"}
           </button>
         </form>
 
         <div className="my-5 flex items-center gap-4 text-[11px] text-smoke">
-          <div className="flex-1 border-t border-zurkhai/20" />
+          <div className="flex-1 border-t border-frost/15" />
           or
-          <div className="flex-1 border-t border-zurkhai/20" />
+          <div className="flex-1 border-t border-frost/15" />
         </div>
 
         <button

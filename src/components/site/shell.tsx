@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AddRaceModal } from "./add-race-modal";
 import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLang, type Lang } from "@/lib/i18n";
+import { useLang } from "@/lib/i18n";
 import { rowToRace, type Race, type RaceRow } from "@/lib/races";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -43,20 +43,6 @@ function LangToggle() {
       <span className={`px-3 py-2 text-[11px] ${!isEn ? "bg-zurkhai text-void-black" : "text-ash"}`}>MN</span>
       <span className={`px-3 py-2 text-[11px] ${isEn ? "bg-zurkhai text-void-black" : "text-ash"}`}>EN</span>
     </label>
-  );
-}
-
-export function AnnouncementBar() {
-  const { t } = useLang();
-  return (
-    <div className="w-full bg-zurkhai text-void-black">
-      <div className="max-w-[1280px] mx-auto px-6 h-[40px] flex items-center justify-center gap-6">
-        <span className="text-[12px] tracking-[0.08em] uppercase font-[400] animate-fade-in-up">{t("announcement")}</span>
-        <Link to="/calendar" className="text-[12px] tracking-[0.08em] uppercase font-[400] underline-offset-4 hover:underline nav-link-scan text-void-black after:bg-void-black" data-cursor-hover>
-          {t("readMore")}
-        </Link>
-      </div>
-    </div>
   );
 }
 

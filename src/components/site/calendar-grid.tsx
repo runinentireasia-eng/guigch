@@ -449,7 +449,7 @@ function RaceListView({
   }, [races]);
 
   if (groups.length === 0) {
-    return <div className="border border-zurkhai/20 px-6 py-10 text-[14px] text-smoke">{t("noRacesList")}</div>;
+    return <div className="border border-frost/15 px-6 py-10 text-[14px] text-smoke">{t("noRacesList")}</div>;
   }
 
   return (
@@ -459,7 +459,7 @@ function RaceListView({
         return (
           <div key={key}>
             <div className="flex items-baseline border-b border-frost/25 px-1 py-3">
-              <div className="text-[13px] tracking-[0.08em] uppercase text-frost">
+              <div className="text-[13px] text-frost">
                 {monthNames[m]} · {y}
               </div>
             </div>
@@ -470,10 +470,10 @@ function RaceListView({
               return (
                 <div
                   key={r.id}
-                  className="group grid grid-cols-1 md:grid-cols-[130px_1fr_auto] gap-4 md:gap-8 items-start mt-4 border border-zurkhai/25 p-4 md:mt-0 md:border-0 md:border-b md:border-zurkhai/20 md:px-1 md:py-6 transition-colors hover:bg-graphite/50"
+                  className="group grid grid-cols-1 md:grid-cols-[110px_1fr_auto] gap-4 md:gap-7 items-start mt-4 border border-frost/15 p-4 md:mt-0 md:border-0 md:border-b md:border-frost/15 md:px-1 md:py-5 transition-colors hover:bg-graphite/50"
                 >
                   <div className="flex md:block items-baseline gap-3 min-w-0">
-                    <div className="font-mono text-[40px] leading-[1] tracking-[-0.04em] text-frost transition-colors group-hover:text-zurkhai">
+                    <div className="font-mono text-[36px] leading-none text-frost transition-colors group-hover:text-zurkhai">
                       {String(d.getDate()).padStart(2, "0")}
                     </div>
                     <div className="text-caption text-smoke md:mt-2 uppercase">{wd}</div>
@@ -485,11 +485,11 @@ function RaceListView({
                   <div className="min-w-0">
                     <button
                       onClick={() => onSelect(r)}
-                      className="text-left text-[20px] leading-[1.25] tracking-[-0.02em] font-[400] text-frost hover:text-zurkhai"
+                      className="text-left text-[19px] leading-[1.3] font-[400] text-frost hover:text-zurkhai"
                     >
                       {lang === "mn" ? r.nameMn : r.nameEn}
                     </button>
-                    <div className="flex items-center gap-1.5 text-[13px] tracking-[0.02em] text-ash mt-1">
+                    <div className="flex items-center gap-1.5 text-[13px] text-ash mt-1">
                       <MapPin size={12} strokeWidth={1.5} className="shrink-0 text-smoke md:hidden" />
                       <span className="truncate">{lang === "mn" ? r.locationMn : r.locationEn}</span>
                     </div>
@@ -647,9 +647,9 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
         aria-modal="true"
         aria-label={t("eventDetails")}
         tabIndex={-1}
-        className={`w-full bg-void-black outline-none shadow-none ${
+        className={`w-full bg-void-black outline-none ${
           isMobile
-            ? "max-h-[85vh] overflow-y-auto border-t border-zurkhai/40 px-5 pb-8 pt-3 animate-in slide-in-from-bottom duration-300"
+            ? "max-h-[85vh] overflow-y-auto border-t border-frost/20 px-5 pb-8 pt-3 animate-in slide-in-from-bottom duration-200"
             : "max-w-[520px] border border-frost/20 p-6 sm:p-8"
         }`}
         onClick={(e) => e.stopPropagation()}
@@ -665,7 +665,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
             <button
               onClick={() => toggle(race.id)}
               aria-pressed={isSaved}
-              className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.06em] uppercase border ${
+              className={`inline-flex items-center gap-2 px-3 py-2 text-[11px] border ${
                 isSaved
                   ? "border-zurkhai text-zurkhai"
                   : "border-frost/30 text-ash hover:text-frost hover:border-frost"
@@ -683,13 +683,13 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
             </button>
           </div>
         </div>
-        <h3 className="text-[24px] leading-[1.25] tracking-[-0.02em] font-[400] text-frost mt-4">
+        <h3 className="text-[24px] leading-[1.25] font-[400] text-frost mt-4">
           {lang === "mn" ? race.nameMn : race.nameEn}
         </h3>
-        <div className="text-[13px] tracking-[0.02em] text-ash mt-3">
+        <div className="text-[13px] text-ash mt-3">
           {lang === "mn" ? race.locationMn : race.locationEn}
         </div>
-        <div className="text-[13px] tracking-[0.02em] text-slate mt-1">
+        <div className="text-[13px] text-slate mt-1">
           {lang === "mn" ? race.organizerMn : race.organizerEn}
         </div>
         <div className="mt-4 flex flex-wrap gap-1.5">
@@ -738,7 +738,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
         <div className="mt-5 grid grid-cols-2 gap-2">
           <button
             onClick={() => downloadIcs([race], lang, `${race.id}.ics`)}
-            className="inline-flex items-center justify-center gap-2 border border-frost/30 px-3 py-3 text-[11px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
+            className="inline-flex items-center justify-center gap-2 border border-frost/20 px-3 py-3 text-[11px] text-ash hover:border-zurkhai hover:text-zurkhai"
           >
             <Download size={13} strokeWidth={1.5} /> {t("exportIcs")}
           </button>
@@ -746,7 +746,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
             href={googleCalendarUrl(race, lang)}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center justify-center gap-2 border border-frost/30 px-3 py-3 text-[11px] tracking-[0.06em] uppercase text-ash hover:border-zurkhai hover:text-zurkhai transition-colors"
+            className="inline-flex items-center justify-center gap-2 border border-frost/20 px-3 py-3 text-[11px] text-ash hover:border-zurkhai hover:text-zurkhai"
           >
             <CalendarDays size={13} strokeWidth={1.5} /> {t("addToGoogle")}
           </a>
@@ -755,7 +755,7 @@ function RacePopupInner({ race, onClose }: { race: Race; onClose: () => void }) 
           href={race.registerUrl}
           target="_blank"
           rel="noreferrer"
-          className="mt-6 block bg-zurkhai text-void-black px-[24px] py-[14px] text-[13px] tracking-[0.04em] uppercase font-[400] text-center hover:opacity-90"
+          className="mt-6 block bg-zurkhai text-void-black px-6 py-3.5 text-[13px] font-[500] text-center hover:bg-frost"
         >
           {t("register")} →
         </a>

@@ -65,13 +65,13 @@ export function RaceCompareTable({
           <table className="w-full min-w-[560px] border-collapse text-left">
             <thead>
               <tr>
-                <th className="w-[140px] border-b border-zurkhai/20 px-4 py-3 text-caption uppercase text-smoke font-[400]">
+                <th className="w-[140px] border-b border-frost/15 px-4 py-3 text-caption text-smoke font-[400]">
                   {t("raceName")}
                 </th>
                 {races.map((r) => (
                   <th
                     key={r.id}
-                    className="border-b border-l border-zurkhai/20 px-4 py-3 align-top text-[15px] font-[400] tracking-[-0.01em] text-frost"
+                    className="border-b border-l border-frost/15 px-4 py-3 align-top text-[15px] font-[400] text-frost"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <span>{lang === "mn" ? r.nameMn : r.nameEn}</span>
@@ -90,13 +90,13 @@ export function RaceCompareTable({
             <tbody>
               {rows.map((row) => (
                 <tr key={row.label}>
-                  <th className="border-b border-zurkhai/15 px-4 py-3 text-caption uppercase text-smoke font-[400] align-top">
+                  <th className="border-b border-frost/15 px-4 py-3 text-caption text-smoke font-[400] align-top">
                     {row.label}
                   </th>
                   {races.map((r) => (
                     <td
                       key={r.id}
-                      className="border-b border-l border-zurkhai/15 px-4 py-3 text-[13px] text-ash align-top"
+                      className="border-b border-l border-frost/15 px-4 py-3 text-[13px] text-ash align-top"
                     >
                       {row.href?.(r) ? (
                         <a
@@ -117,12 +117,12 @@ export function RaceCompareTable({
               <tr>
                 <th className="px-4 py-3" />
                 {races.map((r) => (
-                  <td key={r.id} className="border-l border-zurkhai/15 px-4 py-3">
+                  <td key={r.id} className="border-l border-frost/15 px-4 py-3">
                     <a
                       href={r.registerUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-block bg-zurkhai px-4 py-2 text-[11px] tracking-[0.06em] uppercase text-void-black hover:opacity-90"
+                      className="inline-block bg-zurkhai px-4 py-2 text-[11px] font-[500] text-void-black hover:bg-frost"
                     >
                       {t("register")} →
                     </a>
