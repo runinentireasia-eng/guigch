@@ -5,3 +5,9 @@
 - [x] Simplify calendar, list, race details, and comparison
 - [x] Simplify organizers, results, sign-in, Add Race, and management screens
 - [x] Verify public flows and responsive layouts
+
+# Beam aesthetic roadmap
+
+- [ ] Apply the uploaded blue-lit aesthetic through shared colors, typography, navigation, headers, and controls
+- [ ] Integrate a guigch.mn beam wordmark footer with existing navigation and language control
+- [ ] Verify page appearance and calendar interactions without changing race workflows
