@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -60,14 +61,14 @@ export function PrimaryButton({
   children, onClick, type = "button", disabled,
 }: { children: ReactNode; onClick?: () => void; type?: "button" | "submit"; disabled?: boolean }) {
   return (
-    <button
+    <Button variant="beam"
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className="bg-zurkhai text-void-black px-5 py-3 text-[12px] font-[500] hover:bg-frost disabled:opacity-50"
+      className="h-11 px-5 text-[12px]"
     >
       {children}
-    </button>
+    </Button>
   );
 }
 
@@ -75,14 +76,14 @@ export function GhostButton({
   children, onClick, type = "button", disabled,
 }: { children: ReactNode; onClick?: () => void; type?: "button" | "submit"; disabled?: boolean }) {
   return (
-    <button
+    <Button variant="glass"
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className="border border-frost/25 text-frost px-5 py-3 text-[12px] font-[400] hover:border-frost disabled:opacity-50"
+      className="h-11 px-5 text-[12px]"
     >
       {children}
-    </button>
+    </Button>
   );
 }
 

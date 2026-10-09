@@ -12,6 +12,8 @@ export const Route = createFileRoute("/results")({
       { name: "description", content: "Archive of past Mongolian running races with dates and locations." },
       { property: "og:title", content: "Past Races & Results — гүйгч.mn" },
       { property: "og:description", content: "Archive of past Mongolian running races with dates and locations." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: ResultsPage,

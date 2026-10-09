@@ -12,6 +12,8 @@ export const Route = createFileRoute("/calendar")({
       { name: "description", content: "Month-by-month calendar of every running race in Mongolia. Tap a race day for details and registration." },
       { property: "og:title", content: "Race Calendar — гүйгч.mn" },
       { property: "og:description", content: "Month-by-month calendar of every running race in Mongolia. Tap a race day for details and registration." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: CalendarPage,

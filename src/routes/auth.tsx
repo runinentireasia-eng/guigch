@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
+import { BeamSurface } from "@/components/ui/beam-surface";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -83,7 +85,7 @@ function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-void-black text-frost flex items-center justify-center px-6">
+    <BeamSurface className="site-shell min-h-screen text-foreground flex items-center justify-center px-6">
       <div className="w-full max-w-[400px]">
         <Link to="/" className="text-caption text-smoke hover:text-frost">← гүйгч.mn</Link>
         <h1 className="mt-6 text-[28px] font-[400]">
@@ -107,13 +109,13 @@ function AuthPage() {
             placeholder="password"
             className="bg-transparent border border-frost/30 px-4 py-3 text-[14px] text-frost focus:outline-none focus:border-zurkhai"
           />
-          <button
+          <Button variant="beam"
             type="submit"
             disabled={busy}
-            className="bg-zurkhai text-void-black px-7 py-3.5 text-[13px] font-[500] hover:bg-frost disabled:opacity-50"
+            className="h-12 px-7 text-[13px]"
           >
             {busy ? "…" : mode === "in" ? "Sign in" : "Sign up"}
-          </button>
+          </Button>
         </form>
 
         <div className="my-5 flex items-center gap-4 text-[11px] text-smoke">
@@ -122,22 +124,22 @@ function AuthPage() {
           <div className="flex-1 border-t border-frost/15" />
         </div>
 
-        <button
+        <Button variant="glass"
           onClick={google}
           type="button"
           disabled={busy}
-          className="w-full border border-frost/30 text-frost px-[30px] py-[14px] text-[13px] font-[400] hover:border-frost disabled:opacity-50"
+          className="w-full h-12 text-[13px]"
         >
           Continue with Google
-        </button>
+        </Button>
 
-        <button
+        <Button variant="link"
           onClick={() => setMode((m) => (m === "in" ? "up" : "in"))}
-          className="mt-6 text-caption text-smoke hover:text-frost w-full text-left"
+          className="mt-6 text-smoke w-full justify-start px-0 text-[12px]"
         >
           {mode === "in" ? "No account? Create one →" : "Have an account? Sign in →"}
-        </button>
+        </Button>
       </div>
-    </div>
+    </BeamSurface>
   );
 }

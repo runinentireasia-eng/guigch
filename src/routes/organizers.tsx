@@ -12,6 +12,8 @@ export const Route = createFileRoute("/organizers")({
       { name: "description", content: "Who organizes running races across Mongolia, and which events each of them runs." },
       { property: "og:title", content: "Race Organizers — гүйгч.mn" },
       { property: "og:description", content: "Who organizes running races across Mongolia, and which events each of them runs." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: OrganizersPage,
