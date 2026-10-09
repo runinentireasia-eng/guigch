@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 
 /* ---------- Cinematic CTA button (same language as the homepage hero) ---------- */
 export function CtaButton({
@@ -13,22 +14,18 @@ export function CtaButton({
   children: ReactNode;
   size?: "md" | "sm";
 }) {
-  const pad = size === "sm" ? "px-5 py-3" : "px-7 py-3.5";
-  const cls =
-    `inline-flex items-center justify-center ${pad} bg-zurkhai text-void-black text-[12px] font-[500] ` +
-    "transition-colors hover:bg-frost focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zurkhai";
   return (
-    <div className="inline-flex">
+    <Button variant="beam" size={size === "sm" ? "sm" : "lg"} asChild>
       {to ? (
-        <Link to={to} className={cls}>
+        <Link to={to}>
           {children}
         </Link>
       ) : (
-        <a href={href} target="_blank" rel="noreferrer" className={cls}>
+        <a href={href} target="_blank" rel="noreferrer">
           {children}
         </a>
       )}
-    </div>
+    </Button>
   );
 }
 
@@ -54,7 +51,7 @@ export function PageBanner({
   const h = height === "sm" ? "min-h-[240px]" : "min-h-[300px]";
   return (
     <section
-      className={`relative ${h} w-full flex items-end overflow-hidden bg-void-black text-frost border-b border-frost/15`}
+      className={`beam-banner relative ${h} w-full flex items-end overflow-hidden text-foreground border-b border-input`}
     >
       <div className="absolute inset-0 z-0">
         <img
