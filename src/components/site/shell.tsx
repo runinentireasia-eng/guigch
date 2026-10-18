@@ -51,6 +51,42 @@ function LangToggle() {
 
 const navLinkClass = "text-[13px] text-ash hover:text-frost transition-colors";
 
+function AuthMenu({ label }: { label: string }) {
+  const { lang } = useLang();
+  const [open, setOpen] = useState(false);
+  const itemClass = "block px-4 py-2.5 text-[13px] text-ash hover:text-frost hover:bg-frost/5";
+  return (
+    <div
+      className="relative"
+      onMouseLeave={() => setOpen(false)}
+      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false); }}
+    >
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        onMouseEnter={() => setOpen(true)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className="px-3 py-2 text-[13px] text-ash hover:text-frost"
+      >
+        {label} <span aria-hidden className="text-[10px]">▾</span>
+      </button>
+      {open && (
+        <div role="menu" className="absolute right-0 top-full pt-1 z-50">
+          <div className="min-w-[160px] rounded-md border border-input bg-background py-1">
+            <Link to="/auth" search={{ mode: "in" }} role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+              {lang === "mn" ? "Нэвтрэх" : "Sign in"}
+            </Link>
+            <Link to="/auth" search={{ mode: "up" }} role="menuitem" className={itemClass} onClick={() => setOpen(false)}>
+              {lang === "mn" ? "Бүртгүүлэх" : "Sign up"}
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Nav() {
   const { t } = useLang();
   const [addOpen, setAddOpen] = useState(false);
@@ -74,13 +110,7 @@ export function Nav() {
           </Link>
         </div>
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            to="/auth"
-            className="px-3 py-2 text-[13px] text-ash hover:text-frost"
-            data-cursor-hover
-          >
-            <span>{t("logIn")}</span>
-          </Link>
+          <AuthMenu label={t("logIn")} />
           <Button variant="beam"
             onClick={() => setAddOpen(true)}
             className="h-10 px-4 text-[13px]"
@@ -125,11 +155,19 @@ export function Nav() {
           ))}
           <Link
             to="/auth"
+            search={{ mode: "in" }}
             onClick={() => setMenuOpen(false)}
             className="border-t border-frost/15 py-3 text-left text-[14px] text-ash mt-2"
-            data-cursor-hover
           >
             <span>{t("logIn")}</span>
+          </Link>
+          <Link
+            to="/auth"
+            search={{ mode: "up" }}
+            onClick={() => setMenuOpen(false)}
+            className="py-3 text-left text-[14px] text-ash"
+          >
+            <span>{t("logIn") === "Нэвтрэх" ? "Бүртгүүлэх" : "Sign up"}</span>
           </Link>
           <Button variant="beam"
             onClick={() => {
