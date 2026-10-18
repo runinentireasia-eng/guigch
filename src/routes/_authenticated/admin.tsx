@@ -6,6 +6,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { logRaceAction, useIsAdmin, useSessionUser } from "@/lib/access";
 import { Field, GhostButton, Input, PrimaryButton, Select, StatusPill, Textarea, VerifiedBadge } from "@/components/site/form-ui";
+import { AdminMfaGate } from "@/components/site/admin-mfa-gate";
 import { RaceFields, REVIEW_STATUSES, emptyRaceForm, rowToRaceForm, toRacePayload, type RaceFormValues } from "@/components/site/race-form";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: AdminPage,
+  component: AdminRoute,
 });
 
 const TABS = ["queue", "suggestions", "organizers", "reports", "duplicates", "races"] as const;
@@ -32,6 +33,13 @@ const TAB_LABEL: Record<Tab, string> = {
   duplicates: "DUPLICATE WARNINGS",
   races: "ALL RACES",
 };
+
+function AdminRoute() {
+  const { data: isAdmin, isLoading } = useIsAdmin();
+  if (isLoading) return null;
+  if (!isAdmin) return <AdminPage />;
+  return <AdminMfaGate><AdminPage /></AdminMfaGate>;
+}
 
 function AdminPage() {
   const navigate = useNavigate();

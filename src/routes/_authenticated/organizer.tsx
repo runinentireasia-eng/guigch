@@ -44,7 +44,6 @@ function Header() {
       <div className="max-w-[1280px] mx-auto px-6 h-[72px] flex items-center justify-between">
         <Link to="/" className="text-[16px] font-[400] lowercase">← гүйгч.mn / organizer</Link>
         <div className="flex items-center gap-4">
-          {isAdmin && <Link to="/admin" className="text-caption text-smoke hover:text-frost">Admin dashboard</Link>}
           <button onClick={signOut} className="text-caption text-smoke hover:text-frost">Sign out</button>
         </div>
       </div>
