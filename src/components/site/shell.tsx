@@ -155,11 +155,19 @@ export function Nav() {
           ))}
           <Link
             to="/auth"
+            search={{ mode: "in" }}
             onClick={() => setMenuOpen(false)}
             className="border-t border-frost/15 py-3 text-left text-[14px] text-ash mt-2"
-            data-cursor-hover
           >
             <span>{t("logIn")}</span>
+          </Link>
+          <Link
+            to="/auth"
+            search={{ mode: "up" }}
+            onClick={() => setMenuOpen(false)}
+            className="py-3 text-left text-[14px] text-ash"
+          >
+            <span>{t("logIn") === "Нэвтрэх" ? "Бүртгүүлэх" : "Sign up"}</span>
           </Link>
           <Button variant="beam"
             onClick={() => {

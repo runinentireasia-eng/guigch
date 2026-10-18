@@ -17,12 +17,18 @@ export const Route = createFileRoute("/auth")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>): { mode?: "in" | "up" } =>
+    s.mode === "up" ? { mode: "up" } : s.mode === "in" ? { mode: "in" } : {},
   component: AuthPage,
 });
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"in" | "up">("in");
+  const search = Route.useSearch();
+  const [mode, setMode] = useState<"in" | "up">(search.mode ?? "in");
+  useEffect(() => {
+    if (search.mode) setMode(search.mode);
+  }, [search.mode]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
