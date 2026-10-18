@@ -109,6 +109,7 @@ function AdminPage() {
 
   const setReview = useMutation({
     mutationFn: async ({ id, status, note }: { id: string; status: string; note?: string }) => {
+      if (status === "approved") status = "published"; // approved races go live on the calendar
       const publishing = status === "published";
       const { error } = await supabase
         .from("races")
@@ -146,14 +147,33 @@ function AdminPage() {
   });
 
   const reviewSuggestion = useMutation({
-    mutationFn: async ({ id, status, note }: { id: string; status: "approved" | "rejected"; note?: string }) => {
+    mutationFn: async ({ id, status, note, suggestion }: { id: string; status: "approved" | "rejected"; note?: string; suggestion?: any }) => {
+      if (status === "approved" && suggestion) {
+        if (!suggestion.race_date) throw new Error("Suggestion has no date — add the race manually");
+        const { data, error: insErr } = await supabase
+          .from("races")
+          .insert({
+            name_mn: suggestion.race_name, name_en: suggestion.race_name,
+            race_date: suggestion.race_date,
+            location_mn: suggestion.location ?? "", location_en: suggestion.location ?? "",
+            organizer_mn: suggestion.organizer_name ?? "", organizer_en: suggestion.organizer_name ?? "",
+            category: "road", register_url: suggestion.link ?? "",
+            description_mn: suggestion.notes ?? "", description_en: suggestion.notes ?? "",
+            review_status: "published" as const,
+            published_at: new Date().toISOString(), published_by: user?.id ?? null,
+          })
+          .select("id")
+          .single();
+        if (insErr) throw insErr;
+        await logRaceAction(data.id, "published_from_suggestion", id);
+      }
       const { error } = await supabase
         .from("race_suggestions")
         .update({ status, admin_notes: note ?? "", reviewed_by: user?.id ?? null, reviewed_at: new Date().toISOString() })
         .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("Suggestion reviewed"); qc.invalidateQueries({ queryKey: ["admin-suggestions"] }); },
+    onSuccess: () => { toast.success("Suggestion reviewed"); qc.invalidateQueries({ queryKey: ["admin-suggestions"] }); invalidateRaces(); },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
   });
 
@@ -294,7 +314,7 @@ function AdminPage() {
                     }}
                     className="text-caption text-frost hover:text-zurkhai"
                   >Create race</button>
-                  <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "approved" })} className="text-caption text-frost hover:text-zurkhai">Approve</button>
+                  <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "approved", suggestion: s })} className="text-caption text-frost hover:text-zurkhai">Approve</button>
                      <button onClick={() => reviewSuggestion.mutate({ id: s.id, status: "rejected", note: prompt("Reason (optional)") ?? "" })} className="text-caption text-smoke hover:text-frost">Reject</button>
                 </div>
               </div>
