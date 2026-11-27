@@ -11,3 +11,5 @@
 - [x] Apply the uploaded blue-lit aesthetic through shared colors, typography, navigation, headers, and controls
 - [x] Integrate a guigch.mn beam wordmark footer with existing navigation and language control
 - [x] Verify page appearance and calendar interactions without changing race workflows
+
+- [x] Explain how to embed the race calendar inside the run club website
